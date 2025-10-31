@@ -1,110 +1,102 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Айдар Гарипов — Разработчик</title>
-  <style>
-    /* Сброс стилей */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      background: #fafafa;
-      padding: 2rem;
-    }
-    header {
-      text-align: center;
-      margin-bottom: 3rem;
-    }
-    h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
-    .subtitle { color: #666; font-size: 1.2rem; margin-bottom: 1.5rem; }
-    .socials a {
-      margin: 0 0.5rem;
-      text-decoration: none;
-      color: #0969da;
-      font-weight: 500;
-    }
-    section {
-      max-width: 800px;
-      margin: 0 auto 3rem;
-    }
-    h2 {
-      font-size: 1.8rem;
-      margin-bottom: 1.2rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid #eee;
-    }
-    ul { padding-left: 1.2rem; margin-bottom: 1.5rem; }
-    li { margin-bottom: 0.6rem; }
-    .projects a { color: #0969da; text-decoration: none; }
-    .projects a:hover { text-decoration: underline; }
-    footer {
-      text-align: center;
-      color: #888;
-      font-size: 0.9rem;
-    }
-
-    @media (max-width: 600px) {
-      body { padding: 1rem; }
-      h1 { font-size: 2rem; }
-      h2 { font-size: 1.5rem; }
-    }
-  </style>
+  <title>Айдар Гарипов — Full-stack Engineer</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚙️</text></svg>">
 </head>
 <body>
+
+  <button class="theme-toggle" id="themeToggle">🌓</button>
+
   <header>
+    <img src="assets/img/avatar.png" alt="Айдар Гарипов">
     <h1>Айдар Гарипов</h1>
-    <div class="subtitle">Backend / Full-stack разработчик</div>
+    <div class="subtitle">Backend / DevOps / Full-stack Engineer</div>
     <div class="socials">
       <a href="https://github.com/garipov-ar" target="_blank">GitHub</a>
-      <!-- Добавьте Telegram, LinkedIn и т.д. по желанию -->
+      <!-- <a href="https://t.me/..." target="_blank">Telegram</a> -->
     </div>
   </header>
 
   <main>
-    <section>
+    <section id="about">
       <h2>Обо мне</h2>
       <p>
-        Разрабатываю надёжные и масштабируемые веб-приложения с использованием Python, Node.js, Docker, PostgreSQL и RabbitMQ.
-        Увлекаюсь автоматизацией, архитектурой микросервисов и DevOps-практиками.
+        Создаю отказоустойчивые сервисы на стеке Python, Node.js и Docker.  
+        Проектирую архитектуру микросервисов, настраиваю CI/CD, автоматизирую развёртывание через Nginx и облачные туннели.  
+        Люблю чистый код, документацию и инфраструктуру как код.
       </p>
     </section>
 
-    <section class="projects">
+    <section id="projects">
       <h2>Проекты</h2>
-      <ul>
+      <ul class="projects">
         <li>
-          <strong><a href="https://github.com/garipov-ar/ваш-проект-1" target="_blank">Название проекта 1</a></strong>  
-          — Краткое описание: что делает, какие технологии использованы.
+          <strong><a href="https://github.com/garipov-ar/ваш-бот" target="_blank">Telegram-бот с админкой</a></strong><br>
+          FastAPI + PostgreSQL + Alembic + RabbitMQ. Управление через защищённый веб-интерфейс.
         </li>
         <li>
-          <strong><a href="https://github.com/garipov-ar/ваш-проект-2" target="_blank">Название проекта 2</a></strong>  
-          — Например: Telegram-бот с админкой, FastAPI + PostgreSQL + Alembic.
+          <strong><a href="https://github.com/garipov-ar/ваш-api" target="_blank">API Gateway с Nginx</a></strong><br>
+          Reverse proxy, GeoIP-фильтрация, маршрутизация на локальные сервисы через cloudpub.
         </li>
-        <!-- Добавьте 2–4 проекта -->
       </ul>
     </section>
 
-    <section>
-      <h2>Технологии</h2>
-      <p>
-        Python • FastAPI/Flask • Node.js • Docker • Docker Compose • PostgreSQL • RabbitMQ • Nginx • Linux • Git • GitHub Actions
-      </p>
+    <section id="tech">
+      <h2>Стек</h2>
+      <div class="tech-list">
+        <span class="tech-badge">Python</span>
+        <span class="tech-badge">FastAPI</span>
+        <span class="tech-badge">Node.js</span>
+        <span class="tech-badge">Docker</span>
+        <span class="tech-badge">Docker Compose</span>
+        <span class="tech-badge">PostgreSQL</span>
+        <span class="tech-badge">RabbitMQ</span>
+        <span class="tech-badge">Nginx</span>
+        <span class="tech-badge">Linux</span>
+        <span class="tech-badge">GitHub Actions</span>
+        <span class="tech-badge">cloudpub</span>
+        <span class="tech-badge">.env</span>
+      </div>
     </section>
 
-    <section>
+    <section id="contact">
       <h2>Контакты</h2>
       <p>
-        Открыт к интересным проектам и коллаборациям.<br>
-        Напишите мне: <strong>ваш-email@example.com</strong>
+        Готов к работе над сложными задачами и open-source коллаборациям.<br>
+        Email: <strong>ваш-email@example.com</strong>
       </p>
     </section>
   </main>
 
   <footer>
-    &copy; 2025 Айдар Гарипов. Все права защищены.
+    &copy; 2025 Айдар Гарипов • Собрано с ❤️ и терминалом
   </footer>
+
+  <script>
+    // Плавное появление секций при прокрутке
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('section').forEach(section => observer.observe(section));
+
+    // Переключатель темы
+    const toggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    const current = localStorage.getItem('theme') || 'dark';
+    html.setAttribute('data-theme', current);
+
+    toggle.addEventListener('click', () => {
+      const newTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    });
+  </script>
 </body>
 </html>
