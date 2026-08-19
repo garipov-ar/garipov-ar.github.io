@@ -29,6 +29,9 @@ import {
   CreditCard,
   MessageSquareCode,
   LayoutGrid,
+  FileCheck,
+  Activity,
+  HardDrive,
 } from 'lucide-react';
 
 const GithubIcon = ({ size = 18 }: { size?: number }) => (
@@ -48,12 +51,12 @@ const TelegramIcon = ({ size = 18 }: { size?: number }) => (
 interface Project {
   id: string;
   title: string;
-  category: 'construction' | 'services';
+  category: 'web' | 'bots' | 'backend';
   categoryLabel: string;
   description: string;
   features: string[];
   stack: string[];
-  demoUrl: string;
+  demoUrl?: string;
   githubUrl: string;
   image: string;
   accentColor: string;
@@ -64,8 +67,8 @@ const PROJECTS: Project[] = [
   {
     id: 'nordic',
     title: 'Nordic Craft — Строительная компания',
-    category: 'construction',
-    categoryLabel: 'Строительство и архитектура',
+    category: 'web',
+    categoryLabel: 'Next.js & Frontend',
     description: 'Премиальный адаптивный сайт для строительной компании с интерактивным 5-шаговым квиз-калькулятором сметы и ипотеки.',
     features: [
       '5-шаговый интерактивный квиз-калькулятор стоимости и ипотеки',
@@ -83,8 +86,8 @@ const PROJECTS: Project[] = [
   {
     id: 'echo',
     title: 'Гостевой комплекс «ЭХО»',
-    category: 'construction',
-    categoryLabel: 'Посуточная аренда & Спа',
+    category: 'web',
+    categoryLabel: 'Next.js & Frontend',
     description: 'Атмосферный лендинг для загородного комплекса в таежном стиле с переключателем домов, умным букингом и спа-ритуалами.',
     features: [
       'Интерактивный переключатель (A-Frame «Шалаш» vs «Большой дом»)',
@@ -100,11 +103,83 @@ const PROJECTS: Project[] = [
     metrics: 'Dynamic Pricing • 2 объекта',
   },
   {
+    id: 'transaction-engine',
+    title: 'Transaction Processing Engine — Highload',
+    category: 'backend',
+    categoryLabel: 'Backend & Highload',
+    description: 'Высоконагруженный распределенный движок процессинга финансовых транзакций с очередями сообщений и защитой от сбоев.',
+    features: [
+      'Асинхронная обработка потока транзакций через Apache Kafka',
+      'Гарантия идемпотентности и строгой целостности данных (ACID)',
+      'Тюнинг JVM памяти и оптимизация пула соединений PostgreSQL',
+      'Архитектура микросервисов с метриками и мониторингом',
+    ],
+    stack: ['Java 21', 'Spring Boot 3', 'Apache Kafka', 'PostgreSQL', 'Docker', 'JVM Tuning'],
+    githubUrl: 'https://github.com/garipov-ar/transaction-engine',
+    image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1000&q=80',
+    accentColor: '#38BDF8',
+    metrics: 'High Throughput • Kafka Pipeline',
+  },
+  {
+    id: 'field-support',
+    title: 'Field Support System — Telecom Bot + CMS',
+    category: 'bots',
+    categoryLabel: 'Telegram Боты & CMS',
+    description: 'Корпоративная экосистема для выездных инженеров связи: Telegram-бот для регламентов и CMS-панель управления базой знаний.',
+    features: [
+      'Telegram-бот для мгновенного поиска регламентов и схем оборудования',
+      'CMS-панель для диспетчеров и технических авторов',
+      'Интеграция с реляционной базой данных PostgreSQL',
+      'Система разграничения прав доступа и логирование запросов',
+    ],
+    stack: ['Java', 'Spring Boot', 'Telegram Bot API', 'PostgreSQL', 'REST API', 'Docker'],
+    githubUrl: 'https://github.com/garipov-ar/field-support-system',
+    image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1000&q=80',
+    accentColor: '#818CF8',
+    metrics: 'Telegram Bot + CMS • PostgreSQL',
+  },
+  {
+    id: 'audit-log',
+    title: 'Immutable Financial Audit Log Service',
+    category: 'backend',
+    categoryLabel: 'Backend & Highload',
+    description: 'Отказоустойчивый сервис неизменяемого аудита финансовых транзакций и системных событий (WORM-паттерн).',
+    features: [
+      'Защита записей аудита от модификации и несанкционированного удаления',
+      'Партиционирование таблиц PostgreSQL для работы с миллионами записей',
+      'REST API для быстрой интеграции с банковскими шлюзами',
+      'Полная трассировка действий операторов и транзакций',
+    ],
+    stack: ['Java', 'Spring Boot', 'PostgreSQL', 'REST API', 'Docker'],
+    githubUrl: 'https://github.com/garipov-ar/audit-log-service',
+    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=80',
+    accentColor: '#A78BFA',
+    metrics: 'Immutable Audit • Enterprise',
+  },
+  {
+    id: 'briefy-bot',
+    title: 'Briefy Bot — Умный Telegram-бот сбора брифов',
+    category: 'bots',
+    categoryLabel: 'Telegram Боты & CMS',
+    description: 'Интерактивный Telegram-бот для автоматизированного анкетирования клиентов, сбора ТЗ и передачи структурированных лидов.',
+    features: [
+      'Пошаговый сценарий опроса клиентов с валидацией ответов',
+      'Генерация структурированного брифа в Telegram и экспорт',
+      'Удобные Inline-кнопки и сохранение состояния диалога',
+      'Мгновенное уведомление менеджеров о новой заполненной заявке',
+    ],
+    stack: ['Python', 'aiogram', 'Telegram Bot API', 'SQLite/PostgreSQL'],
+    githubUrl: 'https://github.com/garipov-ar/briefy-bot',
+    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1000&q=80',
+    accentColor: '#F43F5E',
+    metrics: 'Python • aiogram • Брифы',
+  },
+  {
     id: 'door',
     title: 'Дверь-Мастер — Установка межкомнатных дверей',
-    category: 'services',
-    categoryLabel: 'Бытовые услуги',
-    description: 'Высококонверсионный сайт для монтажа дверей с онлайн-калькулятором, врезкой магнитных замков и гарантией 2 года.',
+    category: 'web',
+    categoryLabel: 'Next.js & Frontend',
+    description: 'Высококонверсионный сайт для мастеров по установке дверей с онлайн-калькулятором, врезкой магнитных замков и гарантией 2 года.',
     features: [
       'Калькулятор стоимости (распашные, Invisible, купе, доборы, врезка)',
       'Скидка 10% при заказе от 3-х полотен',
@@ -121,8 +196,8 @@ const PROJECTS: Project[] = [
   {
     id: 'demolition',
     title: 'Демонтаж-Про — Демонтажные работы под ключ',
-    category: 'services',
-    categoryLabel: 'Бытовые услуги',
+    category: 'web',
+    categoryLabel: 'Next.js & Frontend',
     description: 'Продающий лендинг по сносу стен, перегородок, стяжки и вывозу строительного мусора контейнерами 8–27 м³.',
     features: [
       'Калькулятор демонтажа по площади пола и типу стен',
@@ -140,8 +215,8 @@ const PROJECTS: Project[] = [
   {
     id: 'handyman',
     title: 'Муж на час 24/7 — Срочный бытовой ремонт',
-    category: 'services',
-    categoryLabel: 'Бытовые услуги',
+    category: 'web',
+    categoryLabel: 'Next.js & Frontend',
     description: 'Лендинг службы срочного мелкого ремонта с интерактивным чек-листом услуг и выездом мастера за 45 минут.',
     features: [
       'Интерактивный чек-лист бытовых услуг с автоматическим подсчетом сметы',
@@ -159,8 +234,8 @@ const PROJECTS: Project[] = [
   {
     id: 'electrical',
     title: 'Электро-Монтаж — Электромонтажные работы',
-    category: 'services',
-    categoryLabel: 'Бытовые услуги',
+    category: 'web',
+    categoryLabel: 'Next.js & Frontend',
     description: 'Экспертный сайт по электромонтажу в квартирах и домах по ГОСТ и ПУЭ с онлайн-расчетом проекта и сборкой щитов.',
     features: [
       'Калькулятор стоимости по типу жилья (1к, 2к, 3к, коттедж) и материалу стен',
@@ -219,58 +294,58 @@ const STACK_CATEGORIES = [
     ],
   },
   {
-    title: 'Telegram Боты & Mini Apps',
-    icon: Bot,
+    title: 'Backend & Highload Systems',
+    icon: Server,
     color: '#38BDF8',
     skills: [
-      'Telegram Bot API (Node.js / Python)',
+      'Java 21 & Spring Boot 3 (Security, Data)',
+      'Apache Kafka (распределенные очереди)',
+      'Node.js, Express & Python (FastAPI/aiogram)',
+      'PostgreSQL, MySQL, Redis кэширование',
+      'REST API, WebSockets & gRPC',
+      'Docker контейнеризация & микросервисы',
+    ],
+  },
+  {
+    title: 'Telegram Боты & Mini Apps',
+    icon: Bot,
+    color: '#34D399',
+    skills: [
+      'Telegram Bot API (Node.js / Python / Java)',
       'Telegram Mini Apps (TMA / WebApp SDK)',
-      'Telegraf / grammY фреймворки',
+      'Telegraf, grammY, aiogram',
       'Платежи в Telegram (ЮKassa, Stars)',
-      'Интерактивные Inline-меню & стейты',
+      'Интерактивные Inline-меню & FSM стейты',
       'AI-боты (OpenAI / DeepSeek API)',
     ],
   },
   {
-    title: 'Backend, API & Интеграции',
-    icon: Server,
-    color: '#34D399',
-    skills: [
-      'Node.js & REST API архитектура',
-      'CRM интеграции (Bitrix24, amoCRM)',
-      'Yandex Maps API & геолокация',
-      'Webhooks & экспорт в Google Sheets',
-      'Email / SMS шлюзы (Resend, SMTP)',
-      'PostgreSQL, MySQL, Prisma ORM',
-    ],
-  },
-  {
-    title: 'Cloud, DevOps & UX/UI',
+    title: 'DevOps, Cloud & UX/UI',
     icon: Palette,
     color: '#FBBF24',
     skills: [
-      'Figma (Pixel-Perfect верстка)',
       'GitHub Actions (автоматический CI/CD)',
-      'Vercel, GitHub Pages, Docker',
-      'SEO-оптимизация & Schema.org',
+      'Vercel, GitHub Pages, Nginx, Linux',
+      'Figma (Pixel-Perfect верстка)',
+      'SEO-оптимизация & Schema.org / OpenGraph',
       'Интерактивные квиз-калькуляторы',
-      'A/B тестирование конверсии',
+      'CRM интеграции (Bitrix24, amoCRM)',
     ],
   },
 ];
 
 const INITIAL_LOGS = [
-  '⚡ [aidar@hub ~]$ init portfolio-core --prod',
+  '⚡ [aidar@hub ~]$ init portfolio-ecosystem --prod',
   '✔ [kernel] Loaded Next.js 15.1 (Turbopack) & React 19.0.0',
-  '✔ [telegram-bot] Gateway active: @Aidar_RG (Webhook listening)',
-  '✔ [tma] Telegram Mini Apps (WebApps) support enabled',
-  '✔ [cases] 6 live production projects verified & mounted',
+  '✔ [backend] Java 21 / Spring Boot 3 & Apache Kafka ready',
+  '✔ [telegram] Bot Gateway & Mini Apps SDK mounted: @Aidar_RG',
+  '✔ [cases] 10 live production repositories indexed & verified',
   '✔ [network] Status: 200 OK | Core Web Vitals: 98/100',
-  '💡 [terminal] Type "help", "bots" or click buttons to explore.',
+  '💡 [terminal] Type "help", "projects", "backend", "bots" to inspect stack.',
 ];
 
 export default function PortfolioHub() {
-  const [filter, setFilter] = useState<'all' | 'construction' | 'services'>('all');
+  const [filter, setFilter] = useState<'all' | 'web' | 'bots' | 'backend'>('all');
   const [logs, setLogs] = useState<string[]>(INITIAL_LOGS);
   const [cmdInput, setCmdInput] = useState('');
   const [copiedEmail, setCopiedEmail] = useState(false);
@@ -285,17 +360,19 @@ export default function PortfolioHub() {
 
     let response = '';
     if (cleanCmd === 'help') {
-      response = 'Доступные команды: projects, bots, stack, contact, stats, clear, reload';
-    } else if (cleanCmd === 'bots') {
-      response = 'Telegram-разработка: CRM лид-боты, Telegram Mini Apps (WebApps), Боты с оплатой (ЮKassa), AI ассистенты (GPT/DeepSeek)';
+      response = 'Доступные команды: projects, web, bots, backend, stack, contact, stats, clear, reload';
     } else if (cleanCmd === 'projects') {
-      response = `В базе 6 кейсов: ${PROJECTS.map((p) => p.title.split('—')[0].trim()).join(', ')}`;
+      response = `Всего 10 проектов: 6 Web (Next.js), 2 Telegram Боты, 2 Highload Backend (Kafka/Spring Boot)`;
+    } else if (cleanCmd === 'backend') {
+      response = 'Backend: Transaction Processing Engine (Kafka, Java 21), Immutable Audit Log Service (Spring Boot, PostgreSQL)';
+    } else if (cleanCmd === 'bots') {
+      response = 'Telegram: Field Support System Bot (Java/CMS), Briefy Bot (Python/aiogram), CRM Lead Capture Bots';
     } else if (cleanCmd === 'stack') {
-      response = 'Стек: Next.js 15, React 19, TypeScript, Telegram Bot API, Mini Apps (TMA), Tailwind, PostgreSQL, CI/CD';
+      response = 'Стек: Next.js 15, React 19, TypeScript, Java 21 / Spring Boot 3, Apache Kafka, Python, Telegram Bot API, PostgreSQL, Docker, CI/CD';
     } else if (cleanCmd === 'contact') {
       response = 'Telegram: @Aidar_RG (https://t.me/Aidar_RG) | Email: disprogar@gmail.com';
     } else if (cleanCmd === 'stats') {
-      response = 'Метрики: 6 сайтов, Telegram-боты, PageSpeed 98/100, 100% Mobile First, Конверсия x2.8';
+      response = 'Метрики: 10 проектов, PageSpeed 98/100, Highload Kafka Engine, 100% Mobile First, Конверсия x2.8';
     } else if (cleanCmd === 'clear') {
       setLogs([]);
       setCmdInput('');
@@ -305,7 +382,7 @@ export default function PortfolioHub() {
       setCmdInput('');
       return;
     } else {
-      response = `Команда "${cleanCmd}" не найдена. Введите "help" для списка доступных команд.`;
+      response = `Команда "${cleanCmd}" не найдена. Введите "help" для списка команд.`;
     }
 
     setLogs((prev) => [...prev, `⚡ [aidar@hub ~]$ ${cmdInput}`, response]);
@@ -329,12 +406,12 @@ export default function PortfolioHub() {
             </div>
             <div>
               <div style={{ fontWeight: 800, fontSize: '1.15rem', color: '#FFF', letterSpacing: '-0.02em' }}>Айдар Гарипов</div>
-              <div style={{ fontSize: '0.75rem', color: '#38BDF8', fontFamily: 'var(--font-mono)' }}>Web & Telegram Bot Developer</div>
+              <div style={{ fontSize: '0.75rem', color: '#38BDF8', fontFamily: 'var(--font-mono)' }}>Full-Stack & Telegram Bot Developer</div>
             </div>
           </div>
 
           <nav style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-            <a href="#projects" style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none' }}>Кейсы</a>
+            <a href="#projects" style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none' }}>Проекты</a>
             <a href="#bots" style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none' }}>Telegram Боты</a>
             <a href="#stack" style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none' }}>Стек</a>
             <a href="#contacts" style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none' }}>Контакты</a>
@@ -357,20 +434,20 @@ export default function PortfolioHub() {
           <div style={{ textAlign: 'center', maxWidth: 920, margin: '0 auto 50px auto' }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', borderRadius: 9999, background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.3)', color: '#34D399', fontSize: '0.8125rem', fontWeight: 700, marginBottom: '24px' }}>
               <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10B981', display: 'inline-block', boxShadow: '0 0 10px #10B981' }}></span>
-              Открыт для разработки сайтов и Telegram-ботов
+              Full-Stack разработка • Сайты, Боты & Высоконагруженный Backend
             </div>
 
             <h1 style={{ fontSize: 'clamp(2.3rem, 5.2vw, 3.6rem)', lineHeight: 1.15, marginBottom: '24px' }}>
-              Разработка сайтов и <span className="glow-accent">Telegram-ботов</span> под ключ
+              Разработка веб-сервисов, <span className="glow-accent">Telegram-ботов</span> и Backend-систем
             </h1>
 
-            <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', lineHeight: 1.65, maxWidth: 780, margin: '0 auto 36px auto' }}>
-              Создаю сверхбыстрые веб-приложения на Next.js 15, квиз-калькуляторы сметы и многофункциональных Telegram-ботов (Mini Apps / WebApp, прием оплат, интеграция с CRM и AI).
+            <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', lineHeight: 1.65, maxWidth: 800, margin: '0 auto 36px auto' }}>
+              Создаю продающие сайты на Next.js 15, многофункциональных Telegram-ботов (Mini Apps, CRM, оплаты) и отказоустойчивые Backend-системы на Java/Spring Boot & Kafka.
             </p>
 
             <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
               <a href="#projects" className="cyber-btn" style={{ padding: '16px 36px', fontSize: '1rem' }}>
-                Смотреть кейсы ({PROJECTS.length}) ➔
+                Смотреть проекты ({PROJECTS.length}) ➔
               </a>
               <a href="#bots" className="cyber-btn-ghost" style={{ padding: '16px 28px', fontSize: '1rem' }}>
                 <Bot size={18} /> Telegram Боты & WebApps
@@ -391,7 +468,7 @@ export default function PortfolioHub() {
                   <div className="terminal-dot" style={{ background: '#10B981' }}></div>
                 </div>
                 <div style={{ fontSize: '0.75rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <TerminalIcon size={13} /> aidar-garipov@dev-environment: ~
+                  <TerminalIcon size={13} /> aidar-garipov@fullstack-core: ~
                 </div>
                 <div style={{ width: 40 }}></div>
               </div>
@@ -411,7 +488,7 @@ export default function PortfolioHub() {
                     type="text"
                     value={cmdInput}
                     onChange={(e) => setCmdInput(e.target.value)}
-                    placeholder="введите команду (help, bots, projects, stack, contact)..."
+                    placeholder="введите команду (help, projects, backend, bots, stack, contact)..."
                     style={{ flex: 1, background: 'transparent', border: 'none', color: '#FFF', fontFamily: 'var(--font-mono)', fontSize: '0.84rem', outline: 'none' }}
                   />
                   <span className="cursor-blink"></span>
@@ -423,20 +500,20 @@ export default function PortfolioHub() {
           {/* Quick Metrics Strip */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px', background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: 20, padding: '24px', boxShadow: '0 12px 36px rgba(0,0,0,0.4)' }}>
             <div>
-              <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#60A5FA', fontFamily: 'var(--font-heading)' }}>6</div>
-              <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>Сайтов в портфолио</div>
+              <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#60A5FA', fontFamily: 'var(--font-heading)' }}>10</div>
+              <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>Проектов в портфолио</div>
             </div>
             <div>
               <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#38BDF8', fontFamily: 'var(--font-heading)' }}>TG + TMA</div>
               <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>Боты & Mini Apps под ключ</div>
             </div>
             <div>
-              <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#34D399', fontFamily: 'var(--font-heading)' }}>98/100</div>
-              <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>PageSpeed производительность</div>
+              <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#34D399', fontFamily: 'var(--font-heading)' }}>Kafka + Java</div>
+              <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>Highload Backend процессинг</div>
             </div>
             <div>
-              <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#FBBF24', fontFamily: 'var(--font-heading)' }}>x2.8</div>
-              <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>Конверсия с калькулятором</div>
+              <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#FBBF24', fontFamily: 'var(--font-heading)' }}>98/100</div>
+              <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>PageSpeed производительность</div>
             </div>
           </div>
         </div>
@@ -484,7 +561,7 @@ export default function PortfolioHub() {
               &lt; tech-stack /&gt;
             </div>
             <h2 style={{ fontSize: '2.2rem', marginBottom: '12px' }}>Технологический арсенал</h2>
-            <p style={{ color: 'var(--text-muted)' }}>Комплексный стек от интерфейса и бизнес-логики до Telegram API и DevOps</p>
+            <p style={{ color: 'var(--text-muted)' }}>Комплексный стек от Next.js и Telegram API до Java/Kafka микросервисов</p>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))', gap: '24px' }}>
@@ -532,17 +609,18 @@ export default function PortfolioHub() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '20px', marginBottom: '48px' }}>
             <div>
               <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
-                &lt; case-studies /&gt;
+                &lt; all-projects /&gt;
               </div>
-              <h2 style={{ fontSize: '2.5rem' }}>Реализованные веб-решения</h2>
+              <h2 style={{ fontSize: '2.5rem' }}>Реализованные проекты ({PROJECTS.length})</h2>
             </div>
 
             {/* Filter Tabs */}
-            <div style={{ display: 'flex', gap: '8px', background: 'var(--bg-surface)', padding: '6px', borderRadius: 14, border: '1px solid var(--border-subtle)' }}>
+            <div style={{ display: 'flex', gap: '8px', background: 'var(--bg-surface)', padding: '6px', borderRadius: 14, border: '1px solid var(--border-subtle)', flexWrap: 'wrap' }}>
               {[
-                { id: 'all', label: 'Все проекты (6)' },
-                { id: 'construction', label: 'Строительство и аренда (2)' },
-                { id: 'services', label: 'Бытовые услуги (4)' },
+                { id: 'all', label: `Все проекты (${PROJECTS.length})` },
+                { id: 'web', label: 'Next.js & Лендинги (6)' },
+                { id: 'bots', label: 'Telegram Боты (2)' },
+                { id: 'backend', label: 'Backend & Highload (2)' },
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -618,16 +696,18 @@ export default function PortfolioHub() {
                 </div>
 
                 {/* Actions */}
-                <div style={{ padding: '0 24px 24px 24px', display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '12px' }}>
-                  <a
-                    href={project.demoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="cyber-btn"
-                    style={{ padding: '12px 18px', fontSize: '0.875rem' }}
-                  >
-                    Демо сайта <ArrowUpRight size={16} />
-                  </a>
+                <div style={{ padding: '0 24px 24px 24px', display: 'grid', gridTemplateColumns: project.demoUrl ? '1.2fr 0.8fr' : '1fr', gap: '12px' }}>
+                  {project.demoUrl && (
+                    <a
+                      href={project.demoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="cyber-btn"
+                      style={{ padding: '12px 18px', fontSize: '0.875rem' }}
+                    >
+                      Демо сайта <ArrowUpRight size={16} />
+                    </a>
+                  )}
                   <a
                     href={project.githubUrl}
                     target="_blank"
@@ -635,7 +715,7 @@ export default function PortfolioHub() {
                     className="cyber-btn-ghost"
                     style={{ padding: '12px 14px', fontSize: '0.875rem', justifyContent: 'center' }}
                   >
-                    <GithubIcon size={16} /> Исходники
+                    <GithubIcon size={16} /> Исходный код
                   </a>
                 </div>
               </div>
@@ -652,7 +732,7 @@ export default function PortfolioHub() {
           </div>
           <h2 style={{ fontSize: '2.5rem', marginBottom: '16px' }}>Готовы обсудить ваш проект?</h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginBottom: '40px', lineHeight: 1.6 }}>
-            Напишите мне в Telegram или на электронную почту — обсудим сайт или Telegram-бота, подберем архитектуру и сделаем запуск.
+            Напишите мне в Telegram или на электронную почту — обсудим сайт, Telegram-бота или Backend-сервис, подберем архитектуру и сделаем запуск.
           </p>
 
           <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '32px' }}>
@@ -676,7 +756,7 @@ export default function PortfolioHub() {
       {/* Footer */}
       <footer style={{ padding: '40px 0', borderTop: '1px solid var(--border-subtle)', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.875rem', background: '#05070B' }}>
         <div className="container">
-          <div style={{ fontWeight: 800, color: '#FFF', fontSize: '1.1rem', marginBottom: '8px' }}>Айдар Гарипов — Web & Telegram Bot Developer</div>
+          <div style={{ fontWeight: 800, color: '#FFF', fontSize: '1.1rem', marginBottom: '8px' }}>Айдар Гарипов — Full-Stack & Telegram Bot Developer</div>
           <p style={{ color: '#60A5FA', fontFamily: 'var(--font-mono)', fontSize: '0.875rem', marginTop: '6px' }}>
             Сделано с терминалом и любовью ❤️
           </p>
