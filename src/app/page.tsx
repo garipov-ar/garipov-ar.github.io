@@ -40,6 +40,8 @@ import {
   HardDrive,
   User,
   Share2,
+  Menu,
+  X,
 } from 'lucide-react';
 
 const GithubIcon = ({ size = 18 }: { size?: number }) => (
@@ -129,16 +131,15 @@ function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
       nodes.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.35, // Very slow, calm drifting
+        vx: (Math.random() - 0.5) * 0.35,
         vy: (Math.random() - 0.5) * 0.35,
         baseRadius: Math.random() * 1.5 + 1.2,
         pulseSpeed: 0.0015 + Math.random() * 0.002,
         pulseOffset: Math.random() * Math.PI * 2,
-        alphaFactor: isLeftSide ? 0.6 : 1.0, // Left side text area is calmer
+        alphaFactor: isLeftSide ? 0.6 : 1.0,
       });
     }
 
-    // Data packets traveling along edges
     const dataPackets: {
       fromIdx: number;
       toIdx: number;
@@ -155,7 +156,6 @@ function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
 
       ctx.clearRect(0, 0, width, height);
 
-      // Subtle right-side ambient infrastructure glow
       const rightGlow = ctx.createRadialGradient(width * 0.75, height * 0.5, 50, width * 0.75, height * 0.5, width * 0.45);
       rightGlow.addColorStop(0, `${themeColor}12`);
       rightGlow.addColorStop(0.6, `${themeColor}04`);
@@ -172,7 +172,6 @@ function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
         ctx.fillRect(0, 0, width, height);
       }
 
-      // Collect connected pairs
       const connections: { i: number; j: number; dist: number }[] = [];
 
       for (let i = 0; i < nodes.length; i++) {
@@ -193,7 +192,6 @@ function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
           p.y -= (dy / dist) * force * 1.5;
         }
 
-        // Breathing pulsation
         const breathing = Math.sin(time * p.pulseSpeed + p.pulseOffset);
         const currentRadius = p.baseRadius + breathing * 0.6;
         const baseAlpha = (0.2 + (breathing + 1) * 0.15) * p.alphaFactor;
@@ -227,7 +225,6 @@ function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
         }
       }
 
-      // Randomly spawn data packet along a real connection every ~3 seconds
       if (connections.length > 0 && Math.random() < 0.018 && dataPackets.length < 5) {
         const randomConn = connections[Math.floor(Math.random() * connections.length)];
         dataPackets.push({
@@ -238,7 +235,6 @@ function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
         });
       }
 
-      // Animate and draw data packets
       for (let k = dataPackets.length - 1; k >= 0; k--) {
         const packet = dataPackets[k];
         packet.progress += packet.speed;
@@ -843,7 +839,6 @@ function useAnimatedNumber(target: number, duration: number = 380): number {
       if (!startTimeRef.current) startTimeRef.current = timestamp;
       const elapsed = timestamp - startTimeRef.current;
       const progress = Math.min(elapsed / duration, 1);
-      // easeOutCubic
       const ease = 1 - Math.pow(1 - progress, 3);
       const val = Math.round(startRef.current + (target - startRef.current) * ease);
       setCurrent(val);
@@ -868,6 +863,7 @@ export default function PortfolioHub() {
   const [cookieAccepted, setCookieAccepted] = useState(true);
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Interactive Architecture Hover Node
   const [activeArchNode, setActiveArchNode] = useState<string>('web');
@@ -1006,53 +1002,61 @@ export default function PortfolioHub() {
     setTimeout(() => setCopiedEmail(false), 2000);
   };
 
+  const navItems = [
+    { id: 'services', label: 'Услуги' },
+    { id: 'cases', label: 'Кейсы' },
+    { id: 'trust', label: 'Почему я' },
+    { id: 'workflow', label: 'Процесс' },
+    { id: 'calculator', label: 'Калькулятор' },
+    { id: 'technologies', label: 'Стек' },
+    { id: 'faq', label: 'FAQ' },
+  ];
+
   const currentArchInfo = ARCH_DETAILS[activeArchNode] || ARCH_DETAILS.web;
 
   return (
-    <div>
+    <div style={{ overflowX: 'hidden', width: '100%' }}>
       {/* Top Engineering Status Bar */}
       <div style={{ background: '#040609', borderBottom: '1px solid rgba(255,255,255,0.05)', padding: '6px 0', fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
         <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#34D399', fontWeight: 700 }}>
               <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10B981', display: 'inline-block', boxShadow: '0 0 8px #10B981' }}></span>
               SYSTEM ONLINE
             </span>
             <span>node: prod-eu-north</span>
-            <span style={{ display: 'none', minWidth: '120px' }}>ssl: 256-bit encrypted</span>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <span>build: Next.js 15.5 Turbopack</span>
-            <span>latency: &lt;45ms</span>
+            <span>Next.js 15 Turbopack</span>
+            <span>&lt;45ms</span>
           </div>
         </div>
       </div>
 
       {/* Top Navigation */}
-      <header style={{ borderBottom: '1px solid var(--border-subtle)', padding: '14px 0', backgroundColor: 'rgba(6, 8, 13, 0.94)', backdropFilter: 'blur(20px)', position: 'sticky', top: 0, zIndex: 50 }}>
-        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ width: 42, height: 42, borderRadius: 12, background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '1.15rem', color: '#FFF', boxShadow: '0 4px 18px rgba(var(--color-primary-rgb), 0.5)', border: '1px solid rgba(255,255,255,0.2)' }}>
+      <header style={{ borderBottom: '1px solid var(--border-subtle)', padding: '12px 0', backgroundColor: 'rgba(6, 8, 13, 0.94)', backdropFilter: 'blur(20px)', position: 'sticky', top: 0, zIndex: 50 }}>
+        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+          {/* Logo & Brand */}
+          <a href="#hero" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
+            <div style={{ width: 38, height: 38, borderRadius: 10, background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '1rem', color: '#FFF', boxShadow: '0 4px 14px rgba(var(--color-primary-rgb), 0.4)', border: '1px solid rgba(255,255,255,0.2)', flexShrink: 0 }}>
               AG
             </div>
             <div>
-              <div style={{ fontWeight: 800, fontSize: '1.1rem', color: '#FFF', letterSpacing: '-0.02em' }}>Айдар Гарипов</div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--color-primary-light)', fontFamily: 'var(--font-mono)' }}>Full-Stack & Bot Developer</div>
+              <div style={{ fontWeight: 800, fontSize: '1rem', color: '#FFF', letterSpacing: '-0.02em', lineHeight: 1.2 }}>Айдар Гарипов</div>
+              <div style={{ fontSize: '0.7rem', color: 'var(--color-primary-light)', fontFamily: 'var(--font-mono)' }}>Full-Stack & Bot Dev</div>
             </div>
-          </div>
+          </a>
 
-          {/* Navigation Links */}
-          <nav style={{ display: 'flex', gap: '4px', alignItems: 'center', flexWrap: 'wrap' }}>
-            {[
-              { id: 'services', label: 'Услуги' },
-              { id: 'cases', label: 'Кейсы' },
-              { id: 'trust', label: 'Почему я' },
-              { id: 'workflow', label: 'Процесс' },
-              { id: 'calculator', label: 'Калькулятор' },
-              { id: 'technologies', label: 'Стек' },
-              { id: 'faq', label: 'FAQ' },
-            ].map((item) => {
+          {/* Desktop Navigation Links */}
+          <nav style={{ display: 'none' }} className="desktop-nav">
+            <style>{`
+              @media (min-width: 960px) {
+                .desktop-nav { display: flex !important; gap: 4px; align-items: center; }
+                .mobile-toggle-btn { display: none !important; }
+              }
+            `}</style>
+            {navItems.map((item) => {
               const isActive = activeSection === item.id;
               return (
                 <a
@@ -1076,17 +1080,18 @@ export default function PortfolioHub() {
             })}
           </nav>
 
-          {/* Theme Palette & Contact CTA */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ display: 'flex', gap: '5px', background: 'rgba(255,255,255,0.04)', padding: '4px 6px', borderRadius: 10, border: '1px solid var(--border-subtle)' }} title="Сменить акцент темы">
+          {/* Right Header Actions */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {/* Theme Palette */}
+            <div style={{ display: 'flex', gap: '4px', background: 'rgba(255,255,255,0.04)', padding: '4px 6px', borderRadius: 10, border: '1px solid var(--border-subtle)' }} title="Сменить тему">
               {THEMES.map((th) => (
                 <button
                   key={th.id}
                   type="button"
                   onClick={() => changeTheme(th.id)}
                   style={{
-                    width: 18,
-                    height: 18,
+                    width: 16,
+                    height: 16,
                     borderRadius: '50%',
                     background: th.color,
                     border: currentTheme === th.id ? '2px solid #FFF' : '1px solid transparent',
@@ -1101,321 +1106,363 @@ export default function PortfolioHub() {
               ))}
             </div>
 
-            <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn" style={{ padding: '8px 18px', fontSize: '0.8125rem' }}>
-              <TelegramIcon size={15} /> Обсудить проект
+            {/* Telegram Header CTA */}
+            <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn" style={{ padding: '8px 14px', fontSize: '0.8125rem' }}>
+              <TelegramIcon size={15} /> <span style={{ display: 'inline' }}>Обсудить</span>
             </a>
+
+            {/* Mobile Menu Toggle Button */}
+            <button
+              type="button"
+              className="mobile-toggle-btn cyber-btn-ghost"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              style={{ padding: '8px 10px', minHeight: '38px', borderRadius: '10px' }}
+              aria-label="Меню"
+            >
+              {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Dropdown Menu Drawer */}
+        {mobileMenuOpen && (
+          <div style={{ background: 'rgba(6, 8, 13, 0.98)', borderTop: '1px solid var(--border-subtle)', padding: '16px 20px', marginTop: '12px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {navItems.map((item) => {
+                const isActive = activeSection === item.id;
+                return (
+                  <a
+                    key={item.id}
+                    href={`#${item.id}`}
+                    onClick={() => setMobileMenuOpen(false)}
+                    style={{
+                      color: isActive ? 'var(--color-primary-light)' : '#FFF',
+                      backgroundColor: isActive ? 'rgba(var(--color-primary-rgb), 0.15)' : 'rgba(255,255,255,0.02)',
+                      border: `1px solid ${isActive ? 'rgba(var(--color-primary-rgb), 0.4)' : 'var(--border-subtle)'}`,
+                      padding: '12px 16px',
+                      borderRadius: 12,
+                      fontSize: '0.95rem',
+                      fontWeight: 600,
+                      textDecoration: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <span>{item.label}</span>
+                    <ArrowRight size={16} color="var(--color-primary-light)" />
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </header>
 
-      {/* Hero Section: Exact Commercial Result Headline + Interactive System Architecture Map */}
-      <section id="hero" style={{ padding: '90px 0 80px 0', position: 'relative', overflow: 'hidden' }}>
+      {/* Hero Section */}
+      <section id="hero" style={{ padding: '60px 0 50px 0', position: 'relative', overflow: 'hidden' }}>
         <HeroInteractiveCanvas themeColor={activeThemeColor} />
 
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '48px', alignItems: 'center' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '40px', alignItems: 'center' }}>
             {/* Left: Commercial Result Copy */}
             <div>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 14px', borderRadius: 9999, background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.3)', color: '#34D399', fontSize: '0.8125rem', fontWeight: 700, marginBottom: '20px' }}>
-                <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10B981', display: 'inline-block', boxShadow: '0 0 10px #10B981' }}></span>
-                Открыт для новых проектов • Запуск под ключ
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 12px', borderRadius: 9999, background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.3)', color: '#34D399', fontSize: '0.78rem', fontWeight: 700, marginBottom: '16px' }}>
+                <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10B981', display: 'inline-block', boxShadow: '0 0 10px #10B981', flexShrink: 0 }}></span>
+                Открыт для проектов • Запуск под ключ
               </div>
 
-              <h1 style={{ fontSize: 'clamp(2.3rem, 4.2vw, 3.4rem)', lineHeight: 1.15, marginBottom: '20px', letterSpacing: '-0.03em' }}>
+              <h1 style={{ fontSize: 'clamp(1.85rem, 5vw, 3.2rem)', lineHeight: 1.18, marginBottom: '16px', letterSpacing: '-0.03em' }}>
                 Сайты, Telegram-боты и <span className="glow-accent">автоматизация бизнеса</span> под ключ
               </h1>
 
-              <p style={{ fontSize: '1.18rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '24px', maxWidth: 580 }}>
+              <p style={{ fontSize: 'clamp(0.95rem, 2.5vw, 1.15rem)', color: 'var(--text-secondary)', lineHeight: 1.55, marginBottom: '20px', maxWidth: 580 }}>
                 Создаю современные сайты, сервисы и Telegram-ботов, которые помогают получать заявки и автоматизировать работу бизнеса.
               </p>
 
               {/* Technologies Proof Tagline */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '32px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginBottom: '28px' }}>
                 {['Next.js', 'Python', 'Java', 'PostgreSQL', 'Docker', 'Telegram API'].map((t, idx) => (
-                  <span key={idx} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-subtle)', color: 'var(--color-primary-light)', padding: '4px 10px', borderRadius: 8, fontSize: '0.78rem', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
+                  <span key={idx} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-subtle)', color: 'var(--color-primary-light)', padding: '3px 8px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
                     {t}
                   </span>
                 ))}
               </div>
 
-              <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', alignItems: 'center' }}>
-                <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn" style={{ padding: '16px 32px', fontSize: '1rem' }}>
+              <div className="hero-buttons-wrapper" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
+                <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn" style={{ padding: '14px 28px', fontSize: '0.95rem' }}>
                   <TelegramIcon size={18} /> Обсудить проект
                 </a>
-                <a href="#calculator" className="cyber-btn-ghost" style={{ padding: '16px 24px', fontSize: '1rem' }}>
+                <a href="#calculator" className="cyber-btn-ghost" style={{ padding: '14px 22px', fontSize: '0.95rem' }}>
                   <Calculator size={18} /> Рассчитать смету
                 </a>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '24px', marginTop: '36px', paddingTop: '24px', borderTop: '1px solid var(--border-subtle)' }}>
+              {/* Stats Row */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: '30px', paddingTop: '20px', borderTop: '1px solid var(--border-subtle)', flexWrap: 'wrap' }}>
                 <div>
-                  <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#FFF', fontFamily: 'var(--font-heading)' }}>10+</div>
-                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Кейсов в портфолио</div>
+                  <div style={{ fontSize: '1.3rem', fontWeight: 900, color: '#FFF', fontFamily: 'var(--font-heading)' }}>10+</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Кейсов в портфолио</div>
                 </div>
-                <div style={{ width: 1, height: 32, background: 'var(--border-subtle)' }}></div>
+                <div style={{ width: 1, height: 28, background: 'var(--border-subtle)' }}></div>
                 <div>
-                  <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#34D399', fontFamily: 'var(--font-heading)' }}>98/100</div>
-                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Скорость PageSpeed</div>
+                  <div style={{ fontSize: '1.3rem', fontWeight: 900, color: '#34D399', fontFamily: 'var(--font-heading)' }}>98/100</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Скорость PageSpeed</div>
                 </div>
-                <div style={{ width: 1, height: 32, background: 'var(--border-subtle)' }}></div>
+                <div style={{ width: 1, height: 28, background: 'var(--border-subtle)' }}></div>
                 <div>
-                  <div style={{ fontSize: '1.4rem', fontWeight: 900, color: 'var(--color-primary-light)', fontFamily: 'var(--font-heading)' }}>0%</div>
-                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Посредников и наценок</div>
+                  <div style={{ fontSize: '1.3rem', fontWeight: 900, color: 'var(--color-primary-light)', fontFamily: 'var(--font-heading)' }}>0%</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Посредников</div>
                 </div>
               </div>
             </div>
 
             {/* Right: The Exact Interactive Architecture Map with Ambient Glow */}
-            <div style={{ position: 'relative' }}>
-              {/* Soft Ambient Infrastructure Glow Behind Card */}
+            <div style={{ position: 'relative', width: '100%', maxWidth: '100%' }}>
               <div
                 style={{
                   position: 'absolute',
-                  inset: '-20px',
-                  background: 'radial-gradient(circle at 60% 50%, rgba(var(--color-primary-rgb), 0.22) 0%, transparent 70%)',
-                  filter: 'blur(35px)',
+                  inset: '-10px',
+                  background: 'radial-gradient(circle at 60% 50%, rgba(var(--color-primary-rgb), 0.2) 0%, transparent 70%)',
+                  filter: 'blur(30px)',
                   pointerEvents: 'none',
                   zIndex: 0,
                 }}
               />
 
-              <div className="cyber-card" style={{ position: 'relative', zIndex: 1, padding: '24px', border: '1px solid rgba(var(--color-primary-rgb), 0.35)', boxShadow: '0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(var(--color-primary-rgb), 0.15)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '10px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                    <Activity size={15} color="var(--color-primary-light)" /> Interactive Architecture Map
+              <div className="cyber-card" style={{ position: 'relative', zIndex: 1, padding: '20px', border: '1px solid rgba(var(--color-primary-rgb), 0.35)', boxShadow: '0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(var(--color-primary-rgb), 0.15)', width: '100%' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                    <Activity size={14} color="var(--color-primary-light)" /> Interactive Architecture Map
                   </div>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.72rem', color: '#34D399', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
-                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10B981' }}></span> Live Pipeline
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '0.7rem', color: '#34D399', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
+                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10B981' }}></span> Live
                   </span>
                 </div>
 
-              {/* Exact Node System: USER -> NEXT.JS APP -> FASTAPI -> POSTGRES / REDIS -> TELEGRAM */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center', width: '100%' }}>
-                {/* 1. Node: USER */}
-                <div
-                  onMouseEnter={() => setActiveArchNode('user')}
-                  onClick={() => setActiveArchNode('user')}
-                  style={{
-                    width: '100%',
-                    maxWidth: 320,
-                    background: activeArchNode === 'user' ? 'rgba(244, 63, 94, 0.2)' : 'rgba(255, 255, 255, 0.03)',
-                    border: `1px solid ${activeArchNode === 'user' ? '#F43F5E' : 'var(--border-subtle)'}`,
-                    borderRadius: 10,
-                    padding: '8px 14px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    boxShadow: activeArchNode === 'user' ? '0 0 16px rgba(244, 63, 94, 0.3)' : 'none',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <User size={16} color="#F43F5E" />
-                    <span style={{ fontWeight: 800, fontSize: '0.85rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>USER</span>
-                  </div>
-                  <span style={{ fontSize: '0.7rem', color: '#F43F5E', fontFamily: 'var(--font-mono)' }}>Client</span>
-                </div>
-
-                {/* Arrow 1 */}
-                <div style={{ color: activeArchNode === 'web' || activeArchNode === 'user' ? 'var(--color-primary-light)' : 'var(--text-muted)', fontSize: '0.75rem', lineHeight: 1, fontFamily: 'var(--font-mono)' }}>
-                  │<br />▼
-                </div>
-
-                {/* 2. Node: NEXT.JS APP */}
-                <div
-                  onMouseEnter={() => setActiveArchNode('web')}
-                  onClick={() => setActiveArchNode('web')}
-                  style={{
-                    width: '100%',
-                    maxWidth: 320,
-                    background: activeArchNode === 'web' ? 'rgba(56, 189, 248, 0.2)' : 'rgba(56, 189, 248, 0.06)',
-                    border: `1px solid ${activeArchNode === 'web' ? '#38BDF8' : 'rgba(56, 189, 248, 0.25)'}`,
-                    borderRadius: 10,
-                    padding: '8px 14px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    boxShadow: activeArchNode === 'web' ? '0 0 16px rgba(56, 189, 248, 0.3)' : 'none',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Globe size={16} color="#38BDF8" />
-                    <span style={{ fontWeight: 800, fontSize: '0.85rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>NEXT.JS APP</span>
-                  </div>
-                  <span style={{ fontSize: '0.7rem', color: '#38BDF8', fontFamily: 'var(--font-mono)' }}>Frontend</span>
-                </div>
-
-                {/* Arrow 2 */}
-                <div style={{ color: activeArchNode === 'api' || activeArchNode === 'web' ? 'var(--color-primary-light)' : 'var(--text-muted)', fontSize: '0.75rem', lineHeight: 1, fontFamily: 'var(--font-mono)' }}>
-                  │<br />▼
-                </div>
-
-                {/* 3. Node: FASTAPI / SPRING BOOT */}
-                <div
-                  onMouseEnter={() => setActiveArchNode('api')}
-                  onClick={() => setActiveArchNode('api')}
-                  style={{
-                    width: '100%',
-                    maxWidth: 320,
-                    background: activeArchNode === 'api' ? 'rgba(129, 140, 248, 0.2)' : 'rgba(129, 140, 248, 0.06)',
-                    border: `1px solid ${activeArchNode === 'api' ? '#818CF8' : 'rgba(129, 140, 248, 0.25)'}`,
-                    borderRadius: 10,
-                    padding: '8px 14px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    boxShadow: activeArchNode === 'api' ? '0 0 16px rgba(129, 140, 248, 0.3)' : 'none',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Server size={16} color="#818CF8" />
-                    <span style={{ fontWeight: 800, fontSize: '0.85rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>FASTAPI</span>
-                  </div>
-                  <span style={{ fontSize: '0.7rem', color: '#818CF8', fontFamily: 'var(--font-mono)' }}>Backend</span>
-                </div>
-
-                {/* Arrow 3 (Split) */}
-                <div style={{ color: activeArchNode === 'db_postgres' || activeArchNode === 'db_redis' ? 'var(--color-primary-light)' : 'var(--text-muted)', fontSize: '0.75rem', lineHeight: 1, fontFamily: 'var(--font-mono)', letterSpacing: '24px', paddingLeft: '24px' }}>
-                  ││<br />▼▼
-                </div>
-
-                {/* 4. Split Nodes: POSTGRES & REDIS */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', width: '100%', maxWidth: 320 }}>
+                {/* Node System */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'center', width: '100%' }}>
+                  {/* 1. Node: USER */}
                   <div
-                    onMouseEnter={() => setActiveArchNode('db_postgres')}
-                    onClick={() => setActiveArchNode('db_postgres')}
+                    onMouseEnter={() => setActiveArchNode('user')}
+                    onClick={() => setActiveArchNode('user')}
                     style={{
-                      background: activeArchNode === 'db_postgres' ? 'rgba(251, 191, 36, 0.2)' : 'rgba(255, 255, 255, 0.03)',
-                      border: `1px solid ${activeArchNode === 'db_postgres' ? '#FBBF24' : 'var(--border-subtle)'}`,
+                      width: '100%',
+                      background: activeArchNode === 'user' ? 'rgba(244, 63, 94, 0.2)' : 'rgba(255, 255, 255, 0.03)',
+                      border: `1px solid ${activeArchNode === 'user' ? '#F43F5E' : 'var(--border-subtle)'}`,
                       borderRadius: 10,
-                      padding: '8px 10px',
+                      padding: '8px 12px',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '6px',
+                      justifyContent: 'space-between',
                       cursor: 'pointer',
                       transition: 'all 0.2s ease',
-                      boxShadow: activeArchNode === 'db_postgres' ? '0 0 16px rgba(251, 191, 36, 0.3)' : 'none',
+                      minHeight: 42,
                     }}
                   >
-                    <Database size={15} color="#FBBF24" />
-                    <span style={{ fontWeight: 800, fontSize: '0.78rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>POSTGRES</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <User size={15} color="#F43F5E" />
+                      <span style={{ fontWeight: 800, fontSize: '0.82rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>USER</span>
+                    </div>
+                    <span style={{ fontSize: '0.68rem', color: '#F43F5E', fontFamily: 'var(--font-mono)' }}>Client</span>
                   </div>
 
+                  {/* Arrow 1 */}
+                  <div style={{ color: activeArchNode === 'web' || activeArchNode === 'user' ? 'var(--color-primary-light)' : 'var(--text-muted)', fontSize: '0.7rem', lineHeight: 1, fontFamily: 'var(--font-mono)' }}>
+                    │<br />▼
+                  </div>
+
+                  {/* 2. Node: NEXT.JS APP */}
                   <div
-                    onMouseEnter={() => setActiveArchNode('db_redis')}
-                    onClick={() => setActiveArchNode('db_redis')}
+                    onMouseEnter={() => setActiveArchNode('web')}
+                    onClick={() => setActiveArchNode('web')}
                     style={{
-                      background: activeArchNode === 'db_redis' ? 'rgba(251, 146, 60, 0.2)' : 'rgba(255, 255, 255, 0.03)',
-                      border: `1px solid ${activeArchNode === 'db_redis' ? '#FB923C' : 'var(--border-subtle)'}`,
+                      width: '100%',
+                      background: activeArchNode === 'web' ? 'rgba(56, 189, 248, 0.2)' : 'rgba(56, 189, 248, 0.06)',
+                      border: `1px solid ${activeArchNode === 'web' ? '#38BDF8' : 'rgba(56, 189, 248, 0.25)'}`,
                       borderRadius: 10,
-                      padding: '8px 10px',
+                      padding: '8px 12px',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '6px',
+                      justifyContent: 'space-between',
                       cursor: 'pointer',
                       transition: 'all 0.2s ease',
-                      boxShadow: activeArchNode === 'db_redis' ? '0 0 16px rgba(251, 146, 60, 0.3)' : 'none',
+                      minHeight: 42,
                     }}
                   >
-                    <HardDrive size={15} color="#FB923C" />
-                    <span style={{ fontWeight: 800, fontSize: '0.78rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>REDIS</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Globe size={15} color="#38BDF8" />
+                      <span style={{ fontWeight: 800, fontSize: '0.82rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>NEXT.JS APP</span>
+                    </div>
+                    <span style={{ fontSize: '0.68rem', color: '#38BDF8', fontFamily: 'var(--font-mono)' }}>Frontend</span>
+                  </div>
+
+                  {/* Arrow 2 */}
+                  <div style={{ color: activeArchNode === 'api' || activeArchNode === 'web' ? 'var(--color-primary-light)' : 'var(--text-muted)', fontSize: '0.7rem', lineHeight: 1, fontFamily: 'var(--font-mono)' }}>
+                    │<br />▼
+                  </div>
+
+                  {/* 3. Node: FASTAPI */}
+                  <div
+                    onMouseEnter={() => setActiveArchNode('api')}
+                    onClick={() => setActiveArchNode('api')}
+                    style={{
+                      width: '100%',
+                      background: activeArchNode === 'api' ? 'rgba(129, 140, 248, 0.2)' : 'rgba(129, 140, 248, 0.06)',
+                      border: `1px solid ${activeArchNode === 'api' ? '#818CF8' : 'rgba(129, 140, 248, 0.25)'}`,
+                      borderRadius: 10,
+                      padding: '8px 12px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      minHeight: 42,
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Server size={15} color="#818CF8" />
+                      <span style={{ fontWeight: 800, fontSize: '0.82rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>FASTAPI</span>
+                    </div>
+                    <span style={{ fontSize: '0.68rem', color: '#818CF8', fontFamily: 'var(--font-mono)' }}>Backend</span>
+                  </div>
+
+                  {/* Arrow 3 (Split) */}
+                  <div style={{ color: activeArchNode === 'db_postgres' || activeArchNode === 'db_redis' ? 'var(--color-primary-light)' : 'var(--text-muted)', fontSize: '0.7rem', lineHeight: 1, fontFamily: 'var(--font-mono)', letterSpacing: '18px', paddingLeft: '18px' }}>
+                    ││<br />▼▼
+                  </div>
+
+                  {/* 4. Split Nodes: POSTGRES & REDIS */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', width: '100%' }}>
+                    <div
+                      onMouseEnter={() => setActiveArchNode('db_postgres')}
+                      onClick={() => setActiveArchNode('db_postgres')}
+                      style={{
+                        background: activeArchNode === 'db_postgres' ? 'rgba(251, 191, 36, 0.2)' : 'rgba(255, 255, 255, 0.03)',
+                        border: `1px solid ${activeArchNode === 'db_postgres' ? '#FBBF24' : 'var(--border-subtle)'}`,
+                        borderRadius: 10,
+                        padding: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                        minHeight: 42,
+                      }}
+                    >
+                      <Database size={14} color="#FBBF24" />
+                      <span style={{ fontWeight: 800, fontSize: '0.74rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>POSTGRES</span>
+                    </div>
+
+                    <div
+                      onMouseEnter={() => setActiveArchNode('db_redis')}
+                      onClick={() => setActiveArchNode('db_redis')}
+                      style={{
+                        background: activeArchNode === 'db_redis' ? 'rgba(251, 146, 60, 0.2)' : 'rgba(255, 255, 255, 0.03)',
+                        border: `1px solid ${activeArchNode === 'db_redis' ? '#FB923C' : 'var(--border-subtle)'}`,
+                        borderRadius: 10,
+                        padding: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                        minHeight: 42,
+                      }}
+                    >
+                      <HardDrive size={14} color="#FB923C" />
+                      <span style={{ fontWeight: 800, fontSize: '0.74rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>REDIS</span>
+                    </div>
+                  </div>
+
+                  {/* Arrow 4 */}
+                  <div style={{ color: activeArchNode === 'tg' ? '#229ED9' : 'var(--text-muted)', fontSize: '0.7rem', lineHeight: 1, fontFamily: 'var(--font-mono)' }}>
+                    │<br />▼
+                  </div>
+
+                  {/* 5. Node: TELEGRAM */}
+                  <div
+                    onMouseEnter={() => setActiveArchNode('tg')}
+                    onClick={() => setActiveArchNode('tg')}
+                    style={{
+                      width: '100%',
+                      background: activeArchNode === 'tg' ? 'rgba(34, 158, 217, 0.25)' : 'rgba(34, 158, 217, 0.08)',
+                      border: `1px solid ${activeArchNode === 'tg' ? '#229ED9' : 'rgba(34, 158, 217, 0.3)'}`,
+                      borderRadius: 10,
+                      padding: '8px 12px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      minHeight: 42,
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <TelegramIcon size={15} />
+                      <span style={{ fontWeight: 800, fontSize: '0.82rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>TELEGRAM</span>
+                    </div>
+                    <span style={{ fontSize: '0.68rem', color: '#34D399', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>Delivered</span>
                   </div>
                 </div>
 
-                {/* Arrow 4 */}
-                <div style={{ color: activeArchNode === 'tg' ? '#229ED9' : 'var(--text-muted)', fontSize: '0.75rem', lineHeight: 1, fontFamily: 'var(--font-mono)' }}>
-                  │<br />▼
-                </div>
-
-                {/* 5. Node: TELEGRAM */}
-                <div
-                  onMouseEnter={() => setActiveArchNode('tg')}
-                  onClick={() => setActiveArchNode('tg')}
-                  style={{
-                    width: '100%',
-                    maxWidth: 320,
-                    background: activeArchNode === 'tg' ? 'rgba(34, 158, 217, 0.25)' : 'rgba(34, 158, 217, 0.08)',
-                    border: `1px solid ${activeArchNode === 'tg' ? '#229ED9' : 'rgba(34, 158, 217, 0.3)'}`,
-                    borderRadius: 10,
-                    padding: '8px 14px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    boxShadow: activeArchNode === 'tg' ? '0 0 16px rgba(34, 158, 217, 0.35)' : 'none',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <TelegramIcon size={16} />
-                    <span style={{ fontWeight: 800, fontSize: '0.85rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>TELEGRAM</span>
+                {/* Dynamic Live Inspector Panel */}
+                <div style={{ marginTop: '14px', background: 'rgba(0,0,0,0.5)', borderRadius: 10, border: `1px solid ${currentArchInfo.color}30`, padding: '10px 12px', transition: 'all 0.2s ease' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span style={{ width: 7, height: 7, borderRadius: '50%', background: currentArchInfo.color, display: 'inline-block' }}></span>
+                      <span style={{ fontWeight: 800, fontSize: '0.8rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>{currentArchInfo.title}</span>
+                    </div>
+                    <span style={{ fontSize: '0.68rem', color: currentArchInfo.color, fontWeight: 700, fontFamily: 'var(--font-mono)' }}>{currentArchInfo.layerBadge}</span>
                   </div>
-                  <span style={{ fontSize: '0.7rem', color: '#34D399', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>Delivered</span>
-                </div>
-              </div>
-
-              {/* Dynamic Live Inspector Panel */}
-              <div style={{ marginTop: '16px', background: 'rgba(0,0,0,0.4)', borderRadius: 12, border: `1px solid ${currentArchInfo.color}30`, padding: '12px 14px', transition: 'all 0.2s ease' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: currentArchInfo.color, display: 'inline-block' }}></span>
-                    <span style={{ fontWeight: 800, fontSize: '0.85rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>{currentArchInfo.title}</span>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.35, marginBottom: '4px' }}>
+                    {currentArchInfo.desc}
+                  </p>
+                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                    ⚡ {currentArchInfo.metrics}
                   </div>
-                  <span style={{ fontSize: '0.7rem', color: currentArchInfo.color, fontWeight: 700, fontFamily: 'var(--font-mono)' }}>{currentArchInfo.layerBadge}</span>
-                </div>
-                <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.4, marginBottom: '6px' }}>
-                  {currentArchInfo.desc}
-                </p>
-                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                  ⚡ {currentArchInfo.metrics}
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-      {/* Explicit Services Section (Что я могу сделать для вашего бизнеса) */}
-      <section id="services" style={{ padding: '80px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
+      {/* Explicit Services Section */}
+      <section id="services" style={{ padding: '70px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', maxWidth: 680, margin: '0 auto 48px auto' }}>
+          <div style={{ textAlign: 'center', maxWidth: 680, margin: '0 auto 40px auto' }}>
             <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
               &lt; services /&gt;
             </div>
-            <h2 style={{ fontSize: '2.4rem', marginBottom: '12px' }}>Что я могу сделать для вашего бизнеса</h2>
-            <p style={{ color: 'var(--text-muted)' }}>Конкретные продукты, решающие задачи продаж, обслуживания клиентов и автоматизации</p>
+            <h2 style={{ fontSize: 'clamp(1.75rem, 4.5vw, 2.4rem)', marginBottom: '10px' }}>Что я могу сделать для вашего бизнеса</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Конкретные продукты, решающие задачи продаж, обслуживания клиентов и автоматизации</p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
             {SERVICES.map((srv) => (
-              <div key={srv.id} className="cyber-card" style={{ padding: '32px 28px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div key={srv.id} className="cyber-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div>
-                  <div style={{ width: 54, height: 54, borderRadius: 14, background: 'rgba(255,255,255,0.04)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-subtle)', marginBottom: '20px' }}>
+                  <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(255,255,255,0.04)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-subtle)', marginBottom: '16px' }}>
                     {srv.icon}
                   </div>
 
-                  <h3 style={{ fontSize: '1.4rem', marginBottom: '12px', color: '#FFF' }}>{srv.title}</h3>
-                  <p style={{ fontSize: '0.9375rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '24px' }}>
+                  <h3 style={{ fontSize: '1.25rem', marginBottom: '10px', color: '#FFF' }}>{srv.title}</h3>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.55, marginBottom: '20px' }}>
                     {srv.desc}
                   </p>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '28px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '24px' }}>
                     {srv.features.map((feat, fIdx) => (
-                      <div key={fIdx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.84rem', color: 'var(--text-primary)' }}>
-                        <CheckCircle2 size={16} color="var(--color-primary-light)" style={{ flexShrink: 0 }} />
+                      <div key={fIdx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', color: 'var(--text-primary)' }}>
+                        <CheckCircle2 size={15} color="var(--color-primary-light)" style={{ flexShrink: 0 }} />
                         <span>{feat}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <a href="#calculator" className="cyber-btn-ghost" style={{ padding: '12px 18px', fontSize: '0.875rem', justifyContent: 'center' }}>
+                <a href="#calculator" className="cyber-btn-ghost" style={{ padding: '12px 16px', fontSize: '0.85rem', justifyContent: 'center', width: '100%' }}>
                   Рассчитать стоимость <ArrowRight size={16} />
                 </a>
               </div>
@@ -1425,39 +1472,40 @@ export default function PortfolioHub() {
       </section>
 
       {/* Case Studies Section */}
-      <section id="cases" style={{ padding: '90px 0' }}>
+      <section id="cases" style={{ padding: '70px 0' }}>
         <div className="container">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '20px', marginBottom: '48px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px', marginBottom: '32px' }}>
             <div>
-              <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px', fontFamily: 'var(--font-mono)' }}>
                 &lt; all-projects /&gt;
               </div>
-              <h2 style={{ fontSize: '2.5rem' }}>Реализованные кейсы ({CASES.length})</h2>
+              <h2 style={{ fontSize: 'clamp(1.75rem, 4.5vw, 2.4rem)' }}>Реализованные кейсы ({CASES.length})</h2>
             </div>
 
-            {/* Filter Tabs */}
-            <div style={{ display: 'flex', gap: '8px', background: 'var(--bg-surface)', padding: '6px', borderRadius: 14, border: '1px solid var(--border-subtle)', flexWrap: 'wrap' }}>
+            {/* Filter Tabs with Mobile Swipe Scroll */}
+            <div className="scroll-pills-container" style={{ background: 'var(--bg-surface)', padding: '4px', borderRadius: 12, border: '1px solid var(--border-subtle)', maxWidth: '100%' }}>
               {[
                 { id: 'all', label: `Все кейсы (${CASES.length})` },
-                { id: 'web', label: 'Сайты для бизнеса (6)' },
-                { id: 'bots', label: 'Telegram-боты (2)' },
-                { id: 'backend', label: 'Backend & Highload (2)' },
+                { id: 'web', label: 'Сайты (6)' },
+                { id: 'bots', label: 'Боты (2)' },
+                { id: 'backend', label: 'Backend (2)' },
               ].map((tab) => (
                 <button
                   key={tab.id}
                   type="button"
                   onClick={() => setFilter(tab.id as any)}
                   style={{
-                    padding: '8px 16px',
-                    borderRadius: 10,
+                    padding: '8px 14px',
+                    borderRadius: 8,
                     border: 'none',
                     background: filter === tab.id ? 'var(--color-primary)' : 'transparent',
                     color: filter === tab.id ? '#FFF' : 'var(--text-muted)',
                     fontWeight: 700,
-                    fontSize: '0.8125rem',
+                    fontSize: '0.78rem',
                     cursor: 'pointer',
                     transition: 'all 0.2s',
-                    fontFamily: 'var(--font-sans)',
+                    whiteSpace: 'nowrap',
+                    minHeight: 36,
                   }}
                 >
                   {tab.label}
@@ -1467,7 +1515,7 @@ export default function PortfolioHub() {
           </div>
 
           {/* Cases Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '32px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
             {filteredCases.map((project) => (
               <div
                 key={project.id}
@@ -1480,51 +1528,51 @@ export default function PortfolioHub() {
               >
                 <div>
                   {/* Case Preview Image */}
-                  <div style={{ height: 220, backgroundImage: `url('${project.image}')`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
+                  <div style={{ height: 180, backgroundImage: `url('${project.image}')`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
                     <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(12, 16, 26, 0.95) 0%, transparent 60%)' }} />
-                    <span style={{ position: 'absolute', top: 16, left: 16, background: 'rgba(6, 8, 13, 0.85)', backdropFilter: 'blur(8px)', color: project.accentColor, border: `1px solid ${project.accentColor}40`, padding: '6px 12px', borderRadius: 8, fontSize: '0.75rem', fontWeight: 800 }}>
+                    <span style={{ position: 'absolute', top: 12, left: 12, background: 'rgba(6, 8, 13, 0.88)', backdropFilter: 'blur(8px)', color: project.accentColor, border: `1px solid ${project.accentColor}40`, padding: '4px 10px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 800 }}>
                       {project.categoryLabel}
                     </span>
                   </div>
 
-                  {/* Case Content: Problem -> Solution -> Result */}
-                  <div style={{ padding: '24px' }}>
-                    <h3 style={{ fontSize: '1.3rem', marginBottom: '16px', color: '#FFF' }}>{project.title}</h3>
+                  {/* Case Content */}
+                  <div style={{ padding: '20px' }}>
+                    <h3 style={{ fontSize: '1.2rem', marginBottom: '14px', color: '#FFF' }}>{project.title}</h3>
 
                     {/* Problem */}
-                    <div style={{ marginBottom: '12px' }}>
-                      <div style={{ fontSize: '0.75rem', color: '#EF4444', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '3px' }}>
+                    <div style={{ marginBottom: '10px' }}>
+                      <div style={{ fontSize: '0.72rem', color: '#EF4444', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '2px' }}>
                         Проблема бизнеса
                       </div>
-                      <div style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                      <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
                         {project.problem}
                       </div>
                     </div>
 
                     {/* Solution */}
-                    <div style={{ marginBottom: '12px' }}>
-                      <div style={{ fontSize: '0.75rem', color: '#60A5FA', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '3px' }}>
+                    <div style={{ marginBottom: '10px' }}>
+                      <div style={{ fontSize: '0.72rem', color: '#60A5FA', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '2px' }}>
                         Решение
                       </div>
-                      <div style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                      <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
                         {project.solution}
                       </div>
                     </div>
 
                     {/* Business Result */}
-                    <div style={{ marginBottom: '18px', background: 'rgba(16, 185, 129, 0.08)', padding: '10px 12px', borderRadius: 10, border: '1px solid rgba(16, 185, 129, 0.2)' }}>
-                      <div style={{ fontSize: '0.75rem', color: '#34D399', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '3px' }}>
+                    <div style={{ marginBottom: '14px', background: 'rgba(16, 185, 129, 0.08)', padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                      <div style={{ fontSize: '0.72rem', color: '#34D399', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '2px' }}>
                         Результат для бизнеса
                       </div>
-                      <div style={{ fontSize: '0.84rem', color: '#E2E8F0', fontWeight: 500, lineHeight: 1.5 }}>
+                      <div style={{ fontSize: '0.82rem', color: '#E2E8F0', fontWeight: 500, lineHeight: 1.45 }}>
                         {project.businessResult}
                       </div>
                     </div>
 
                     {/* Stack tags */}
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '8px' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '6px' }}>
                       {project.stack.map((s, sIdx) => (
-                        <span key={sIdx} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border-subtle)', color: 'var(--text-muted)', padding: '3px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>
+                        <span key={sIdx} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border-subtle)', color: 'var(--text-muted)', padding: '2px 6px', borderRadius: 6, fontSize: '0.7rem', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>
                           {s}
                         </span>
                       ))}
@@ -1533,16 +1581,16 @@ export default function PortfolioHub() {
                 </div>
 
                 {/* Actions */}
-                <div style={{ padding: '0 24px 24px 24px', display: 'grid', gridTemplateColumns: project.demoUrl ? '1.2fr 0.8fr' : '1fr', gap: '12px' }}>
+                <div className="case-actions-grid" style={{ padding: '0 20px 20px 20px', display: 'grid', gridTemplateColumns: project.demoUrl ? '1.2fr 0.8fr' : '1fr', gap: '10px' }}>
                   {project.demoUrl && (
                     <a
                       href={project.demoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="cyber-btn"
-                      style={{ padding: '12px 16px', fontSize: '0.85rem' }}
+                      style={{ padding: '10px 14px', fontSize: '0.82rem' }}
                     >
-                      Смотреть демо <ArrowUpRight size={16} />
+                      Смотреть демо <ArrowUpRight size={15} />
                     </a>
                   )}
                   <a
@@ -1550,9 +1598,9 @@ export default function PortfolioHub() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="cyber-btn-ghost"
-                    style={{ padding: '12px 14px', fontSize: '0.85rem', justifyContent: 'center' }}
+                    style={{ padding: '10px 12px', fontSize: '0.82rem', justifyContent: 'center' }}
                   >
-                    <GithubIcon size={16} /> Исходники
+                    <GithubIcon size={15} /> Исходники
                   </a>
                 </div>
               </div>
@@ -1561,26 +1609,26 @@ export default function PortfolioHub() {
         </div>
       </section>
 
-      {/* Trust Section (Почему со мной работают) */}
-      <section id="trust" style={{ padding: '80px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
+      {/* Trust Section */}
+      <section id="trust" style={{ padding: '70px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 48px auto' }}>
-            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
+          <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 40px auto' }}>
+            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px', fontFamily: 'var(--font-mono)' }}>
               &lt; why-me /&gt;
             </div>
-            <h2 style={{ fontSize: '2.4rem', marginBottom: '12px' }}>Почему со мной работают</h2>
-            <p style={{ color: 'var(--text-muted)' }}>Прозрачные условия, надежность и фокус на решении бизнес-задач</p>
+            <h2 style={{ fontSize: 'clamp(1.75rem, 4.5vw, 2.4rem)', marginBottom: '10px' }}>Почему со мной работают</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Прозрачные условия, надежность и фокус на решении бизнес-задач</p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
             {WHY_WORK_WITH_ME.map((item, idx) => (
-              <div key={idx} className="cyber-card" style={{ background: 'var(--bg-main)', padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div key={idx} className="cyber-card" style={{ background: 'var(--bg-main)', padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div>
-                  <span style={{ display: 'inline-block', padding: '4px 10px', borderRadius: 6, background: 'rgba(var(--color-primary-rgb), 0.12)', color: 'var(--color-primary-light)', fontSize: '0.75rem', fontWeight: 800, marginBottom: '16px', fontFamily: 'var(--font-mono)' }}>
+                  <span style={{ display: 'inline-block', padding: '3px 8px', borderRadius: 6, background: 'rgba(var(--color-primary-rgb), 0.12)', color: 'var(--color-primary-light)', fontSize: '0.72rem', fontWeight: 800, marginBottom: '12px', fontFamily: 'var(--font-mono)' }}>
                     {item.badge}
                   </span>
-                  <h3 style={{ fontSize: '1.15rem', color: '#FFF', marginBottom: '10px' }}>{item.title}</h3>
-                  <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{item.desc}</p>
+                  <h3 style={{ fontSize: '1.1rem', color: '#FFF', marginBottom: '8px' }}>{item.title}</h3>
+                  <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -1588,25 +1636,25 @@ export default function PortfolioHub() {
         </div>
       </section>
 
-      {/* 4 Steps Workflow Section (Как проходит работа) */}
-      <section id="workflow" style={{ padding: '90px 0' }}>
+      {/* 4 Steps Workflow Section */}
+      <section id="workflow" style={{ padding: '70px 0' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 48px auto' }}>
-            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
+          <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 40px auto' }}>
+            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px', fontFamily: 'var(--font-mono)' }}>
               &lt; workflow /&gt;
             </div>
-            <h2 style={{ fontSize: '2.4rem', marginBottom: '12px' }}>Как проходит работа</h2>
-            <p style={{ color: 'var(--text-muted)' }}>4 простых и понятных этапа от первого сообщения до готового продукта</p>
+            <h2 style={{ fontSize: 'clamp(1.75rem, 4.5vw, 2.4rem)', marginBottom: '10px' }}>Как проходит работа</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>4 понятных этапа от первого сообщения до готового продукта</p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '18px' }}>
             {WORKFLOW_STEPS.map((step, idx) => (
-              <div key={idx} className="cyber-card" style={{ padding: '28px 24px', position: 'relative' }}>
-                <div style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--color-primary-light)', fontFamily: 'var(--font-heading)', opacity: 0.4, marginBottom: '14px' }}>
+              <div key={idx} className="cyber-card" style={{ padding: '22px 20px', position: 'relative' }}>
+                <div style={{ fontSize: '1.75rem', fontWeight: 900, color: 'var(--color-primary-light)', fontFamily: 'var(--font-heading)', opacity: 0.4, marginBottom: '10px' }}>
                   {step.step}
                 </div>
-                <h3 style={{ fontSize: '1.2rem', color: '#FFF', marginBottom: '10px' }}>{step.title}</h3>
-                <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{step.desc}</p>
+                <h3 style={{ fontSize: '1.15rem', color: '#FFF', marginBottom: '8px' }}>{step.title}</h3>
+                <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>{step.desc}</p>
               </div>
             ))}
           </div>
@@ -1614,27 +1662,27 @@ export default function PortfolioHub() {
       </section>
 
       {/* Interactive Project Cost & Timeline Calculator */}
-      <section id="calculator" style={{ padding: '90px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
+      <section id="calculator" style={{ padding: '70px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', maxWidth: 700, margin: '0 auto 48px auto' }}>
-            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
+          <div style={{ textAlign: 'center', maxWidth: 700, margin: '0 auto 40px auto' }}>
+            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px', fontFamily: 'var(--font-mono)' }}>
               &lt; calculator /&gt;
             </div>
-            <h2 style={{ fontSize: '2.5rem', marginBottom: '14px' }}>Калькулятор стоимости и сроков</h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem' }}>
+            <h2 style={{ fontSize: 'clamp(1.75rem, 4.5vw, 2.4rem)', marginBottom: '10px' }}>Калькулятор стоимости и сроков</h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
               Сконфигурируйте параметры разработки вашего проекта и получите моментальный предварительный расчёт
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '36px', alignItems: 'start' }}>
-            {/* Options */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
+          <div className="calculator-layout-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '28px', alignItems: 'start' }}>
+            {/* Left Config Panel */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               {/* Step 1 */}
-              <div className="cyber-card" style={{ padding: '24px' }}>
-                <div style={{ fontSize: '0.875rem', color: 'var(--color-primary-light)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px', fontFamily: 'var(--font-mono)' }}>
+              <div className="cyber-card" style={{ padding: '20px' }}>
+                <div style={{ fontSize: '0.82rem', color: 'var(--color-primary-light)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '14px', fontFamily: 'var(--font-mono)' }}>
                   Шаг 1. Тип разработки
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '10px' }}>
                   {PROJECT_TYPES.map((type) => {
                     const isSelected = calcType === type.id;
                     return (
@@ -1644,13 +1692,13 @@ export default function PortfolioHub() {
                         onClick={() => handleSelectProjectType(type.id)}
                         className={`calc-option-btn ${isSelected ? 'active' : ''}`}
                       >
-                        <div style={{ fontWeight: 800, fontSize: '0.95rem', color: isSelected ? '#FFF' : 'var(--text-primary)' }}>
+                        <div style={{ fontWeight: 800, fontSize: '0.9rem', color: isSelected ? '#FFF' : 'var(--text-primary)' }}>
                           {type.title}
                         </div>
-                        <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.35 }}>
                           {type.desc}
                         </div>
-                        <div style={{ fontSize: '0.82rem', color: 'var(--color-primary-light)', fontWeight: 700, marginTop: '4px', fontFamily: 'var(--font-mono)' }}>
+                        <div style={{ fontSize: '0.78rem', color: 'var(--color-primary-light)', fontWeight: 700, marginTop: '4px', fontFamily: 'var(--font-mono)' }}>
                           от {type.basePrice.toLocaleString('ru-RU')} ₽ • {type.baseDays} дн.
                         </div>
                       </button>
@@ -1660,11 +1708,11 @@ export default function PortfolioHub() {
               </div>
 
               {/* Step 2 */}
-              <div className="cyber-card" style={{ padding: '24px' }}>
-                <div style={{ fontSize: '0.875rem', color: 'var(--color-primary-light)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px', fontFamily: 'var(--font-mono)' }}>
+              <div className="cyber-card" style={{ padding: '20px' }}>
+                <div style={{ fontSize: '0.82rem', color: 'var(--color-primary-light)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '14px', fontFamily: 'var(--font-mono)' }}>
                   Шаг 2. Дополнительные модули ({calculation.typeTitle})
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {currentAvailableModules.map((mod) => {
                     const isChecked = selectedModules.includes(mod.id);
                     return (
@@ -1674,15 +1722,15 @@ export default function PortfolioHub() {
                         onClick={() => toggleModule(mod.id)}
                         className={`calc-checkbox-btn ${isChecked ? 'active' : ''}`}
                       >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                          <div style={{ width: 20, height: 20, borderRadius: 6, border: `2px solid ${isChecked ? 'var(--color-primary)' : 'var(--border-subtle)'}`, background: isChecked ? 'var(--color-primary)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            {isChecked && <Check size={14} color="#FFF" />}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <div style={{ width: 18, height: 18, borderRadius: 5, border: `2px solid ${isChecked ? 'var(--color-primary)' : 'var(--border-subtle)'}`, background: isChecked ? 'var(--color-primary)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                            {isChecked && <Check size={12} color="#FFF" />}
                           </div>
-                          <span style={{ fontSize: '0.9rem', color: isChecked ? '#FFF' : 'var(--text-secondary)', fontWeight: isChecked ? 600 : 400 }}>
+                          <span style={{ fontSize: '0.84rem', color: isChecked ? '#FFF' : 'var(--text-secondary)', fontWeight: isChecked ? 600 : 400 }}>
                             {mod.label}
                           </span>
                         </div>
-                        <div style={{ fontSize: '0.82rem', color: 'var(--color-primary-light)', fontFamily: 'var(--font-mono)', fontWeight: 700, flexShrink: 0 }}>
+                        <div style={{ fontSize: '0.78rem', color: 'var(--color-primary-light)', fontFamily: 'var(--font-mono)', fontWeight: 700, flexShrink: 0 }}>
                           +{mod.price.toLocaleString('ru-RU')} ₽
                         </div>
                       </button>
@@ -1692,24 +1740,25 @@ export default function PortfolioHub() {
               </div>
 
               {/* Step 3 */}
-              <div className="cyber-card" style={{ padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
+              <div className="cyber-card" style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '14px', flexWrap: 'wrap' }}>
                 <div>
-                  <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#FFF' }}>⚡ Экспресс-запуск проекта</div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Приоритетная разработка и сдача в 2 раза быстрее</div>
+                  <div style={{ fontWeight: 800, fontSize: '0.9rem', color: '#FFF' }}>⚡ Экспресс-запуск проекта</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Приоритетная разработка и сдача в 2 раза быстрее</div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsExpress(!isExpress)}
                   style={{
-                    padding: '8px 18px',
+                    padding: '8px 16px',
                     borderRadius: 10,
                     border: `1px solid ${isExpress ? 'var(--color-primary)' : 'var(--border-subtle)'}`,
                     background: isExpress ? 'rgba(var(--color-primary-rgb), 0.2)' : 'transparent',
                     color: isExpress ? 'var(--color-primary-light)' : 'var(--text-muted)',
                     fontWeight: 700,
-                    fontSize: '0.84rem',
+                    fontSize: '0.8rem',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
+                    minHeight: 40,
                   }}
                 >
                   {isExpress ? '✓ Включено (+25%)' : 'Обычный темп'}
@@ -1717,53 +1766,53 @@ export default function PortfolioHub() {
               </div>
             </div>
 
-            {/* Live Calculation Summary & CTA */}
-            <div className="cyber-card" style={{ padding: '32px', border: '1px solid rgba(var(--color-primary-rgb), 0.35)', boxShadow: '0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(var(--color-primary-rgb), 0.15)', position: 'sticky', top: 100 }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', gap: '8px', flexWrap: 'wrap' }}>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '4px 12px', borderRadius: 8, background: 'rgba(var(--color-primary-rgb), 0.15)', color: 'var(--color-primary-light)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'var(--font-mono)' }}>
+            {/* Right Summary Card */}
+            <div className="cyber-card calculator-summary-card" style={{ padding: '24px', border: '1px solid rgba(var(--color-primary-rgb), 0.35)', boxShadow: '0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(var(--color-primary-rgb), 0.15)', position: 'sticky', top: 100 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', gap: '8px', flexWrap: 'wrap' }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '4px 10px', borderRadius: 6, background: 'rgba(var(--color-primary-rgb), 0.15)', color: 'var(--color-primary-light)', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'var(--font-mono)' }}>
                   Итоговый расчёт
                 </div>
-                <span style={{ fontSize: '0.72rem', color: 'var(--color-primary-light)', background: 'rgba(255,255,255,0.04)', padding: '4px 8px', borderRadius: 6, border: '1px solid var(--border-subtle)', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
+                <span style={{ fontSize: '0.7rem', color: 'var(--color-primary-light)', background: 'rgba(255,255,255,0.04)', padding: '3px 8px', borderRadius: 6, border: '1px solid var(--border-subtle)', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
                   CONFIG: {selectedModules.length}/{currentAvailableModules.length} MODULES
                 </span>
               </div>
 
-              <div style={{ marginBottom: '24px' }}>
-                <div style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginBottom: '4px' }}>Выбранный тип:</div>
-                <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFF' }}>{calculation.typeTitle}</div>
+              <div style={{ marginBottom: '18px' }}>
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '2px' }}>Выбранный тип:</div>
+                <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#FFF' }}>{calculation.typeTitle}</div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', padding: '20px 0', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)', marginBottom: '28px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', padding: '16px 0', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)', marginBottom: '20px' }}>
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)', fontSize: '0.8125rem', marginBottom: '4px' }}>
-                    <Coins size={15} color="var(--color-primary-light)" /> Ориентировочно
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--text-muted)', fontSize: '0.75rem', marginBottom: '2px' }}>
+                    <Coins size={14} color="var(--color-primary-light)" /> Ориентировочно
                   </div>
-                  <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#FFF', fontFamily: 'var(--font-heading)', transition: 'color 0.2s' }}>
+                  <div style={{ fontSize: '1.45rem', fontWeight: 900, color: '#FFF', fontFamily: 'var(--font-heading)' }}>
                     ~{animatedPrice.toLocaleString('ru-RU')} ₽
                   </div>
                 </div>
 
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)', fontSize: '0.8125rem', marginBottom: '4px' }}>
-                    <Clock size={15} color="var(--color-primary-light)" /> Срок реализации
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--text-muted)', fontSize: '0.75rem', marginBottom: '2px' }}>
+                    <Clock size={14} color="var(--color-primary-light)" /> Срок
                   </div>
-                  <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#34D399', fontFamily: 'var(--font-heading)', transition: 'color 0.2s' }}>
+                  <div style={{ fontSize: '1.45rem', fontWeight: 900, color: '#34D399', fontFamily: 'var(--font-heading)' }}>
                     {animatedDays} дн.
                   </div>
                 </div>
               </div>
 
-              <div style={{ marginBottom: '24px' }}>
-                <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', marginBottom: '8px' }}>Включенные модули ({selectedModules.length}):</div>
+              <div style={{ marginBottom: '20px' }}>
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '8px' }}>Включенные модули ({selectedModules.length}):</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   {selectedModules.length === 0 ? (
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>Базовая комплектация</div>
+                    <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>Базовая комплектация</div>
                   ) : (
                     selectedModules.map((mId) => {
                       const mod = currentAvailableModules.find((m) => m.id === mId);
                       return (
-                        <div key={mId} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                          <Check size={14} color="var(--color-primary-light)" />
+                        <div key={mId} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+                          <Check size={13} color="var(--color-primary-light)" style={{ flexShrink: 0 }} />
                           <span>{mod?.label || mId}</span>
                         </div>
                       );
@@ -1777,12 +1826,12 @@ export default function PortfolioHub() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="cyber-btn"
-                style={{ width: '100%', padding: '16px', fontSize: '0.95rem' }}
+                style={{ width: '100%', padding: '14px', fontSize: '0.9rem' }}
               >
-                <TelegramIcon size={18} /> Обсудить в Telegram ➔
+                <TelegramIcon size={16} /> Обсудить в Telegram ➔
               </a>
 
-              <div style={{ textAlign: 'center', marginTop: '12px', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+              <div style={{ textAlign: 'center', marginTop: '10px', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
                 Конфигурация автоматически передастся в диалог с Айдаром
               </div>
             </div>
@@ -1791,36 +1840,36 @@ export default function PortfolioHub() {
       </section>
 
       {/* Layered Architectural Tech Stack Matrix */}
-      <section id="technologies" style={{ padding: '90px 0' }}>
+      <section id="technologies" style={{ padding: '70px 0' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 48px auto' }}>
-            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
+          <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 40px auto' }}>
+            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px', fontFamily: 'var(--font-mono)' }}>
               &lt; tech-pipelines /&gt;
             </div>
-            <h2 style={{ fontSize: '2.4rem', marginBottom: '12px' }}>Архитектурный стек технологий</h2>
-            <p style={{ color: 'var(--text-muted)' }}>Сквозной пайплайн разработки от пользовательского интерфейса до облачной инфраструктуры</p>
+            <h2 style={{ fontSize: 'clamp(1.75rem, 4.5vw, 2.4rem)', marginBottom: '10px' }}>Архитектурный стек технологий</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Сквозной пайплайн разработки от пользовательского интерфейса до облачной инфраструктуры</p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '18px' }}>
             {STACK_PIPELINES.map((pipeline, pIdx) => (
-              <div key={pIdx} className="cyber-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div key={pIdx} className="cyber-card" style={{ padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '10px' }}>
-                    <div style={{ fontWeight: 800, fontSize: '1rem', color: '#FFF' }}>{pipeline.layer}</div>
-                    <span style={{ fontSize: '0.72rem', color: pipeline.color, background: `${pipeline.color}15`, padding: '3px 8px', borderRadius: 6, fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '8px' }}>
+                    <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#FFF' }}>{pipeline.layer}</div>
+                    <span style={{ fontSize: '0.68rem', color: pipeline.color, background: `${pipeline.color}15`, padding: '2px 6px', borderRadius: 4, fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
                       {pipeline.tag}
                     </span>
                   </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     {pipeline.items.map((item, iIdx) => (
-                      <div key={iIdx} style={{ display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(255,255,255,0.02)', padding: '10px 12px', borderRadius: 10, border: '1px solid var(--border-subtle)' }}>
-                        <div style={{ width: 30, height: 30, borderRadius: 8, background: 'rgba(255,255,255,0.04)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                          {TECH_ICONS[item.name] || <span style={{ width: 8, height: 8, borderRadius: '50%', background: pipeline.color }}></span>}
+                      <div key={iIdx} style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255,255,255,0.02)', padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border-subtle)' }}>
+                        <div style={{ width: 26, height: 26, borderRadius: 6, background: 'rgba(255,255,255,0.04)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                          {TECH_ICONS[item.name] || <span style={{ width: 6, height: 6, borderRadius: '50%', background: pipeline.color }}></span>}
                         </div>
                         <div>
-                          <div style={{ fontWeight: 700, fontSize: '0.88rem', color: '#FFF' }}>{item.name}</div>
-                          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{item.role}</div>
+                          <div style={{ fontWeight: 700, fontSize: '0.84rem', color: '#FFF' }}>{item.name}</div>
+                          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{item.role}</div>
                         </div>
                       </div>
                     ))}
@@ -1833,27 +1882,27 @@ export default function PortfolioHub() {
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" style={{ padding: '80px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
+      <section id="faq" style={{ padding: '70px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
         <div className="container" style={{ maxWidth: 860 }}>
-          <div style={{ textAlign: 'center', margin: '0 auto 48px auto' }}>
-            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
+          <div style={{ textAlign: 'center', margin: '0 auto 40px auto' }}>
+            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px', fontFamily: 'var(--font-mono)' }}>
               &lt; faq /&gt;
             </div>
-            <h2 style={{ fontSize: '2.4rem', marginBottom: '12px' }}>Часто задаваемые вопросы</h2>
-            <p style={{ color: 'var(--text-muted)' }}>Ответы на популярные вопросы о процессе, оплате и гарантиях</p>
+            <h2 style={{ fontSize: 'clamp(1.75rem, 4.5vw, 2.4rem)', marginBottom: '10px' }}>Часто задаваемые вопросы</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Ответы на популярные вопросы о процессе, оплате и гарантиях</p>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {FAQ_ITEMS.map((item, idx) => {
               const isOpen = openFaq === idx;
               return (
-                <div key={idx} className="cyber-card" style={{ background: 'var(--bg-main)', padding: '20px 24px', cursor: 'pointer' }} onClick={() => setOpenFaq(isOpen ? null : idx)}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
-                    <h3 style={{ fontSize: '1.05rem', color: '#FFF' }}>{item.q}</h3>
-                    <ChevronDown size={20} color="var(--color-primary-light)" style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.25s ease' }} />
+                <div key={idx} className="cyber-card" style={{ background: 'var(--bg-main)', padding: '18px 20px', cursor: 'pointer' }} onClick={() => setOpenFaq(isOpen ? null : idx)}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+                    <h3 style={{ fontSize: '0.98rem', color: '#FFF' }}>{item.q}</h3>
+                    <ChevronDown size={18} color="var(--color-primary-light)" style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.25s ease', flexShrink: 0 }} />
                   </div>
                   {isOpen && (
-                    <p style={{ marginTop: '14px', fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6, borderTop: '1px solid var(--border-subtle)', paddingTop: '12px' }}>
+                    <p style={{ marginTop: '12px', fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.55, borderTop: '1px solid var(--border-subtle)', paddingTop: '10px' }}>
                       {item.a}
                     </p>
                   )}
@@ -1865,25 +1914,25 @@ export default function PortfolioHub() {
       </section>
 
       {/* High-Converting Final CTA Section */}
-      <section id="contacts" style={{ padding: '100px 0', background: 'radial-gradient(circle at 50% 100%, rgba(var(--color-primary-rgb), 0.18) 0%, transparent 60%)' }}>
+      <section id="contacts" style={{ padding: '80px 0', background: 'radial-gradient(circle at 50% 100%, rgba(var(--color-primary-rgb), 0.18) 0%, transparent 60%)' }}>
         <div className="container" style={{ maxWidth: 840, textAlign: 'center' }}>
-          <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
+          <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px', fontFamily: 'var(--font-mono)' }}>
             &lt; start-project /&gt;
           </div>
-          <h2 style={{ fontSize: 'clamp(2.2rem, 4.5vw, 3rem)', marginBottom: '18px' }}>Есть задача или идея?</h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '1.15rem', marginBottom: '40px', lineHeight: 1.6, maxWidth: 680, margin: '0 auto 40px auto' }}>
+          <h2 style={{ fontSize: 'clamp(1.85rem, 5vw, 2.8rem)', marginBottom: '14px' }}>Есть задача или идея?</h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', marginBottom: '32px', lineHeight: 1.55, maxWidth: 680, margin: '0 auto 32px auto' }}>
             Опишите её в Telegram. Я предложу вариант реализации и помогу определить оптимальный формат проекта.
           </p>
 
-          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
             <a
               href="https://t.me/Aidar_RG"
               target="_blank"
               rel="noopener noreferrer"
               className="cyber-btn"
-              style={{ padding: '18px 40px', fontSize: '1.05rem' }}
+              style={{ padding: '16px 36px', fontSize: '1rem' }}
             >
-              <TelegramIcon size={20} /> Обсудить проект
+              <TelegramIcon size={18} /> Обсудить проект
             </a>
 
             <a
@@ -1891,19 +1940,19 @@ export default function PortfolioHub() {
               target="_blank"
               rel="noopener noreferrer"
               className="cyber-btn-ghost"
-              style={{ padding: '18px 28px', fontSize: '1.05rem' }}
+              style={{ padding: '16px 24px', fontSize: '1rem' }}
             >
-              <GithubIcon size={20} /> Посмотреть GitHub
+              <GithubIcon size={18} /> GitHub
             </a>
 
             <button
               type="button"
               onClick={copyEmail}
               className="cyber-btn-ghost"
-              style={{ padding: '18px 24px', fontSize: '1.05rem' }}
+              style={{ padding: '16px 20px', fontSize: '1rem' }}
               title="Скопировать email"
             >
-              <Mail size={18} color="var(--color-primary-light)" />
+              <Mail size={16} color="var(--color-primary-light)" />
               <span>{copiedEmail ? 'Email скопирован!' : 'Email'}</span>
             </button>
           </div>
@@ -1911,13 +1960,13 @@ export default function PortfolioHub() {
       </section>
 
       {/* Footer */}
-      <footer style={{ padding: '40px 0', borderTop: '1px solid var(--border-subtle)', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.875rem', background: '#05070B' }}>
+      <footer style={{ padding: '36px 0', borderTop: '1px solid var(--border-subtle)', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.84rem', background: '#05070B' }}>
         <div className="container">
-          <div style={{ fontWeight: 800, color: '#FFF', fontSize: '1.1rem', marginBottom: '8px' }}>Айдар Гарипов — Full-Stack & Bot Developer</div>
-          <p style={{ color: 'var(--color-primary-light)', fontFamily: 'var(--font-mono)', fontSize: '0.875rem', marginTop: '6px' }}>
+          <div style={{ fontWeight: 800, color: '#FFF', fontSize: '1rem', marginBottom: '6px' }}>Айдар Гарипов — Full-Stack & Bot Developer</div>
+          <p style={{ color: 'var(--color-primary-light)', fontFamily: 'var(--font-mono)', fontSize: '0.82rem', marginTop: '4px' }}>
             Сделано с терминалом и любовью ❤️
           </p>
-          <p style={{ marginTop: '12px', fontSize: '0.75rem' }}>© {new Date().getFullYear()} Все права защищены. garipov-ar.github.io</p>
+          <p style={{ marginTop: '10px', fontSize: '0.72rem' }}>© {new Date().getFullYear()} Все права защищены. garipov-ar.github.io</p>
         </div>
       </footer>
 
@@ -1928,12 +1977,12 @@ export default function PortfolioHub() {
           onClick={scrollToTop}
           style={{
             position: 'fixed',
-            bottom: '30px',
-            right: '30px',
-            width: '48px',
-            height: '48px',
-            borderRadius: '14px',
-            background: 'rgba(12, 16, 26, 0.9)',
+            bottom: '24px',
+            right: '20px',
+            width: '44px',
+            height: '44px',
+            borderRadius: '12px',
+            background: 'rgba(12, 16, 26, 0.92)',
             backdropFilter: 'blur(12px)',
             border: '1px solid rgba(var(--color-primary-rgb), 0.4)',
             color: '#FFF',
@@ -1948,7 +1997,7 @@ export default function PortfolioHub() {
           title="Наверх"
           aria-label="Наверх"
         >
-          <ChevronUp size={22} color="var(--color-primary-light)" />
+          <ChevronUp size={20} color="var(--color-primary-light)" />
         </button>
       )}
 
@@ -1957,44 +2006,42 @@ export default function PortfolioHub() {
         <div
           style={{
             position: 'fixed',
-            bottom: '24px',
+            bottom: '16px',
             left: '50%',
             transform: 'translateX(-50%)',
-            width: 'calc(100% - 48px)',
-            maxWidth: '680px',
-            background: 'rgba(12, 16, 26, 0.95)',
+            width: 'calc(100% - 32px)',
+            maxWidth: '640px',
+            background: 'rgba(12, 16, 26, 0.96)',
             backdropFilter: 'blur(20px)',
             border: '1px solid rgba(var(--color-primary-rgb), 0.3)',
-            borderRadius: '18px',
-            padding: '18px 24px',
+            borderRadius: '16px',
+            padding: '16px 20px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            gap: '20px',
+            gap: '16px',
             boxShadow: '0 16px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(var(--color-primary-rgb), 0.15)',
             zIndex: 100,
             flexWrap: 'wrap',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: '240px' }}>
-            <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(var(--color-primary-rgb), 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary-light)', flexShrink: 0 }}>
-              <Cookie size={20} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, minWidth: '220px' }}>
+            <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(var(--color-primary-rgb), 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary-light)', flexShrink: 0 }}>
+              <Cookie size={18} />
             </div>
-            <div style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
               Этот сайт использует файлы cookie для улучшения пользовательского опыта и аналитики.
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <button
-              type="button"
-              onClick={acceptCookies}
-              className="cyber-btn"
-              style={{ padding: '10px 22px', fontSize: '0.84rem', borderRadius: 10 }}
-            >
-              Принять
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={acceptCookies}
+            className="cyber-btn"
+            style={{ padding: '8px 18px', fontSize: '0.82rem', borderRadius: 8, minHeight: 38 }}
+          >
+            Принять
+          </button>
         </div>
       )}
     </div>
