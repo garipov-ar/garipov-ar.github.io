@@ -101,14 +101,13 @@ h1, h2, h3, h4 {
   backdrop-filter: blur(16px);
   border: 1px solid var(--border-subtle);
   border-radius: 20px;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease;
   position: relative;
   overflow: hidden;
 }
 
 .cyber-card:hover {
   border-color: rgba(var(--color-primary-rgb), 0.4);
-  transform: translateY(-4px);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(var(--color-primary-rgb), 0.15);
 }
 
@@ -126,9 +125,10 @@ h1, h2, h3, h4 {
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   text-decoration: none;
   box-shadow: 0 4px 24px rgba(var(--color-primary-rgb), 0.35);
+  position: relative;
 }
 
 .cyber-btn:hover {
@@ -151,7 +151,7 @@ h1, h2, h3, h4 {
   border-radius: 12px;
   border: 1px solid var(--border-subtle);
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   text-decoration: none;
   backdrop-filter: blur(12px);
 }
@@ -160,6 +160,7 @@ h1, h2, h3, h4 {
   background: rgba(255, 255, 255, 0.08);
   border-color: var(--color-primary);
   color: var(--color-primary-light);
+  transform: translateY(-1px);
 }
 
 /* Calculator Specific Styles */
@@ -211,6 +212,17 @@ h1, h2, h3, h4 {
 .calc-checkbox-btn.active {
   background: rgba(var(--color-primary-rgb), 0.12);
   border-color: var(--color-primary);
+}
+
+/* Live Pulse Node Animation */
+@keyframes flowPulse {
+  0% { transform: translateY(0); opacity: 0.2; }
+  50% { transform: translateY(6px); opacity: 0.9; }
+  100% { transform: translateY(12px); opacity: 0.2; }
+}
+
+.data-flow-line {
+  animation: flowPulse 2s ease-in-out infinite;
 }
 
 ::-webkit-scrollbar {
