@@ -580,14 +580,27 @@ const WORKFLOW_STEPS = [
   },
 ];
 
+interface CaseArchitectureStep {
+  label: string;
+  sub: string;
+  badge?: string;
+  color?: string;
+}
+
 interface CaseProject {
   id: string;
   title: string;
+  subtitle: string;
   category: 'web' | 'bots' | 'backend';
   categoryLabel: string;
-  problem: string;
+  isFeatured?: boolean;
+  featuredBadge?: string;
+  description: string;
+  challenge: string;
   solution: string;
-  businessResult: string;
+  results: string[];
+  keyFeatures: string[];
+  architectureSteps: CaseArchitectureStep[];
   stack: string[];
   demoUrl?: string;
   githubUrl: string;
@@ -597,13 +610,65 @@ interface CaseProject {
 
 const CASES: CaseProject[] = [
   {
-    id: 'nordic',
-    title: 'Nordic Craft — Строительная компания',
+    id: 'echo',
+    title: 'Гостевой комплекс «ЭХО»',
+    subtitle: 'Платформа бронирования и калькулятор отдыха',
     category: 'web',
     categoryLabel: 'Сайты для бизнеса',
-    problem: 'Клиенты уходили с сайта без заявки из-за отсутствия понятного расчета стоимости дома и условий ипотеки.',
-    solution: 'Разработан 5-шаговый интерактивный квиз-калькулятор с мгновенным подбором комплектации и связкой с Telegram.',
-    businessResult: 'Заявки поступают сразу с выбранной сметой и контактом, повышая конверсию первого касания.',
+    isFeatured: true,
+    featuredBadge: '★ FEATURED CASE • VISUAL + PRODUCT UX',
+    description: 'Премиальный сайт загородного комплекса с интерактивным сценарием выбора домов, динамическим ценообразованием и автоматизацией бронирования.',
+    challenge: 'Пользователям требовалось не просто показать фотографии домов, а предоставить прозрачный расчет сметы с учетом дат, спа-услуг (чан/баня) и сократить путь до заявки.',
+    solution: 'Разработан кастомный интерфейс на Next.js 15 с каталогом домов (Шалаш/Большой дом), динамическим калькулятором бронирования с автоскидкой от 2 суток и моментальной передачей данных в Telegram.',
+    results: [
+      'Интерактивный конфигуратор бронирования на клиенте',
+      'Автоматический учет сезонности и скидок от 2 суток',
+      'Мгновенная отправка готовой сметы администратору в Telegram'
+    ],
+    keyFeatures: [
+      'Динамический калькулятор сметы будни/выходные',
+      'Переключение каталога домов с фотогалереей',
+      'Интерактивная карта проезда Яндекс.Карты',
+      'Уведомления администратора в Telegram'
+    ],
+    architectureSteps: [
+      { label: 'ГОСТЬ', sub: 'Mobile/Web UI', color: '#F43F5E' },
+      { label: 'NEXT.JS 15', sub: 'SSR & Booking Engine', color: '#38BDF8' },
+      { label: 'API ROUTE', sub: 'Lead Validator (Zod)', color: '#818CF8' },
+      { label: 'TELEGRAM BOT', sub: 'Admin Direct Alert', color: '#229ED9' }
+    ],
+    stack: ['Next.js 15', 'React 19', 'TypeScript', 'Zod', 'Telegram API', 'CSS Modules'],
+    demoUrl: 'https://garipov-ar.github.io/echo-houses-rental/',
+    githubUrl: 'https://github.com/garipov-ar/echo-houses-rental',
+    image: 'https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&w=1200&q=80',
+    accentColor: '#D97706',
+  },
+  {
+    id: 'nordic',
+    title: 'Nordic Craft — Строительная компания',
+    subtitle: '5-шаговый интерактивный квиз-подбор дома',
+    category: 'web',
+    categoryLabel: 'Сайты для бизнеса',
+    description: 'Сайт для загородного малоэтажного строительства с конверсионным квизом комплектаций и ипотечным калькулятором.',
+    challenge: 'Высокая стоимость привлечения лидов и потеря посетителей из-за отсутствия предварительного понимания цены строительства дома.',
+    solution: 'Внедрен пошаговый конфигуратор проекта (площадь, фундамент, отделка, ипотека) с мгновенным расчетом и передачей параметров менеджеру.',
+    results: [
+      'Заявки поступают сразу с выбранной сметой и контактом',
+      'Повышена вовлеченность посетителей через интерактив',
+      'Сокращено время первичной квалификации лида менеджером'
+    ],
+    keyFeatures: [
+      '5-шаговый интерактивный квиз подбора комплектации',
+      'Ипотечный экспресс-калькулятор ежемесячного платежа',
+      'Mobile-first адаптивная верстка под все экраны',
+      'Интеграция с Telegram Bot API для заявок'
+    ],
+    architectureSteps: [
+      { label: 'КЛИЕНТ', sub: 'Квиз-интерфейс', color: '#F43F5E' },
+      { label: 'NEXT.JS 15', sub: 'State & Step Machine', color: '#38BDF8' },
+      { label: 'SERVER ROUTE', sub: 'Lead Processing', color: '#818CF8' },
+      { label: 'TELEGRAM', sub: 'Мгновенный лид менеджеру', color: '#229ED9' }
+    ],
     stack: ['Next.js 15', 'React 19', 'TypeScript', 'Telegram Bot API', 'CSS Modules'],
     demoUrl: 'https://garipov-ar.github.io/nordic-craft-construction/',
     githubUrl: 'https://github.com/garipov-ar/nordic-craft-construction',
@@ -611,66 +676,155 @@ const CASES: CaseProject[] = [
     accentColor: '#10B981',
   },
   {
-    id: 'echo',
-    title: 'Гостевой комплекс «ЭХО»',
-    category: 'web',
-    categoryLabel: 'Сайты для бизнеса',
-    problem: 'Требовалось автоматизировать расчет бронирования в зависимости от дней недели (будни/выходные) и спа-услуг.',
-    solution: 'Создан атмосферный лендинг с переключателем домов (Шалаш/Большой дом), динамическим прайсингом и скидкой от 2 суток.',
-    businessResult: 'Гости самостоятельно конфигурируют отдых с доп. услугами (чан/баня), снижая нагрузку на администратора.',
-    stack: ['Next.js 15', 'React 19', 'TypeScript', 'Booking Engine', 'Yandex Maps'],
-    demoUrl: 'https://garipov-ar.github.io/echo-houses-rental/',
-    githubUrl: 'https://github.com/garipov-ar/echo-houses-rental',
-    image: 'https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&w=1000&q=80',
-    accentColor: '#D97706',
-  },
-  {
-    id: 'briefy-bot',
-    title: 'Briefy Bot — Умный Telegram-бот сбора брифов',
-    category: 'bots',
-    categoryLabel: 'Telegram-боты & CRM',
-    problem: 'Менеджеры тратили до 40 минут на первичный опрос каждого лида для выяснения требований к проекту.',
-    solution: 'Интерактивный Telegram-бот проводит пошаговый опрос клиента, валидирует данные и формирует готовое ТЗ.',
-    businessResult: 'Экономия до 80% времени менеджеров, мгновенная отправка заполненного брифа в рабочий чат.',
-    stack: ['Python', 'aiogram', 'Telegram Bot API', 'SQLite/PostgreSQL'],
-    githubUrl: 'https://github.com/garipov-ar/briefy-bot',
-    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1000&q=80',
-    accentColor: '#F43F5E',
-  },
-  {
-    id: 'field-support',
-    title: 'Field Support System — Telecom Bot + CMS',
-    category: 'bots',
-    categoryLabel: 'Telegram-боты & CMS',
-    problem: 'Выездные инженеры тратили время на поиск актуальных схем оборудования и регламентов на удаленных объектах.',
-    solution: 'Telegram-бот для мгновенного поиска документации по коду ошибки + Web-панель управления базой знаний.',
-    businessResult: 'Сокращение времени простоя оборудования и оперативный доступ к регламентам прямо со смартфона.',
-    stack: ['Java', 'Spring Boot', 'Telegram Bot API', 'PostgreSQL', 'Docker'],
-    githubUrl: 'https://github.com/garipov-ar/field-support-system',
-    image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1000&q=80',
-    accentColor: '#818CF8',
-  },
-  {
     id: 'transaction-engine',
     title: 'Transaction Processing Engine — Highload',
+    subtitle: 'Распределенный процессинг транзакций',
     category: 'backend',
-    categoryLabel: 'Backend & Автоматизация',
-    problem: 'Необходимость надежной распределенной обработки финансового потока без потерь и дублирования транзакций.',
-    solution: 'Построена асинхронная архитектура на базе Apache Kafka и Spring Boot 3 с гарантией идемпотентности (ACID).',
-    businessResult: 'Стабильная работа под высокой нагрузкой с защитой от сбоев и полным мониторингом состояний.',
+    categoryLabel: 'Backend & Архитектура',
+    description: 'Отказоустойчивая платформа финансового процессинга с гарантией доставки сообщений и защитой от дублирования.',
+    challenge: 'Обеспечить гарантированную обработку входящего потока финансовых операций без потерь данных при пиковых нагрузках.',
+    solution: 'Построена событийная архитектура на базе Apache Kafka и Spring Boot 3 с идемпотентными консьюмерами и распределенными блокировками.',
+    results: [
+      '100% гарантия исключения дублей транзакций (ACID)',
+      'Отказоустойчивость при пиковых нагрузках в очередях',
+      'Прозрачный сквозной мониторинг состояний пайплайна'
+    ],
+    keyFeatures: [
+      'Kafka Event-Driven Architecture',
+      'Идемпотентная обработка событий',
+      'ACID-транзакции в PostgreSQL',
+      'Docker-контейнеризация и мониторинг'
+    ],
+    architectureSteps: [
+      { label: 'PRODUCER', sub: 'Payment Stream', color: '#F43F5E' },
+      { label: 'APACHE KAFKA', sub: 'Partitioned Topic', color: '#FB923C' },
+      { label: 'SPRING BOOT', sub: 'Idempotent Consumer', color: '#818CF8' },
+      { label: 'POSTGRESQL', sub: 'ACID Storage', color: '#FBBF24' }
+    ],
     stack: ['Java 21', 'Spring Boot 3', 'Apache Kafka', 'PostgreSQL', 'Docker', 'JVM Tuning'],
     githubUrl: 'https://github.com/garipov-ar/transaction-engine',
     image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1000&q=80',
     accentColor: '#38BDF8',
   },
   {
+    id: 'field-support',
+    title: 'Field Support System — Telecom Bot + CMS',
+    subtitle: 'Telegram-бот для инженеров + Web CMS',
+    category: 'bots',
+    categoryLabel: 'Telegram-боты & CMS',
+    description: 'Корпоративная система оперативного доступа к технической документации и регламентам на удаленных объектах.',
+    challenge: 'Выездные специалисты тратили до 30 минут на поиск актуальных схем оборудования в разрозненных PDF-инструкциях.',
+    solution: 'Разработан Telegram-бот для мгновенного поиска регламентов по кодам ошибок и артикулам + веб-панель управления контентом.',
+    results: [
+      'Мгновенный доступ к схемам прямо со смартфона',
+      'Сокращение времени поиска инструкций инженерами',
+      'Централизованное обновление базы знаний через CMS'
+    ],
+    keyFeatures: [
+      'Поиск инструкций по коду ошибки оборудования',
+      'Web-панель администрирования статей и регламентов',
+      'Кэширование частых запросов специалистов',
+      'Ролевой доступ к регламентам и файлам'
+    ],
+    architectureSteps: [
+      { label: 'ИНЖЕНЕР', sub: 'Telegram Client', color: '#F43F5E' },
+      { label: 'TELEGRAM BOT', sub: 'Spring Webhook', color: '#229ED9' },
+      { label: 'SPRING BOOT', sub: 'Search Engine', color: '#818CF8' },
+      { label: 'POSTGRESQL', sub: 'Knowledge Base DB', color: '#FBBF24' }
+    ],
+    stack: ['Java', 'Spring Boot', 'Telegram Bot API', 'PostgreSQL', 'Docker'],
+    githubUrl: 'https://github.com/garipov-ar/field-support-system',
+    image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1000&q=80',
+    accentColor: '#818CF8',
+  },
+  {
+    id: 'briefy-bot',
+    title: 'Briefy Bot — Умный Telegram-бот сбора брифов',
+    subtitle: 'Автоматизация квалификации лидов',
+    category: 'bots',
+    categoryLabel: 'Telegram-боты & CRM',
+    description: 'Интерактивный Telegram-бот для автоматического анкетирования заказчиков и формирования структурированного ТЗ.',
+    challenge: 'Менеджеры тратили существенное время на первичный созвон и ручное заполнение анкет требований к проекту.',
+    solution: 'Создан пошаговый бот с валидацией ответов, сбором референсов и автоматической выгрузкой брифа в командный чат.',
+    results: [
+      'Экономия до 80% времени менеджеров на брифинге',
+      'Структурированное ТЗ сразу в формате Markdown',
+      'Исключение пропущенных обязательных вопросов'
+    ],
+    keyFeatures: [
+      'Пошаговая машина состояний (FSM)',
+      'Валидация типов данных и файлов',
+      'Генерация готового резюме ТЗ в чат',
+      'Отправка уведомлений в рабочий Telegram-канал'
+    ],
+    architectureSteps: [
+      { label: 'КЛИЕНТ', sub: 'Telegram Bot UI', color: '#F43F5E' },
+      { label: 'AIOGRAM', sub: 'Python FSM Engine', color: '#38BDF8' },
+      { label: 'POSTGRESQL', sub: 'Brief Storage', color: '#FBBF24' },
+      { label: 'TEAM CHAT', sub: 'Formatted Markdown Alert', color: '#229ED9' }
+    ],
+    stack: ['Python', 'aiogram 3', 'Telegram Bot API', 'PostgreSQL', 'Docker'],
+    githubUrl: 'https://github.com/garipov-ar/briefy-bot',
+    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1000&q=80',
+    accentColor: '#F43F5E',
+  },
+  {
+    id: 'audit-log',
+    title: 'Immutable Financial Audit Log Service',
+    subtitle: 'Неизменяемый WORM-аудит операций',
+    category: 'backend',
+    categoryLabel: 'Backend & Архитектура',
+    description: 'Сервис аудита и фиксации финансовых событий с защитой от изменения и удаления записей (Write-Once-Read-Many).',
+    challenge: 'Требования безопасности и комплаенса исключают возможность модификации архивных записей даже суперпользователями.',
+    solution: 'Спроектирована неизменяемая архитектура на PostgreSQL с криптографическим хэшированием и партиционированием.',
+    results: [
+      '100% юридическая достоверность истории действий',
+      'Быстрый поиск по миллионам архивных записей',
+      'Полная защита от несанкционированного изменения'
+    ],
+    keyFeatures: [
+      'WORM-паттерн хранения логов',
+      'Криптографическая цепочка хэшей',
+      'Партиционирование таблиц по датам',
+      'REST API для микросервисной интеграции'
+    ],
+    architectureSteps: [
+      { label: 'СЕРВИСЫ', sub: 'Audit Events', color: '#F43F5E' },
+      { label: 'AUDIT API', sub: 'Spring Boot Gateway', color: '#818CF8' },
+      { label: 'HASH ENGINE', sub: 'SHA-256 Validation', color: '#34D399' },
+      { label: 'POSTGRESQL', sub: 'WORM Partitioned Tables', color: '#FBBF24' }
+    ],
+    stack: ['Java 21', 'Spring Boot', 'PostgreSQL', 'REST API', 'Docker'],
+    githubUrl: 'https://github.com/garipov-ar/audit-log-service',
+    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=80',
+    accentColor: '#A78BFA',
+  },
+  {
     id: 'door',
-    title: 'Дверь-Мастер — Установка дверей',
+    title: 'Дверь-Мастер — Монтаж дверей',
+    subtitle: 'Конфигуратор полотен и фурнитуры',
     category: 'web',
     categoryLabel: 'Сайты для бизнеса',
-    problem: 'Сложность дистанционного расчета монтажа полотен, доборов и врезки магнитных замков отпугивала заказчиков.',
-    solution: 'Создан наглядный калькулятор комплектации со скидкой 10% от 3-х полотен и презентацией чистого монтажа.',
-    businessResult: 'Заказчик сразу видит точную прозрачную вилку цен, что увеличивает доверие и звонки мастеру.',
+    description: 'Сайт для мастеров по установке межкомнатных и скрытых дверей со скидочным калькулятором объема.',
+    challenge: 'Сложность дистанционного расчета стоимости врезки скрытых петель, магнитных замков и доборов.',
+    solution: 'Создан чек-лист услуг с выбором количества дверей и автоматическим применением скидки 10% от 3 полотен.',
+    results: [
+      'Прозрачный предварительный расчет сметы заказчиком',
+      'Повышение доверия заказчиков к мастеру до выезда',
+      'Снижение числа уточняющих звонков'
+    ],
+    keyFeatures: [
+      'Выбор количества полотен (- / +)',
+      'Калькулятор доборов и врезки замков',
+      'Скидка 10% от 3-х дверей',
+      'Чистая адаптивная верстка'
+    ],
+    architectureSteps: [
+      { label: 'ЗАКАЗЧИК', sub: 'Калькулятор сметы', color: '#F43F5E' },
+      { label: 'NEXT.JS', sub: 'Reactive Pricing', color: '#38BDF8' },
+      { label: 'ФОРМА', sub: 'Заявка на замер', color: '#818CF8' },
+      { label: 'МАСТЕР', sub: 'Прямой контакт', color: '#C08244' }
+    ],
     stack: ['Next.js 15', 'React 19', 'TypeScript', 'CSS Modules'],
     demoUrl: 'https://garipov-ar.github.io/door-install/',
     githubUrl: 'https://github.com/garipov-ar/door-install',
@@ -678,26 +832,31 @@ const CASES: CaseProject[] = [
     accentColor: '#C08244',
   },
   {
-    id: 'audit-log',
-    title: 'Immutable Financial Audit Log Service',
-    category: 'backend',
-    categoryLabel: 'Backend & Автоматизация',
-    problem: 'Требование регуляторов к неизменяемому хранению финансовых логов и аудиту действий операторов.',
-    solution: 'Разработан сервис на базе PostgreSQL и WORM-паттерна (Write Once, Read Many) с защитой от модификации.',
-    businessResult: '100% юридическая чистота логов и моментальный поиск по миллионам архивных записей.',
-    stack: ['Java', 'Spring Boot', 'PostgreSQL', 'REST API', 'Docker'],
-    githubUrl: 'https://github.com/garipov-ar/audit-log-service',
-    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=80',
-    accentColor: '#A78BFA',
-  },
-  {
     id: 'demolition',
-    title: 'Демонтаж-Про — Демонтажные работы',
+    title: 'Демонтаж-Про — Снос и вывоз мусора',
+    subtitle: 'Калькулятор демонтажа и контейнеров',
     category: 'web',
     categoryLabel: 'Сайты для бизнеса',
-    problem: 'Заказчикам сложно оценить объемы сноса стен и количество контейнеров для строительного мусора.',
-    solution: 'Внедрен экспресс-калькулятор расчета площади пола, типа стен и объема контейнеров (8–27 м³).',
-    businessResult: 'Клиент за 15 секунд получает смету, а компания — подготовленный лид с параметрами объекта.',
+    description: 'Лендинг демонтажных работ с расчетом площади стен, типа перегородок и подбором контейнеров.',
+    challenge: 'Клиентам трудно оценить объем строительного мусора и необходимый тоннаж контейнеров для вывоза.',
+    solution: 'Внедрен интерактивный расчет сметы по площади помещения и перечню демонтируемых конструкций.',
+    results: [
+      'Расчет ориентировочной сметы за 15 секунд',
+      'Сбор квалифицированных заявок с параметрами объекта',
+      'Исключение разногласий по объему вывоза мусора'
+    ],
+    keyFeatures: [
+      'Выбор площади объекта слайдером',
+      'Чекбоксы видов демонтажа',
+      'Расчет контейнеров 8–27 м³',
+      'Оценка стоимости по фото'
+    ],
+    architectureSteps: [
+      { label: 'КЛИЕНТ', sub: 'Расчет площади', color: '#F43F5E' },
+      { label: 'NEXT.JS', sub: 'Calculator Logic', color: '#38BDF8' },
+      { label: 'ФОРМА', sub: 'Запрос расчета', color: '#818CF8' },
+      { label: 'БРИГАДИР', sub: 'Выезд на замер', color: '#E57A22' }
+    ],
     stack: ['Next.js 15', 'React 19', 'TypeScript', 'CSS Modules'],
     demoUrl: 'https://garipov-ar.github.io/demolition-service/',
     githubUrl: 'https://github.com/garipov-ar/demolition-service',
@@ -707,11 +866,29 @@ const CASES: CaseProject[] = [
   {
     id: 'handyman',
     title: 'Муж на час 24/7 — Срочный ремонт',
+    subtitle: 'Диспетчеризация мелкого ремонта',
     category: 'web',
     categoryLabel: 'Сайты для бизнеса',
-    problem: 'Высокая конкуренция в нише мелкого бытового ремонта и недоверие к скрытым накруткам цен на месте.',
-    solution: 'Интерактивный чек-лист услуг с фиксированным прайсом и таймером срочного выезда за 45 минут.',
-    businessResult: 'Прозрачная смета до приезда мастера повышает конверсию в вызов на 40%.',
+    description: 'Сайт срочного выезда мастера на час с фиксированным прайс-листом и таймером оперативного прибытия.',
+    challenge: 'Недоверие заказчиков к скрытым накруткам стоимости после приезда мастера.',
+    solution: 'Внедрен открытый калькулятор стоимости типовых работ с гарантией фиксации цены.',
+    results: [
+      'Прозрачная фиксированная смета до вызова мастера',
+      'Быстрая форма заказа в 1 клик',
+      'Адаптированный под смартфоны интерфейс'
+    ],
+    keyFeatures: [
+      'Чек-лист типовых задач ремонта',
+      'Калькулятор с суммированием позиций',
+      'Таймер срочного выезда 45 мин',
+      'Фиксация сметы'
+    ],
+    architectureSteps: [
+      { label: 'КЛИЕНТ', sub: 'Выбор услуг', color: '#F43F5E' },
+      { label: 'NEXT.JS', sub: 'Client State', color: '#38BDF8' },
+      { label: 'СЕРВИС', sub: 'Фиксация сметы', color: '#818CF8' },
+      { label: 'ДИСПЕТЧЕР', sub: 'Вызов мастера', color: '#3B82F6' }
+    ],
     stack: ['Next.js 15', 'React 19', 'TypeScript', 'CSS Modules'],
     demoUrl: 'https://garipov-ar.github.io/handyman-service/',
     githubUrl: 'https://github.com/garipov-ar/handyman-service',
@@ -721,11 +898,29 @@ const CASES: CaseProject[] = [
   {
     id: 'electrical',
     title: 'Электро-Монтаж — Работы по ГОСТ',
+    subtitle: 'Калькулятор электроточек и сборки щита',
     category: 'web',
     categoryLabel: 'Сайты для бизнеса',
-    problem: 'Потребители опасаются некачественной проводки и хотят понимать схему работы по официальному договору.',
-    solution: 'Сайт с онлайн-расчетом точек розеток, сборки щита ABB и демонстрацией лазерной прокладки трасс.',
-    businessResult: 'Фокус на ГОСТ, ПУЭ и 5 лет гарантии привлекает заказчиков с премиальными чеками.',
+    description: 'Сайт электромонтажных работ в квартирах и домах с онлайн-расчетом точек, трасс и щитового оборудования.',
+    challenge: 'Опасения заказчиков относительно безопасности монтажа и непонимание формирования итоговой стоимости.',
+    solution: 'Создан прозрачный конфигуратор точек розеток/выключателей и демонстрация регламентов ГОСТ/ПУЭ.',
+    results: [
+      'Понятная смета на этапе планирования ремонта',
+      'Акцент на безопасности и официальном договоре',
+      'Привлечение комплексных объектов под ключ'
+    ],
+    keyFeatures: [
+      'Счетчик электроточек и групп',
+      'Расчет сборки щита ABB',
+      'Калькулятор площади помещения',
+      'Форма вызова инженера'
+    ],
+    architectureSteps: [
+      { label: 'ЗАКАЗЧИК', sub: 'Счетчик точек', color: '#F43F5E' },
+      { label: 'NEXT.JS', sub: 'Pricing Engine', color: '#38BDF8' },
+      { label: 'ИНЖЕНЕР', sub: 'Проект и смета', color: '#818CF8' },
+      { label: 'ОБЪЕКТ', sub: 'Монтаж по ГОСТ', color: '#F59E0B' }
+    ],
     stack: ['Next.js 15', 'React 19', 'TypeScript', 'CSS Modules'],
     demoUrl: 'https://garipov-ar.github.io/electrical-service/',
     githubUrl: 'https://github.com/garipov-ar/electrical-service',
@@ -886,6 +1081,9 @@ export default function PortfolioHub() {
   const [liveTimestamp, setLiveTimestamp] = useState<string>('');
   const statusBtnRef = useRef<HTMLButtonElement>(null);
   const statusPopoverRef = useRef<HTMLDivElement>(null);
+
+  // Deep-Dive Case Study Modal State
+  const [selectedCaseModal, setSelectedCaseModal] = useState<CaseProject | null>(null);
 
   // Interactive Architecture Hover Node
   const [activeArchNode, setActiveArchNode] = useState<string>('web');
@@ -1052,6 +1250,27 @@ export default function PortfolioHub() {
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [statusOpen]);
+
+  // Deep-Dive Modal Escape & Scroll-lock Effect
+  useEffect(() => {
+    const handleCaseKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && selectedCaseModal) {
+        setSelectedCaseModal(null);
+      }
+    };
+
+    if (selectedCaseModal) {
+      document.body.style.overflow = 'hidden';
+      window.addEventListener('keydown', handleCaseKeyDown);
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleCaseKeyDown);
+    };
+  }, [selectedCaseModal]);
 
   const changeTheme = (themeId: string) => {
     setCurrentTheme(themeId);
@@ -1246,16 +1465,11 @@ export default function PortfolioHub() {
             {/* Mobile Menu Toggle Button */}
             <button
               type="button"
-              className="cyber-btn-ghost"
+              className="cyber-btn-ghost mobile-menu-btn"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              style={{ display: 'inline-flex', padding: '7px 10px', minHeight: '36px', borderRadius: '10px' }}
+              style={{ padding: '7px 10px', minHeight: '36px', borderRadius: '10px' }}
               aria-label="Меню"
             >
-              <style>{`
-                @media (min-width: 769px) {
-                  .mobile-menu-btn { display: none !important; }
-                }
-              `}</style>
               {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
           </div>
@@ -1662,15 +1876,18 @@ export default function PortfolioHub() {
         </div>
       </section>
 
-      {/* Case Studies Section */}
+      {/* Cases & Portfolio Section */}
       <section id="cases" style={{ padding: '60px 0' }}>
         <div className="container">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '14px', marginBottom: '28px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '32px', flexWrap: 'wrap', gap: '16px' }}>
             <div>
               <div style={{ color: 'var(--color-primary)', fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px', fontFamily: 'var(--font-mono)' }}>
-                &lt; all-projects /&gt;
+                &lt; case-studies /&gt;
               </div>
-              <h2 className="section-h2" style={{ fontSize: 'clamp(1.4rem, 3.5vw, 2.4rem)' }}>Реализованные кейсы ({CASES.length})</h2>
+              <h2 className="section-h2" style={{ fontSize: 'clamp(1.4rem, 3.5vw, 2.4rem)', marginBottom: '4px' }}>Кейсы и инженерные решения</h2>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+                ЗАДАЧА → РЕШЕНИЕ → РЕЗУЛЬТАТ: Реальные продукты, решающие задачи бизнеса
+              </p>
             </div>
 
             {/* Filter Tabs with Mobile Swipe Scroll */}
@@ -1678,7 +1895,7 @@ export default function PortfolioHub() {
               {[
                 { id: 'all', label: `Все кейсы (${CASES.length})` },
                 { id: 'web', label: 'Сайты (6)' },
-                { id: 'bots', label: 'Боты (2)' },
+                { id: 'bots', label: 'Боты & CRM (2)' },
                 { id: 'backend', label: 'Backend (2)' },
               ].map((tab) => (
                 <button
@@ -1705,97 +1922,249 @@ export default function PortfolioHub() {
             </div>
           </div>
 
-          {/* Cases Grid */}
-          <div className="cases-cards-grid">
-            {filteredCases.map((project) => (
-              <div
-                key={project.id}
-                className="cyber-card"
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                }}
-              >
+          {/* FEATURED CASE: Гостевой комплекс «ЭХО» (Show when filter is 'all' or 'web') */}
+          {(filter === 'all' || filter === 'web') && (
+            <div className="featured-case-card">
+              {/* Left Column: Case Story & Details */}
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div>
-                  {/* Case Preview Image */}
-                  <div style={{ height: 160, backgroundImage: `url('${project.image}')`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
-                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(12, 16, 26, 0.95) 0%, transparent 60%)' }} />
-                    <span style={{ position: 'absolute', top: 10, left: 10, background: 'rgba(6, 8, 13, 0.88)', backdropFilter: 'blur(6px)', color: project.accentColor, border: `1px solid ${project.accentColor}40`, padding: '3px 8px', borderRadius: 5, fontSize: '0.7rem', fontWeight: 800 }}>
-                      {project.categoryLabel}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', flexWrap: 'wrap' }}>
+                    <span style={{ background: 'rgba(217, 119, 6, 0.18)', color: '#FBBF24', border: '1px solid rgba(217, 119, 6, 0.4)', padding: '4px 10px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 800, fontFamily: 'var(--font-mono)' }}>
+                      ★ FEATURED CASE • VISUAL + PRODUCT UX
+                    </span>
+                    <span style={{ background: 'rgba(255, 255, 255, 0.05)', color: 'var(--text-muted)', border: '1px solid var(--border-subtle)', padding: '4px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 600 }}>
+                      Booking Platform
                     </span>
                   </div>
 
-                  {/* Case Content */}
-                  <div style={{ padding: '16px' }}>
-                    <h3 style={{ fontSize: '1.1rem', marginBottom: '12px', color: '#FFF' }}>{project.title}</h3>
+                  <h3 style={{ fontSize: 'clamp(1.25rem, 2.5vw, 1.85rem)', color: '#FFF', marginBottom: '6px' }}>
+                    Гостевой комплекс «ЭХО»
+                  </h3>
+                  <p style={{ fontSize: '0.88rem', color: 'var(--color-primary-light)', fontWeight: 600, marginBottom: '14px' }}>
+                    Интерактивная платформа бронирования и калькулятор отдыха
+                  </p>
 
-                    {/* Problem */}
-                    <div style={{ marginBottom: '8px' }}>
-                      <div style={{ fontSize: '0.68rem', color: '#EF4444', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '2px' }}>
-                        Проблема бизнеса
+                  {/* Challenge & Solution Grid */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '10px', marginBottom: '14px' }}>
+                    <div style={{ background: 'rgba(239, 68, 68, 0.06)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: 10, padding: '10px 12px' }}>
+                      <div style={{ fontSize: '0.68rem', color: '#F87171', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '3px' }}>
+                        01. Задача
                       </div>
                       <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
-                        {project.problem}
+                        Создать современный сайт, который не просто показывает дома, а помогает гостю рассчитать стоимость с учетом будней/выходных и перейти к бронированию.
                       </div>
                     </div>
 
-                    {/* Solution */}
-                    <div style={{ marginBottom: '8px' }}>
-                      <div style={{ fontSize: '0.68rem', color: '#60A5FA', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '2px' }}>
-                        Решение
+                    <div style={{ background: 'rgba(56, 189, 248, 0.06)', border: '1px solid rgba(56, 189, 248, 0.2)', borderRadius: 10, padding: '10px 12px' }}>
+                      <div style={{ fontSize: '0.68rem', color: '#38BDF8', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '3px' }}>
+                        02. Решение
                       </div>
                       <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
-                        {project.solution}
+                        Кастомный интерфейс на Next.js 15 с переключателем домов (Шалаш/Большой дом), динамическим калькулятором с автоскидкой от 2 суток и Telegram-заявками.
                       </div>
                     </div>
+                  </div>
 
-                    {/* Business Result */}
-                    <div style={{ marginBottom: '12px', background: 'rgba(16, 185, 129, 0.08)', padding: '8px 10px', borderRadius: 7, border: '1px solid rgba(16, 185, 129, 0.2)' }}>
-                      <div style={{ fontSize: '0.68rem', color: '#34D399', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '2px' }}>
-                        Результат для бизнеса
+                  {/* Results Box */}
+                  <div style={{ background: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.25)', borderRadius: 10, padding: '10px 14px', marginBottom: '14px' }}>
+                    <div style={{ fontSize: '0.68rem', color: '#34D399', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '6px' }}>
+                      03. Результат для бизнеса
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: '#E2E8F0' }}>
+                        <CheckCircle2 size={13} color="#34D399" /> <span>Интерактивный конфигуратор выбора дома и доп. услуг</span>
                       </div>
-                      <div style={{ fontSize: '0.8rem', color: '#E2E8F0', fontWeight: 500, lineHeight: 1.4 }}>
-                        {project.businessResult}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: '#E2E8F0' }}>
+                        <CheckCircle2 size={13} color="#34D399" /> <span>Автоматический расчет сезонности и скидок от 2 суток</span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: '#E2E8F0' }}>
+                        <CheckCircle2 size={13} color="#34D399" /> <span>Мгновенная отправка готовой сметы администратору в Telegram</span>
                       </div>
                     </div>
+                  </div>
 
-                    {/* Stack tags */}
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '4px' }}>
-                      {project.stack.map((s, sIdx) => (
-                        <span key={sIdx} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border-subtle)', color: 'var(--text-muted)', padding: '2px 5px', borderRadius: 4, fontSize: '0.68rem', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>
-                          {s}
-                        </span>
-                      ))}
-                    </div>
+                  {/* Tech Stack Tags */}
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginBottom: '18px' }}>
+                    {['Next.js 15', 'React 19', 'TypeScript', 'Zod', 'Telegram API', 'CSS Modules'].map((s) => (
+                      <span key={s} style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid var(--border-subtle)', color: 'var(--text-primary)', padding: '3px 8px', borderRadius: 5, fontSize: '0.72rem', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>
+                        {s}
+                      </span>
+                    ))}
                   </div>
                 </div>
 
                 {/* Actions */}
-                <div className="case-actions-grid" style={{ padding: '0 16px 16px 16px', display: 'grid', gridTemplateColumns: project.demoUrl ? '1fr 1fr' : '1fr', gap: '8px' }}>
-                  {project.demoUrl && (
-                    <a
-                      href={project.demoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="cyber-btn"
-                      style={{ padding: '9px 12px', fontSize: '0.8rem', minHeight: 38 }}
-                    >
-                      Демо <ArrowUpRight size={14} />
-                    </a>
-                  )}
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                   <a
-                    href={project.githubUrl}
+                    href="https://garipov-ar.github.io/echo-houses-rental/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="cyber-btn"
+                    style={{ padding: '10px 18px', fontSize: '0.84rem' }}
+                  >
+                    Демо <ArrowUpRight size={14} />
+                  </a>
+                  <a
+                    href="https://github.com/garipov-ar/echo-houses-rental"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="cyber-btn-ghost"
-                    style={{ padding: '9px 10px', fontSize: '0.8rem', justifyContent: 'center', minHeight: 38 }}
+                    style={{ padding: '10px 14px', fontSize: '0.84rem' }}
                   >
                     <GithubIcon size={14} /> Исходники
                   </a>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedCaseModal(CASES.find((c) => c.id === 'echo') || null)}
+                    className="cyber-btn-ghost"
+                    style={{ padding: '10px 14px', fontSize: '0.84rem', borderColor: 'rgba(217, 119, 6, 0.4)', color: '#FBBF24' }}
+                  >
+                    🔍 Разбор кейса
+                  </button>
                 </div>
               </div>
-            ))}
+
+              {/* Right Column: Visual Preview Banner */}
+              <div
+                onClick={() => setSelectedCaseModal(CASES.find((c) => c.id === 'echo') || null)}
+                style={{
+                  minHeight: '300px',
+                  borderRadius: 16,
+                  backgroundImage: `url('https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&w=1200&q=80')`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  position: 'relative',
+                  cursor: 'pointer',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  boxShadow: '0 16px 36px rgba(0,0,0,0.5)',
+                  overflow: 'hidden',
+                }}
+                title="Нажмите для подробного разбора кейса"
+              >
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(6, 8, 13, 0.92) 0%, transparent 60%)' }} />
+                <div style={{ position: 'absolute', bottom: 14, left: 14, right: 14, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: '0.72rem', color: '#FFF', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)', padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.1)' }}>
+                    Загородный отдых • Калькулятор бронирования
+                  </span>
+                  <span style={{ fontSize: '0.72rem', color: '#FBBF24', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)', padding: '4px 10px', borderRadius: 6, fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    🔍 Подробнее
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Cases Cards Grid (Excluding echo if shown as featured banner) */}
+          <div className="cases-cards-grid">
+            {filteredCases
+              .filter((p) => !((filter === 'all' || filter === 'web') && p.id === 'echo'))
+              .map((project) => (
+                <div
+                  key={project.id}
+                  className="cyber-card"
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <div>
+                    {/* Case Preview Image */}
+                    <div
+                      onClick={() => setSelectedCaseModal(project)}
+                      style={{ height: 160, backgroundImage: `url('${project.image}')`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative', cursor: 'pointer' }}
+                      title="Кликните для разбора кейса"
+                    >
+                      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(12, 16, 26, 0.95) 0%, transparent 60%)' }} />
+                      <span style={{ position: 'absolute', top: 10, left: 10, background: 'rgba(6, 8, 13, 0.88)', backdropFilter: 'blur(6px)', color: project.accentColor, border: `1px solid ${project.accentColor}40`, padding: '3px 8px', borderRadius: 5, fontSize: '0.7rem', fontWeight: 800 }}>
+                        {project.categoryLabel}
+                      </span>
+                    </div>
+
+                    {/* Case Content */}
+                    <div style={{ padding: '16px' }}>
+                      <h3 style={{ fontSize: '1.05rem', marginBottom: '4px', color: '#FFF' }}>{project.title}</h3>
+                      <p style={{ fontSize: '0.78rem', color: 'var(--color-primary-light)', fontWeight: 600, marginBottom: '12px' }}>{project.subtitle}</p>
+
+                      {/* Problem */}
+                      <div style={{ marginBottom: '8px' }}>
+                        <div style={{ fontSize: '0.68rem', color: '#EF4444', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '2px' }}>
+                          01. Задача
+                        </div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                          {project.challenge}
+                        </div>
+                      </div>
+
+                      {/* Solution */}
+                      <div style={{ marginBottom: '8px' }}>
+                        <div style={{ fontSize: '0.68rem', color: '#60A5FA', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '2px' }}>
+                          02. Решение
+                        </div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                          {project.solution}
+                        </div>
+                      </div>
+
+                      {/* Business Results (Bullet List) */}
+                      <div style={{ marginBottom: '12px', background: 'rgba(16, 185, 129, 0.08)', padding: '8px 10px', borderRadius: 7, border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                        <div style={{ fontSize: '0.68rem', color: '#34D399', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '4px' }}>
+                          03. Результат
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                          {project.results.map((res, rIdx) => (
+                            <div key={rIdx} style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.76rem', color: '#E2E8F0', lineHeight: 1.3 }}>
+                              <CheckCircle2 size={11} color="#34D399" style={{ flexShrink: 0 }} />
+                              <span>{res}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Stack tags */}
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '4px' }}>
+                        {project.stack.map((s, sIdx) => (
+                          <span key={sIdx} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border-subtle)', color: 'var(--text-muted)', padding: '2px 5px', borderRadius: 4, fontSize: '0.68rem', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>
+                            {s}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="case-actions-grid" style={{ padding: '0 16px 16px 16px', display: 'grid', gridTemplateColumns: project.demoUrl ? '1fr 1fr 1.1fr' : '1fr 1fr', gap: '6px' }}>
+                    {project.demoUrl && (
+                      <a
+                        href={project.demoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="cyber-btn"
+                        style={{ padding: '8px 8px', fontSize: '0.76rem', minHeight: 36 }}
+                      >
+                        Демо <ArrowUpRight size={13} />
+                      </a>
+                    )}
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="cyber-btn-ghost"
+                      style={{ padding: '8px 8px', fontSize: '0.76rem', justifyContent: 'center', minHeight: 36 }}
+                    >
+                      <GithubIcon size={13} /> Исходники
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedCaseModal(project)}
+                      className="cyber-btn-ghost"
+                      style={{ padding: '8px 8px', fontSize: '0.76rem', justifyContent: 'center', minHeight: 36, color: 'var(--color-primary-light)' }}
+                    >
+                      🔍 Разбор
+                    </button>
+                  </div>
+                </div>
+              ))}
           </div>
         </div>
       </section>
@@ -2234,6 +2603,228 @@ export default function PortfolioHub() {
           >
             Принять
           </button>
+        </div>
+      )}
+
+      {/* Deep-Dive Case Study Modal */}
+      {selectedCaseModal && (
+        <div
+          className="case-study-modal-backdrop"
+          onClick={() => setSelectedCaseModal(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={selectedCaseModal.title}
+        >
+          <div
+            className="case-study-modal-card"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 24px', borderBottom: '1px solid var(--border-subtle)', background: 'rgba(255,255,255,0.02)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                <span style={{ background: `${selectedCaseModal.accentColor}20`, color: selectedCaseModal.accentColor, border: `1px solid ${selectedCaseModal.accentColor}50`, padding: '3px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 800, fontFamily: 'var(--font-mono)' }}>
+                  {selectedCaseModal.categoryLabel}
+                </span>
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                  CASE STUDY #{selectedCaseModal.id.toUpperCase()}
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setSelectedCaseModal(null)}
+                className="cyber-btn-ghost"
+                style={{ padding: '6px 10px', minHeight: 32, borderRadius: 8, fontSize: '0.8rem' }}
+                aria-label="Закрыть модальное окно"
+              >
+                <X size={16} /> <span>Закрыть</span>
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div style={{ padding: '24px', overflowY: 'auto', maxHeight: 'calc(90vh - 140px)' }}>
+              {/* Project Hero Banner inside Modal */}
+              <div style={{ position: 'relative', borderRadius: 14, overflow: 'hidden', height: 220, marginBottom: '20px', backgroundImage: `url('${selectedCaseModal.image}')`, backgroundSize: 'cover', backgroundPosition: 'center', border: '1px solid var(--border-subtle)' }}>
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(6, 8, 13, 0.95) 0%, rgba(6, 8, 13, 0.4) 60%, transparent 100%)' }} />
+                <div style={{ position: 'absolute', bottom: 16, left: 18, right: 18, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '10px' }}>
+                  <div>
+                    <h2 style={{ fontSize: 'clamp(1.2rem, 3vw, 1.6rem)', color: '#FFF', marginBottom: '4px' }}>
+                      {selectedCaseModal.title}
+                    </h2>
+                    <p style={{ fontSize: '0.84rem', color: 'var(--color-primary-light)', fontWeight: 600 }}>
+                      {selectedCaseModal.subtitle}
+                    </p>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    {selectedCaseModal.demoUrl && (
+                      <a
+                        href={selectedCaseModal.demoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="cyber-btn"
+                        style={{ padding: '8px 14px', fontSize: '0.78rem', minHeight: 34 }}
+                      >
+                        Live Демо <ArrowUpRight size={13} />
+                      </a>
+                    )}
+                    <a
+                      href={selectedCaseModal.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="cyber-btn-ghost"
+                      style={{ padding: '8px 12px', fontSize: '0.78rem', minHeight: 34 }}
+                    >
+                      <GithubIcon size={13} /> Исходный код
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              {/* 01. Overview Description */}
+              <div style={{ marginBottom: '20px', background: 'rgba(255, 255, 255, 0.02)', border: '1px solid var(--border-subtle)', borderRadius: 12, padding: '14px 18px' }}>
+                <div style={{ fontSize: '0.7rem', color: 'var(--color-primary-light)', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '4px' }}>
+                  01. Обзор и контекст
+                </div>
+                <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                  {selectedCaseModal.description}
+                </p>
+              </div>
+
+              {/* 02. Problem & 03. Solution (2-Column Grid) */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '14px', marginBottom: '20px' }}>
+                {/* Challenge */}
+                <div style={{ background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.25)', borderRadius: 12, padding: '16px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.74rem', color: '#F87171', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '6px' }}>
+                    <ShieldCheck size={14} color="#F87171" /> 02. Бизнес-задача
+                  </div>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                    {selectedCaseModal.challenge}
+                  </p>
+                </div>
+
+                {/* Solution */}
+                <div style={{ background: 'rgba(56, 189, 248, 0.05)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: 12, padding: '16px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.74rem', color: '#38BDF8', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '6px' }}>
+                    <Code2 size={14} color="#38BDF8" /> 03. Инженерное решение
+                  </div>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                    {selectedCaseModal.solution}
+                  </p>
+                </div>
+              </div>
+
+              {/* 04. Mini Architecture Scheme */}
+              <div style={{ background: 'rgba(0, 0, 0, 0.4)', border: '1px solid var(--border-subtle)', borderRadius: 14, padding: '16px', marginBottom: '20px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.74rem', color: 'var(--color-primary-light)', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
+                    <Workflow size={14} color="var(--color-primary-light)" /> 04. Архитектурный поток данных
+                  </div>
+                  <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>Data Flow Pipeline</span>
+                </div>
+
+                {/* Flow steps chain */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '8px', alignItems: 'center' }}>
+                  {selectedCaseModal.architectureSteps.map((step, idx) => (
+                    <div
+                      key={idx}
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.03)',
+                        border: `1px solid ${step.color || 'var(--color-primary)'}40`,
+                        borderRadius: 10,
+                        padding: '10px 12px',
+                        textAlign: 'center',
+                        position: 'relative',
+                      }}
+                    >
+                      <div style={{ fontSize: '0.62rem', color: step.color || 'var(--color-primary-light)', fontWeight: 800, fontFamily: 'var(--font-mono)', marginBottom: '2px' }}>
+                        STEP 0{idx + 1}
+                      </div>
+                      <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#FFF', fontFamily: 'var(--font-mono)' }}>
+                        {step.label}
+                      </div>
+                      <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                        {step.sub}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 05. Key Features & 06. Business Results */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '14px', marginBottom: '20px' }}>
+                {/* Key Features */}
+                <div style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid var(--border-subtle)', borderRadius: 12, padding: '16px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.74rem', color: 'var(--color-primary-light)', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '10px' }}>
+                    <Sparkles size={14} color="var(--color-primary-light)" /> 05. Ключевые возможности
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    {selectedCaseModal.keyFeatures.map((feat, fIdx) => (
+                      <div key={fIdx} style={{ display: 'flex', alignItems: 'center', gap: '7px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                        <CheckCircle2 size={13} color="var(--color-primary-light)" style={{ flexShrink: 0 }} />
+                        <span>{feat}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Business Results */}
+                <div style={{ background: 'rgba(16, 185, 129, 0.06)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: 12, padding: '16px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.74rem', color: '#34D399', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '10px' }}>
+                    <CheckCircle2 size={14} color="#34D399" /> 06. Результат для бизнеса
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    {selectedCaseModal.results.map((res, rIdx) => (
+                      <div key={rIdx} style={{ display: 'flex', alignItems: 'center', gap: '7px', fontSize: '0.8rem', color: '#E2E8F0' }}>
+                        <CheckCircle2 size={13} color="#34D399" style={{ flexShrink: 0 }} />
+                        <span>{res}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* 07. Tech Stack Full List */}
+              <div style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid var(--border-subtle)', borderRadius: 12, padding: '14px 18px', marginBottom: '20px' }}>
+                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '8px' }}>
+                  07. Стек технологий
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                  {selectedCaseModal.stack.map((stk) => (
+                    <span key={stk} style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-subtle)', color: '#FFF', padding: '4px 10px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>
+                      {stk}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer CTA */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 24px', borderTop: '1px solid var(--border-subtle)', background: 'rgba(6, 8, 13, 0.98)', flexWrap: 'wrap', gap: '10px' }}>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                Хотите похожий проект или интеграцию?
+              </span>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <a
+                  href={`https://t.me/Aidar_RG?text=${encodeURIComponent(`Здравствуйте! Меня заинтересовал кейс "${selectedCaseModal.title}". Хочу обсудить похожий проект.`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cyber-btn"
+                  style={{ padding: '8px 16px', fontSize: '0.82rem', minHeight: 36 }}
+                >
+                  <TelegramIcon size={14} /> Обсудить в Telegram
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setSelectedCaseModal(null)}
+                  className="cyber-btn-ghost"
+                  style={{ padding: '8px 14px', fontSize: '0.82rem', minHeight: 36 }}
+                >
+                  Закрыть
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
