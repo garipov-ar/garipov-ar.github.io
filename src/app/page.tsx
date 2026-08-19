@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Code2,
   ExternalLink,
@@ -29,9 +29,6 @@ import {
   CreditCard,
   MessageSquareCode,
   LayoutGrid,
-  FileCheck,
-  Activity,
-  HardDrive,
 } from 'lucide-react';
 
 const GithubIcon = ({ size = 18 }: { size?: number }) => (
@@ -47,6 +44,194 @@ const TelegramIcon = ({ size = 18 }: { size?: number }) => (
     <path d="M9 13l5.5-5.5" />
   </svg>
 );
+
+// Interactive Hero Particle Network Background
+function HeroInteractiveCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    let width = (canvas.width = canvas.parentElement?.clientWidth || window.innerWidth);
+    let height = (canvas.height = canvas.parentElement?.clientHeight || 650);
+
+    const handleResize = () => {
+      if (!canvas || !canvas.parentElement) return;
+      width = canvas.width = canvas.parentElement.clientWidth;
+      height = canvas.height = canvas.parentElement.clientHeight;
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    const mouse = {
+      x: width / 2,
+      y: height / 2,
+      targetX: width / 2,
+      targetY: height / 2,
+      radius: 160,
+      isHovering: false,
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.targetX = e.clientX - rect.left;
+      mouse.targetY = e.clientY - rect.top;
+      mouse.isHovering = true;
+    };
+
+    const handleMouseLeave = () => {
+      mouse.isHovering = false;
+    };
+
+    const parent = canvas.parentElement;
+    if (parent) {
+      parent.addEventListener('mousemove', handleMouseMove);
+      parent.addEventListener('mouseleave', handleMouseLeave);
+    }
+
+    // Particle nodes
+    const particleCount = Math.min(Math.floor((width * height) / 12000), 75);
+    const particles: {
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      baseRadius: number;
+      radius: number;
+      color: string;
+      alpha: number;
+    }[] = [];
+
+    const colors = ['#3B82F6', '#60A5FA', '#38BDF8', '#818CF8', '#34D399'];
+
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.8,
+        vy: (Math.random() - 0.5) * 0.8,
+        baseRadius: Math.random() * 2 + 1,
+        radius: Math.random() * 2 + 1,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        alpha: Math.random() * 0.5 + 0.3,
+      });
+    }
+
+    const render = () => {
+      // Smooth lerp mouse
+      mouse.x += (mouse.targetX - mouse.x) * 0.1;
+      mouse.y += (mouse.targetY - mouse.y) * 0.1;
+
+      ctx.clearRect(0, 0, width, height);
+
+      // Draw Cursor Spotlight Glow
+      if (mouse.isHovering) {
+        const gradient = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, mouse.radius * 1.5);
+        gradient.addColorStop(0, 'rgba(59, 130, 246, 0.18)');
+        gradient.addColorStop(0.5, 'rgba(99, 102, 241, 0.06)');
+        gradient.addColorStop(1, 'transparent');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, width, height);
+      }
+
+      // Update & Draw Particles
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // Bounce from walls
+        if (p.x < 0 || p.x > width) p.vx *= -1;
+        if (p.y < 0 || p.y > height) p.vy *= -1;
+
+        // Mouse interaction (repel / attract)
+        const dx = mouse.x - p.x;
+        const dy = mouse.y - p.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (mouse.isHovering && dist < mouse.radius) {
+          const force = (mouse.radius - dist) / mouse.radius;
+          p.x -= (dx / dist) * force * 2.5;
+          p.y -= (dy / dist) * force * 2.5;
+          p.radius = p.baseRadius + force * 2.5;
+        } else {
+          p.radius += (p.baseRadius - p.radius) * 0.1;
+        }
+
+        // Draw particle
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = p.color;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.globalAlpha = 1;
+
+        // Connect particle to mouse if close
+        if (mouse.isHovering && dist < mouse.radius) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = `rgba(96, 165, 250, ${(1 - dist / mouse.radius) * 0.45})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+
+        // Connect particles with each other
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const pjdx = p.x - p2.x;
+          const pjdy = p.y - p2.y;
+          const pjdist = Math.sqrt(pjdx * pjdx + pjdy * pjdy);
+
+          if (pjdist < 110) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = `rgba(59, 130, 246, ${(1 - pjdist / 110) * 0.18})`;
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+          }
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    render();
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', handleResize);
+      if (parent) {
+        parent.removeEventListener('mousemove', handleMouseMove);
+        parent.removeEventListener('mouseleave', handleMouseLeave);
+      }
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none',
+        zIndex: 0,
+      }}
+    />
+  );
+}
 
 interface Project {
   id: string;
@@ -335,13 +520,13 @@ const STACK_CATEGORIES = [
 ];
 
 const INITIAL_LOGS = [
-  '⚡ [aidar@hub ~]$ init portfolio-ecosystem --prod',
+  '⚡ [aidar@hub ~]$ init interactive-ecosystem --prod',
+  '✔ [neural-mesh] Interactive Cursor Particle Canvas active (60 FPS)',
   '✔ [kernel] Loaded Next.js 15.1 (Turbopack) & React 19.0.0',
   '✔ [backend] Java 21 / Spring Boot 3 & Apache Kafka ready',
   '✔ [telegram] Bot Gateway & Mini Apps SDK mounted: @Aidar_RG',
   '✔ [cases] 10 live production repositories indexed & verified',
-  '✔ [network] Status: 200 OK | Core Web Vitals: 98/100',
-  '💡 [terminal] Type "help", "projects", "backend", "bots" to inspect stack.',
+  '💡 [terminal] Hover hero canvas to interact with neural grid nodes.',
 ];
 
 export default function PortfolioHub() {
@@ -428,9 +613,11 @@ export default function PortfolioHub() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section style={{ padding: '80px 0 50px 0', position: 'relative', overflow: 'hidden' }}>
-        <div className="container">
+      {/* Hero Section with Interactive Neural Mesh Canvas */}
+      <section style={{ padding: '90px 0 60px 0', position: 'relative', overflow: 'hidden' }}>
+        <HeroInteractiveCanvas />
+
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <div style={{ textAlign: 'center', maxWidth: 920, margin: '0 auto 50px auto' }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', borderRadius: 9999, background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.3)', color: '#34D399', fontSize: '0.8125rem', fontWeight: 700, marginBottom: '24px' }}>
               <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10B981', display: 'inline-block', boxShadow: '0 0 10px #10B981' }}></span>
@@ -498,7 +685,7 @@ export default function PortfolioHub() {
           </div>
 
           {/* Quick Metrics Strip */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px', background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: 20, padding: '24px', boxShadow: '0 12px 36px rgba(0,0,0,0.4)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px', background: 'rgba(12, 16, 26, 0.85)', backdropFilter: 'blur(16px)', border: '1px solid var(--border-subtle)', borderRadius: 20, padding: '24px', boxShadow: '0 12px 36px rgba(0,0,0,0.4)' }}>
             <div>
               <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#60A5FA', fontFamily: 'var(--font-heading)' }}>10</div>
               <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>Проектов в портфолио</div>
