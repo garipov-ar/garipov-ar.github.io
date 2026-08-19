@@ -1184,7 +1184,7 @@ export default function PortfolioHub() {
         <HeroInteractiveCanvas themeColor={activeThemeColor} />
 
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '32px', alignItems: 'center' }}>
+          <div className="hero-main-grid">
             {/* Left: Commercial Result Copy */}
             <div>
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: 9999, background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.3)', color: '#34D399', fontSize: '0.72rem', fontWeight: 700, marginBottom: '14px' }}>
@@ -1535,7 +1535,7 @@ export default function PortfolioHub() {
           </div>
 
           {/* Cases Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
+          <div className="cases-cards-grid">
             {filteredCases.map((project) => (
               <div
                 key={project.id}
@@ -1694,7 +1694,7 @@ export default function PortfolioHub() {
             </p>
           </div>
 
-          <div className="calculator-layout-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px', alignItems: 'start' }}>
+          <div className="calculator-layout-grid">
             {/* Left Config Panel */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {/* Step 1 */}
