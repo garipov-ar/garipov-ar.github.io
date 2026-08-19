@@ -828,6 +828,38 @@ const FAQ_ITEMS = [
   },
 ];
 
+// Animated Count-Up Hook for Smooth Metric & Price Transitions
+function useAnimatedNumber(target: number, duration: number = 380): number {
+  const [current, setCurrent] = useState(target);
+  const startRef = useRef(target);
+  const startTimeRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    startRef.current = current;
+    startTimeRef.current = null;
+    let animId: number;
+
+    const step = (timestamp: number) => {
+      if (!startTimeRef.current) startTimeRef.current = timestamp;
+      const elapsed = timestamp - startTimeRef.current;
+      const progress = Math.min(elapsed / duration, 1);
+      // easeOutCubic
+      const ease = 1 - Math.pow(1 - progress, 3);
+      const val = Math.round(startRef.current + (target - startRef.current) * ease);
+      setCurrent(val);
+
+      if (progress < 1) {
+        animId = requestAnimationFrame(step);
+      }
+    };
+
+    animId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(animId);
+  }, [target, duration]);
+
+  return current;
+}
+
 export default function PortfolioHub() {
   const [filter, setFilter] = useState<'all' | 'web' | 'bots' | 'backend'>('all');
   const [activeSection, setActiveSection] = useState<string>('hero');
@@ -894,6 +926,9 @@ export default function PortfolioHub() {
       days: totalDays,
     };
   }, [calcType, selectedModules, isExpress, currentAvailableModules]);
+
+  const animatedPrice = useAnimatedNumber(calculation.price, 360);
+  const animatedDays = useAnimatedNumber(calculation.days, 280);
 
   // Telegram Pre-filled URL
   const telegramMessageUrl = useMemo(() => {
@@ -1067,7 +1102,7 @@ export default function PortfolioHub() {
             </div>
 
             <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn" style={{ padding: '8px 18px', fontSize: '0.8125rem' }}>
-              <TelegramIcon size={15} /> 💬 Обсудить проект
+              <TelegramIcon size={15} /> Обсудить проект
             </a>
           </div>
         </div>
@@ -1105,7 +1140,7 @@ export default function PortfolioHub() {
 
               <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', alignItems: 'center' }}>
                 <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn" style={{ padding: '16px 32px', fontSize: '1rem' }}>
-                  <TelegramIcon size={18} /> 💬 Обсудить проект
+                  <TelegramIcon size={18} /> Обсудить проект
                 </a>
                 <a href="#calculator" className="cyber-btn-ghost" style={{ padding: '16px 24px', fontSize: '1rem' }}>
                   <Calculator size={18} /> Рассчитать смету
@@ -1684,8 +1719,13 @@ export default function PortfolioHub() {
 
             {/* Live Calculation Summary & CTA */}
             <div className="cyber-card" style={{ padding: '32px', border: '1px solid rgba(var(--color-primary-rgb), 0.35)', boxShadow: '0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(var(--color-primary-rgb), 0.15)', position: 'sticky', top: 100 }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '4px 12px', borderRadius: 8, background: 'rgba(var(--color-primary-rgb), 0.15)', color: 'var(--color-primary-light)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '20px', fontFamily: 'var(--font-mono)' }}>
-                Итоговый расчёт
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', gap: '8px', flexWrap: 'wrap' }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '4px 12px', borderRadius: 8, background: 'rgba(var(--color-primary-rgb), 0.15)', color: 'var(--color-primary-light)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'var(--font-mono)' }}>
+                  Итоговый расчёт
+                </div>
+                <span style={{ fontSize: '0.72rem', color: 'var(--color-primary-light)', background: 'rgba(255,255,255,0.04)', padding: '4px 8px', borderRadius: 6, border: '1px solid var(--border-subtle)', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
+                  CONFIG: {selectedModules.length}/{currentAvailableModules.length} MODULES
+                </span>
               </div>
 
               <div style={{ marginBottom: '24px' }}>
@@ -1698,8 +1738,8 @@ export default function PortfolioHub() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)', fontSize: '0.8125rem', marginBottom: '4px' }}>
                     <Coins size={15} color="var(--color-primary-light)" /> Ориентировочно
                   </div>
-                  <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#FFF', fontFamily: 'var(--font-heading)' }}>
-                    ~{calculation.price.toLocaleString('ru-RU')} ₽
+                  <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#FFF', fontFamily: 'var(--font-heading)', transition: 'color 0.2s' }}>
+                    ~{animatedPrice.toLocaleString('ru-RU')} ₽
                   </div>
                 </div>
 
@@ -1707,8 +1747,8 @@ export default function PortfolioHub() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)', fontSize: '0.8125rem', marginBottom: '4px' }}>
                     <Clock size={15} color="var(--color-primary-light)" /> Срок реализации
                   </div>
-                  <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#34D399', fontFamily: 'var(--font-heading)' }}>
-                    {calculation.days} дн.
+                  <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#34D399', fontFamily: 'var(--font-heading)', transition: 'color 0.2s' }}>
+                    {animatedDays} дн.
                   </div>
                 </div>
               </div>
@@ -1739,7 +1779,7 @@ export default function PortfolioHub() {
                 className="cyber-btn"
                 style={{ width: '100%', padding: '16px', fontSize: '0.95rem' }}
               >
-                <TelegramIcon size={18} /> 💬 Обсудить в Telegram ➔
+                <TelegramIcon size={18} /> Обсудить в Telegram ➔
               </a>
 
               <div style={{ textAlign: 'center', marginTop: '12px', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -1843,7 +1883,7 @@ export default function PortfolioHub() {
               className="cyber-btn"
               style={{ padding: '18px 40px', fontSize: '1.05rem' }}
             >
-              <TelegramIcon size={20} /> 💬 Обсудить проект
+              <TelegramIcon size={20} /> Обсудить проект
             </a>
 
             <a
