@@ -38,6 +38,8 @@ import {
   Radio,
   Activity,
   HardDrive,
+  User,
+  Share2,
 } from 'lucide-react';
 
 const GithubIcon = ({ size = 18 }: { size?: number }) => (
@@ -307,7 +309,7 @@ const TECH_ICONS: Record<string, React.ReactNode> = {
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <ellipse cx="12" cy="7" rx="8" ry="3.5" stroke="#818CF8" strokeWidth="1.6"/>
       <path d="M4 7v10c0 1.9 3.6 3.5 8 3.5s8-1.6 8-3.5V7" stroke="#818CF8" strokeWidth="1.6"/>
-      <path d="M4 12c0 1.9 3.6 3.5 8 3.5s8-1.6 8-3.5" stroke="#818CF8" strokeWidth="1.6"/>
+      <path d="M4 12c0 1.9 3.6 3.5 8 3.5" stroke="#818CF8" strokeWidth="1.6"/>
     </svg>
   ),
   'RabbitMQ': (
@@ -346,6 +348,64 @@ const TECH_ICONS: Record<string, React.ReactNode> = {
       <path d="M12 9.5v5M12 12h2.5" stroke="#FFF" strokeWidth="1.5"/>
     </svg>
   ),
+};
+
+// Architecture Node Inspection Details
+const ARCH_DETAILS: Record<string, { title: string; subtitle: string; desc: string; metrics: string; tech: string; layerBadge: string; color: string }> = {
+  user: {
+    title: 'USER LAYER',
+    subtitle: 'Пользователи и клиенты',
+    desc: 'Клиент заходит на сайт со смартфона или ПК, заполняет интерактивный квиз, рассчитывает смету или нажимает «Оставить заявку».',
+    metrics: 'Mobile 82% • First Input Delay < 15ms',
+    tech: 'Mobile Browsers, Desktop Web, Telegram Webview',
+    layerBadge: 'Entry Point',
+    color: '#F43F5E',
+  },
+  web: {
+    title: 'NEXT.JS APP',
+    subtitle: 'Frontend & Client State',
+    desc: 'Построен на Next.js 15 и React 19. Мгновенная генерация страниц (SSR), квиз-калькуляторы сметы, валидация полей и плавная анимация.',
+    metrics: 'PageSpeed 98/100 • Core Web Vitals OK',
+    tech: 'Next.js 15, React 19, TypeScript, Tailwind CSS',
+    layerBadge: 'Frontend Layer',
+    color: '#38BDF8',
+  },
+  api: {
+    title: 'FASTAPI / SPRING BOOT',
+    subtitle: 'Backend & Business Logic',
+    desc: 'Серверная логика на Python и Java. Обрабатывает входящие заявки, рассчитывает скидки, проверяет авторизацию и формирует транзакции.',
+    metrics: 'Throughput > 5k req/sec • Response < 12ms',
+    tech: 'Python FastAPI, Java Spring Boot 3, REST / Webhooks',
+    layerBadge: 'Core API Layer',
+    color: '#818CF8',
+  },
+  db_postgres: {
+    title: 'POSTGRESQL',
+    subtitle: 'Relational Database',
+    desc: 'Надежное ACID-хранилище заявок, пользователей, каталога товаров и истории заказов. Защищено резервным копированием.',
+    metrics: 'ACID Compliant • Partitioned Storage',
+    tech: 'PostgreSQL 16, pg_stat_statements, Indexes',
+    layerBadge: 'Persistence Layer',
+    color: '#FBBF24',
+  },
+  db_redis: {
+    title: 'REDIS',
+    subtitle: 'In-Memory Cache & Sessions',
+    desc: 'Сверхбыстрое кэширование цен, ограничение частоты запросов (Rate Limiting) и мгновенный доступ к временным сессиям клиентов.',
+    metrics: 'Latency < 1ms • In-Memory Key-Value',
+    tech: 'Redis 7, Pub/Sub, TTL Caching',
+    layerBadge: 'Cache Layer',
+    color: '#FB923C',
+  },
+  tg: {
+    title: 'TELEGRAM NOTIFICATIONS & BOT',
+    subtitle: 'Instant Delivery & CRM Integration',
+    desc: 'Мгновенная доставка заявки со сметой и контактом в Telegram владельцу за 2 секунды. Уведомление менеджеров и интеграция с CRM.',
+    metrics: 'Delivery Time ~1.8s • 24/7 SLA 99.9%',
+    tech: 'Telegram Bot API, aiogram, Webhooks, CRM Sync',
+    layerBadge: 'Integration Layer',
+    color: '#229ED9',
+  },
 };
 
 // Layered Architecture Tech Stack
@@ -722,7 +782,7 @@ export default function PortfolioHub() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   // Interactive Architecture Hover Node
-  const [activeArchNode, setActiveArchNode] = useState<string | null>(null);
+  const [activeArchNode, setActiveArchNode] = useState<string>('web');
 
   // Calculator State
   const [calcType, setCalcType] = useState<string>('landing');
@@ -744,7 +804,6 @@ export default function PortfolioHub() {
   const handleSelectProjectType = (typeId: string) => {
     setCalcType(typeId);
     const newModules = DYNAMIC_MODULES_BY_TYPE[typeId] || [];
-    // Default to the first two modules of that category
     if (newModules.length >= 2) {
       setSelectedModules([newModules[0].id, newModules[1].id]);
     } else if (newModules.length === 1) {
@@ -855,6 +914,8 @@ export default function PortfolioHub() {
     setCopiedEmail(true);
     setTimeout(() => setCopiedEmail(false), 2000);
   };
+
+  const currentArchInfo = ARCH_DETAILS[activeArchNode] || ARCH_DETAILS.web;
 
   return (
     <div>
@@ -1013,144 +1074,201 @@ export default function PortfolioHub() {
               </div>
             </div>
 
-            {/* Right: Senior Full-Stack Interactive Architecture Map */}
-            <div className="cyber-card" style={{ padding: '28px', border: '1px solid rgba(var(--color-primary-rgb), 0.3)', boxShadow: '0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(var(--color-primary-rgb), 0.15)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '12px' }}>
+            {/* Right: The Exact Interactive Architecture Map Requested */}
+            <div className="cyber-card" style={{ padding: '24px', border: '1px solid rgba(var(--color-primary-rgb), 0.35)', boxShadow: '0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(var(--color-primary-rgb), 0.15)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '10px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                   <Activity size={15} color="var(--color-primary-light)" /> Interactive Architecture Map
                 </div>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: '#34D399', fontWeight: 700 }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.72rem', color: '#34D399', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
                   <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10B981' }}></span> Live Pipeline
                 </span>
               </div>
 
-              {/* Hierarchy Tree Diagram with Interactive Inspection */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {/* 1. Client Web Layer */}
+              {/* Exact Node System: USER -> NEXT.JS APP -> FASTAPI -> POSTGRES / REDIS -> TELEGRAM */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center', width: '100%' }}>
+                {/* 1. Node: USER */}
+                <div
+                  onMouseEnter={() => setActiveArchNode('user')}
+                  onClick={() => setActiveArchNode('user')}
+                  style={{
+                    width: '100%',
+                    maxWidth: 320,
+                    background: activeArchNode === 'user' ? 'rgba(244, 63, 94, 0.2)' : 'rgba(255, 255, 255, 0.03)',
+                    border: `1px solid ${activeArchNode === 'user' ? '#F43F5E' : 'var(--border-subtle)'}`,
+                    borderRadius: 10,
+                    padding: '8px 14px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    boxShadow: activeArchNode === 'user' ? '0 0 16px rgba(244, 63, 94, 0.3)' : 'none',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <User size={16} color="#F43F5E" />
+                    <span style={{ fontWeight: 800, fontSize: '0.85rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>USER</span>
+                  </div>
+                  <span style={{ fontSize: '0.7rem', color: '#F43F5E', fontFamily: 'var(--font-mono)' }}>Client</span>
+                </div>
+
+                {/* Arrow 1 */}
+                <div style={{ color: activeArchNode === 'web' || activeArchNode === 'user' ? 'var(--color-primary-light)' : 'var(--text-muted)', fontSize: '0.75rem', lineHeight: 1, fontFamily: 'var(--font-mono)' }}>
+                  │<br />▼
+                </div>
+
+                {/* 2. Node: NEXT.JS APP */}
                 <div
                   onMouseEnter={() => setActiveArchNode('web')}
-                  onMouseLeave={() => setActiveArchNode(null)}
+                  onClick={() => setActiveArchNode('web')}
                   style={{
-                    background: activeArchNode === 'web' ? 'rgba(56, 189, 248, 0.16)' : 'rgba(56, 189, 248, 0.07)',
+                    width: '100%',
+                    maxWidth: 320,
+                    background: activeArchNode === 'web' ? 'rgba(56, 189, 248, 0.2)' : 'rgba(56, 189, 248, 0.06)',
                     border: `1px solid ${activeArchNode === 'web' ? '#38BDF8' : 'rgba(56, 189, 248, 0.25)'}`,
-                    borderRadius: 12,
-                    padding: '12px 16px',
+                    borderRadius: 10,
+                    padding: '8px 14px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
+                    boxShadow: activeArchNode === 'web' ? '0 0 16px rgba(56, 189, 248, 0.3)' : 'none',
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Globe size={18} color="#38BDF8" />
-                    <div>
-                      <div style={{ fontWeight: 800, fontSize: '0.88rem', color: '#FFF' }}>NEXT.JS APP</div>
-                      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>React 19 • Квизы • SSR / Edge • PageSpeed 98</div>
-                    </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Globe size={16} color="#38BDF8" />
+                    <span style={{ fontWeight: 800, fontSize: '0.85rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>NEXT.JS APP</span>
                   </div>
-                  <span style={{ fontSize: '0.72rem', color: '#38BDF8', fontFamily: 'var(--font-mono)' }}>Frontend</span>
+                  <span style={{ fontSize: '0.7rem', color: '#38BDF8', fontFamily: 'var(--font-mono)' }}>Frontend</span>
                 </div>
 
-                <div style={{ textAlign: 'center', color: 'var(--color-primary-light)', fontSize: '0.72rem', opacity: 0.8 }}>
-                  ↓ HTTPS REST / Webhooks
+                {/* Arrow 2 */}
+                <div style={{ color: activeArchNode === 'api' || activeArchNode === 'web' ? 'var(--color-primary-light)' : 'var(--text-muted)', fontSize: '0.75rem', lineHeight: 1, fontFamily: 'var(--font-mono)' }}>
+                  │<br />▼
                 </div>
 
-                {/* 2. Core API Layer */}
+                {/* 3. Node: FASTAPI / SPRING BOOT */}
                 <div
                   onMouseEnter={() => setActiveArchNode('api')}
-                  onMouseLeave={() => setActiveArchNode(null)}
+                  onClick={() => setActiveArchNode('api')}
                   style={{
-                    background: activeArchNode === 'api' ? 'rgba(129, 140, 248, 0.16)' : 'rgba(129, 140, 248, 0.07)',
+                    width: '100%',
+                    maxWidth: 320,
+                    background: activeArchNode === 'api' ? 'rgba(129, 140, 248, 0.2)' : 'rgba(129, 140, 248, 0.06)',
                     border: `1px solid ${activeArchNode === 'api' ? '#818CF8' : 'rgba(129, 140, 248, 0.25)'}`,
-                    borderRadius: 12,
-                    padding: '12px 16px',
+                    borderRadius: 10,
+                    padding: '8px 14px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
+                    boxShadow: activeArchNode === 'api' ? '0 0 16px rgba(129, 140, 248, 0.3)' : 'none',
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Server size={18} color="#818CF8" />
-                    <div>
-                      <div style={{ fontWeight: 800, fontSize: '0.88rem', color: '#FFF' }}>FASTAPI / SPRING BOOT</div>
-                      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Python & Java • Бизнес-логика • Auth • Docker</div>
-                    </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Server size={16} color="#818CF8" />
+                    <span style={{ fontWeight: 800, fontSize: '0.85rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>FASTAPI</span>
                   </div>
-                  <span style={{ fontSize: '0.72rem', color: '#818CF8', fontFamily: 'var(--font-mono)' }}>Core API</span>
+                  <span style={{ fontSize: '0.7rem', color: '#818CF8', fontFamily: 'var(--font-mono)' }}>Backend</span>
                 </div>
 
-                <div style={{ textAlign: 'center', color: 'var(--color-primary-light)', fontSize: '0.72rem', opacity: 0.8 }}>
-                  ↓ ACID Persistence & Caching
+                {/* Arrow 3 (Split) */}
+                <div style={{ color: activeArchNode === 'db_postgres' || activeArchNode === 'db_redis' ? 'var(--color-primary-light)' : 'var(--text-muted)', fontSize: '0.75rem', lineHeight: 1, fontFamily: 'var(--font-mono)', letterSpacing: '24px', paddingLeft: '24px' }}>
+                  ││<br />▼▼
                 </div>
 
-                {/* 3. Database Layer */}
+                {/* 4. Split Nodes: POSTGRES & REDIS */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', width: '100%', maxWidth: 320 }}>
+                  <div
+                    onMouseEnter={() => setActiveArchNode('db_postgres')}
+                    onClick={() => setActiveArchNode('db_postgres')}
+                    style={{
+                      background: activeArchNode === 'db_postgres' ? 'rgba(251, 191, 36, 0.2)' : 'rgba(255, 255, 255, 0.03)',
+                      border: `1px solid ${activeArchNode === 'db_postgres' ? '#FBBF24' : 'var(--border-subtle)'}`,
+                      borderRadius: 10,
+                      padding: '8px 10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      boxShadow: activeArchNode === 'db_postgres' ? '0 0 16px rgba(251, 191, 36, 0.3)' : 'none',
+                    }}
+                  >
+                    <Database size={15} color="#FBBF24" />
+                    <span style={{ fontWeight: 800, fontSize: '0.78rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>POSTGRES</span>
+                  </div>
+
+                  <div
+                    onMouseEnter={() => setActiveArchNode('db_redis')}
+                    onClick={() => setActiveArchNode('db_redis')}
+                    style={{
+                      background: activeArchNode === 'db_redis' ? 'rgba(251, 146, 60, 0.2)' : 'rgba(255, 255, 255, 0.03)',
+                      border: `1px solid ${activeArchNode === 'db_redis' ? '#FB923C' : 'var(--border-subtle)'}`,
+                      borderRadius: 10,
+                      padding: '8px 10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      boxShadow: activeArchNode === 'db_redis' ? '0 0 16px rgba(251, 146, 60, 0.3)' : 'none',
+                    }}
+                  >
+                    <HardDrive size={15} color="#FB923C" />
+                    <span style={{ fontWeight: 800, fontSize: '0.78rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>REDIS</span>
+                  </div>
+                </div>
+
+                {/* Arrow 4 */}
+                <div style={{ color: activeArchNode === 'tg' ? '#229ED9' : 'var(--text-muted)', fontSize: '0.75rem', lineHeight: 1, fontFamily: 'var(--font-mono)' }}>
+                  │<br />▼
+                </div>
+
+                {/* 5. Node: TELEGRAM */}
                 <div
-                  onMouseEnter={() => setActiveArchNode('db')}
-                  onMouseLeave={() => setActiveArchNode(null)}
+                  onMouseEnter={() => setActiveArchNode('tg')}
+                  onClick={() => setActiveArchNode('tg')}
                   style={{
-                    background: activeArchNode === 'db' ? 'rgba(251, 191, 36, 0.16)' : 'rgba(255, 255, 255, 0.03)',
-                    border: `1px solid ${activeArchNode === 'db' ? '#FBBF24' : 'var(--border-subtle)'}`,
-                    borderRadius: 12,
-                    padding: '12px 16px',
+                    width: '100%',
+                    maxWidth: 320,
+                    background: activeArchNode === 'tg' ? 'rgba(34, 158, 217, 0.25)' : 'rgba(34, 158, 217, 0.08)',
+                    border: `1px solid ${activeArchNode === 'tg' ? '#229ED9' : 'rgba(34, 158, 217, 0.3)'}`,
+                    borderRadius: 10,
+                    padding: '8px 14px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
+                    boxShadow: activeArchNode === 'tg' ? '0 0 16px rgba(34, 158, 217, 0.35)' : 'none',
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Database size={18} color="#FBBF24" />
-                    <div>
-                      <div style={{ fontWeight: 800, fontSize: '0.88rem', color: '#FFF' }}>POSTGRESQL & REDIS</div>
-                      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Реляционные данные • Партиционирование • Кэш</div>
-                    </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <TelegramIcon size={16} />
+                    <span style={{ fontWeight: 800, fontSize: '0.85rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>TELEGRAM</span>
                   </div>
-                  <span style={{ fontSize: '0.72rem', color: '#FBBF24', fontFamily: 'var(--font-mono)' }}>Data Layer</span>
+                  <span style={{ fontSize: '0.7rem', color: '#34D399', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>Delivered</span>
                 </div>
+              </div>
 
-                {/* 4. Split Branch to Telegram & Automation */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '4px' }}>
-                  <div
-                    onMouseEnter={() => setActiveArchNode('tg')}
-                    onMouseLeave={() => setActiveArchNode(null)}
-                    style={{
-                      background: activeArchNode === 'tg' ? 'rgba(34, 158, 217, 0.2)' : 'rgba(34, 158, 217, 0.08)',
-                      border: `1px solid ${activeArchNode === 'tg' ? '#229ED9' : 'rgba(34, 158, 217, 0.25)'}`,
-                      borderRadius: 10,
-                      padding: '10px 12px',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
-                      <TelegramIcon size={14} />
-                      <span style={{ fontWeight: 800, fontSize: '0.8rem', color: '#FFF' }}>TELEGRAM</span>
-                    </div>
-                    <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Заявка за 2 сек в бот</div>
+              {/* Dynamic Live Inspector Panel */}
+              <div style={{ marginTop: '16px', background: 'rgba(0,0,0,0.4)', borderRadius: 12, border: `1px solid ${currentArchInfo.color}30`, padding: '12px 14px', transition: 'all 0.2s ease' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: currentArchInfo.color, display: 'inline-block' }}></span>
+                    <span style={{ fontWeight: 800, fontSize: '0.85rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>{currentArchInfo.title}</span>
                   </div>
-
-                  <div
-                    onMouseEnter={() => setActiveArchNode('auto')}
-                    onMouseLeave={() => setActiveArchNode(null)}
-                    style={{
-                      background: activeArchNode === 'auto' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(16, 185, 129, 0.08)',
-                      border: `1px solid ${activeArchNode === 'auto' ? '#10B981' : 'rgba(16, 185, 129, 0.25)'}`,
-                      borderRadius: 10,
-                      padding: '10px 12px',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
-                      <Zap size={14} color="#34D399" />
-                      <span style={{ fontWeight: 800, fontSize: '0.8rem', color: '#FFF' }}>AUTOMATION</span>
-                    </div>
-                    <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>CRM, Kafka, Брифы</div>
-                  </div>
+                  <span style={{ fontSize: '0.7rem', color: currentArchInfo.color, fontWeight: 700, fontFamily: 'var(--font-mono)' }}>{currentArchInfo.layerBadge}</span>
+                </div>
+                <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.4, marginBottom: '6px' }}>
+                  {currentArchInfo.desc}
+                </p>
+                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                  ⚡ {currentArchInfo.metrics}
                 </div>
               </div>
             </div>
