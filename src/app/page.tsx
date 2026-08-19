@@ -64,7 +64,7 @@ const THEMES = [
   { id: 'amber', name: 'Cyber Amber', color: '#F59E0B' },
 ];
 
-// Interactive Hero Particle Canvas Background
+// Interactive Hero Living Infrastructure Graph Background
 function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -91,7 +91,7 @@ function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
       y: height / 2,
       targetX: width / 2,
       targetY: height / 2,
-      radius: 150,
+      radius: 140,
       isHovering: false,
     };
 
@@ -112,48 +112,71 @@ function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
       parent.addEventListener('mouseleave', handleMouseLeave);
     }
 
-    const particleCount = Math.min(Math.floor((width * height) / 13000), 65);
-    const particles: {
+    const particleCount = Math.min(Math.floor((width * height) / 16000), 45);
+    const nodes: {
       x: number;
       y: number;
       vx: number;
       vy: number;
       baseRadius: number;
-      radius: number;
-      color: string;
-      alpha: number;
+      pulseSpeed: number;
+      pulseOffset: number;
+      alphaFactor: number;
     }[] = [];
 
     for (let i = 0; i < particleCount; i++) {
-      particles.push({
+      const isLeftSide = i % 2 === 0;
+      nodes.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.7,
-        vy: (Math.random() - 0.5) * 0.7,
-        baseRadius: Math.random() * 2 + 1,
-        radius: Math.random() * 2 + 1,
-        color: themeColor,
-        alpha: Math.random() * 0.4 + 0.25,
+        vx: (Math.random() - 0.5) * 0.35, // Very slow, calm drifting
+        vy: (Math.random() - 0.5) * 0.35,
+        baseRadius: Math.random() * 1.5 + 1.2,
+        pulseSpeed: 0.0015 + Math.random() * 0.002,
+        pulseOffset: Math.random() * Math.PI * 2,
+        alphaFactor: isLeftSide ? 0.6 : 1.0, // Left side text area is calmer
       });
     }
 
+    // Data packets traveling along edges
+    const dataPackets: {
+      fromIdx: number;
+      toIdx: number;
+      progress: number;
+      speed: number;
+    }[] = [];
+
+    let time = 0;
+
     const render = () => {
-      mouse.x += (mouse.targetX - mouse.x) * 0.1;
-      mouse.y += (mouse.targetY - mouse.y) * 0.1;
+      time++;
+      mouse.x += (mouse.targetX - mouse.x) * 0.08;
+      mouse.y += (mouse.targetY - mouse.y) * 0.08;
 
       ctx.clearRect(0, 0, width, height);
 
+      // Subtle right-side ambient infrastructure glow
+      const rightGlow = ctx.createRadialGradient(width * 0.75, height * 0.5, 50, width * 0.75, height * 0.5, width * 0.45);
+      rightGlow.addColorStop(0, `${themeColor}12`);
+      rightGlow.addColorStop(0.6, `${themeColor}04`);
+      rightGlow.addColorStop(1, 'transparent');
+      ctx.fillStyle = rightGlow;
+      ctx.fillRect(0, 0, width, height);
+
       if (mouse.isHovering) {
-        const gradient = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, mouse.radius * 1.4);
-        gradient.addColorStop(0, `${themeColor}22`);
-        gradient.addColorStop(0.5, `${themeColor}08`);
-        gradient.addColorStop(1, 'transparent');
-        ctx.fillStyle = gradient;
+        const mouseGradient = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, mouse.radius * 1.3);
+        mouseGradient.addColorStop(0, `${themeColor}1a`);
+        mouseGradient.addColorStop(0.6, `${themeColor}05`);
+        mouseGradient.addColorStop(1, 'transparent');
+        ctx.fillStyle = mouseGradient;
         ctx.fillRect(0, 0, width, height);
       }
 
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
+      // Collect connected pairs
+      const connections: { i: number; j: number; dist: number }[] = [];
+
+      for (let i = 0; i < nodes.length; i++) {
+        const p = nodes[i];
         p.x += p.vx;
         p.y += p.vy;
 
@@ -166,47 +189,80 @@ function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
 
         if (mouse.isHovering && dist < mouse.radius) {
           const force = (mouse.radius - dist) / mouse.radius;
-          p.x -= (dx / dist) * force * 2.2;
-          p.y -= (dy / dist) * force * 2.2;
-          p.radius = p.baseRadius + force * 2;
-        } else {
-          p.radius += (p.baseRadius - p.radius) * 0.1;
+          p.x -= (dx / dist) * force * 1.5;
+          p.y -= (dy / dist) * force * 1.5;
         }
 
+        // Breathing pulsation
+        const breathing = Math.sin(time * p.pulseSpeed + p.pulseOffset);
+        const currentRadius = p.baseRadius + breathing * 0.6;
+        const baseAlpha = (0.2 + (breathing + 1) * 0.15) * p.alphaFactor;
+
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, Math.max(0.8, currentRadius), 0, Math.PI * 2);
         ctx.fillStyle = themeColor;
-        ctx.globalAlpha = p.alpha;
-        ctx.shadowBlur = 8;
+        ctx.globalAlpha = baseAlpha;
+        ctx.shadowBlur = 6;
         ctx.shadowColor = themeColor;
         ctx.fill();
         ctx.shadowBlur = 0;
         ctx.globalAlpha = 1;
 
-        if (mouse.isHovering && dist < mouse.radius) {
-          ctx.beginPath();
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(mouse.x, mouse.y);
-          ctx.strokeStyle = `${themeColor}44`;
-          ctx.lineWidth = 1;
-          ctx.stroke();
-        }
-
-        for (let j = i + 1; j < particles.length; j++) {
-          const p2 = particles[j];
+        for (let j = i + 1; j < nodes.length; j++) {
+          const p2 = nodes[j];
           const pjdx = p.x - p2.x;
           const pjdy = p.y - p2.y;
           const pjdist = Math.sqrt(pjdx * pjdx + pjdy * pjdy);
 
-          if (pjdist < 110) {
+          if (pjdist < 130) {
+            connections.push({ i, j, dist: pjdist });
+            const lineAlpha = (1 - pjdist / 130) * 0.18 * ((p.alphaFactor + p2.alphaFactor) / 2);
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `${themeColor}22`;
-            ctx.lineWidth = 0.8;
+            ctx.strokeStyle = `${themeColor}${Math.floor(lineAlpha * 255).toString(16).padStart(2, '0')}`;
+            ctx.lineWidth = 0.75;
             ctx.stroke();
           }
         }
+      }
+
+      // Randomly spawn data packet along a real connection every ~3 seconds
+      if (connections.length > 0 && Math.random() < 0.018 && dataPackets.length < 5) {
+        const randomConn = connections[Math.floor(Math.random() * connections.length)];
+        dataPackets.push({
+          fromIdx: randomConn.i,
+          toIdx: randomConn.j,
+          progress: 0,
+          speed: 0.008 + Math.random() * 0.012,
+        });
+      }
+
+      // Animate and draw data packets
+      for (let k = dataPackets.length - 1; k >= 0; k--) {
+        const packet = dataPackets[k];
+        packet.progress += packet.speed;
+
+        const from = nodes[packet.fromIdx];
+        const to = nodes[packet.toIdx];
+
+        if (!from || !to || packet.progress >= 1) {
+          dataPackets.splice(k, 1);
+          continue;
+        }
+
+        const packetX = from.x + (to.x - from.x) * packet.progress;
+        const packetY = from.y + (to.y - from.y) * packet.progress;
+
+        ctx.beginPath();
+        ctx.arc(packetX, packetY, 2, 0, Math.PI * 2);
+        ctx.fillStyle = '#FFF';
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = themeColor;
+        ctx.globalAlpha = 0.85;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.globalAlpha = 1;
       }
 
       animationFrameId = requestAnimationFrame(render);
@@ -1074,16 +1130,29 @@ export default function PortfolioHub() {
               </div>
             </div>
 
-            {/* Right: The Exact Interactive Architecture Map Requested */}
-            <div className="cyber-card" style={{ padding: '24px', border: '1px solid rgba(var(--color-primary-rgb), 0.35)', boxShadow: '0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(var(--color-primary-rgb), 0.15)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '10px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                  <Activity size={15} color="var(--color-primary-light)" /> Interactive Architecture Map
+            {/* Right: The Exact Interactive Architecture Map with Ambient Glow */}
+            <div style={{ position: 'relative' }}>
+              {/* Soft Ambient Infrastructure Glow Behind Card */}
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: '-20px',
+                  background: 'radial-gradient(circle at 60% 50%, rgba(var(--color-primary-rgb), 0.22) 0%, transparent 70%)',
+                  filter: 'blur(35px)',
+                  pointerEvents: 'none',
+                  zIndex: 0,
+                }}
+              />
+
+              <div className="cyber-card" style={{ position: 'relative', zIndex: 1, padding: '24px', border: '1px solid rgba(var(--color-primary-rgb), 0.35)', boxShadow: '0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(var(--color-primary-rgb), 0.15)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '10px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                    <Activity size={15} color="var(--color-primary-light)" /> Interactive Architecture Map
+                  </div>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.72rem', color: '#34D399', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
+                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10B981' }}></span> Live Pipeline
+                  </span>
                 </div>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.72rem', color: '#34D399', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
-                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10B981' }}></span> Live Pipeline
-                </span>
-              </div>
 
               {/* Exact Node System: USER -> NEXT.JS APP -> FASTAPI -> POSTGRES / REDIS -> TELEGRAM */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center', width: '100%' }}>
@@ -1274,7 +1343,8 @@ export default function PortfolioHub() {
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
       {/* Explicit Services Section (Что я могу сделать для вашего бизнеса) */}
       <section id="services" style={{ padding: '80px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
