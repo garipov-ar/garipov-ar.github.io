@@ -114,7 +114,7 @@ function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
       parent.addEventListener('mouseleave', handleMouseLeave);
     }
 
-    const particleCount = Math.min(Math.floor((width * height) / 16000), 45);
+    const particleCount = Math.min(Math.floor((width * height) / 16000), 40);
     const nodes: {
       x: number;
       y: number;
@@ -131,12 +131,12 @@ function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
       nodes.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.35,
-        vy: (Math.random() - 0.5) * 0.35,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
         baseRadius: Math.random() * 1.5 + 1.2,
         pulseSpeed: 0.0015 + Math.random() * 0.002,
         pulseOffset: Math.random() * Math.PI * 2,
-        alphaFactor: isLeftSide ? 0.6 : 1.0,
+        alphaFactor: isLeftSide ? 0.5 : 1.0,
       });
     }
 
@@ -157,16 +157,16 @@ function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
       ctx.clearRect(0, 0, width, height);
 
       const rightGlow = ctx.createRadialGradient(width * 0.75, height * 0.5, 50, width * 0.75, height * 0.5, width * 0.45);
-      rightGlow.addColorStop(0, `${themeColor}12`);
-      rightGlow.addColorStop(0.6, `${themeColor}04`);
+      rightGlow.addColorStop(0, `${themeColor}10`);
+      rightGlow.addColorStop(0.6, `${themeColor}03`);
       rightGlow.addColorStop(1, 'transparent');
       ctx.fillStyle = rightGlow;
       ctx.fillRect(0, 0, width, height);
 
       if (mouse.isHovering) {
         const mouseGradient = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, mouse.radius * 1.3);
-        mouseGradient.addColorStop(0, `${themeColor}1a`);
-        mouseGradient.addColorStop(0.6, `${themeColor}05`);
+        mouseGradient.addColorStop(0, `${themeColor}18`);
+        mouseGradient.addColorStop(0.6, `${themeColor}04`);
         mouseGradient.addColorStop(1, 'transparent');
         ctx.fillStyle = mouseGradient;
         ctx.fillRect(0, 0, width, height);
@@ -212,20 +212,20 @@ function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
           const pjdy = p.y - p2.y;
           const pjdist = Math.sqrt(pjdx * pjdx + pjdy * pjdy);
 
-          if (pjdist < 130) {
+          if (pjdist < 120) {
             connections.push({ i, j, dist: pjdist });
-            const lineAlpha = (1 - pjdist / 130) * 0.18 * ((p.alphaFactor + p2.alphaFactor) / 2);
+            const lineAlpha = (1 - pjdist / 120) * 0.16 * ((p.alphaFactor + p2.alphaFactor) / 2);
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p2.x, p2.y);
             ctx.strokeStyle = `${themeColor}${Math.floor(lineAlpha * 255).toString(16).padStart(2, '0')}`;
-            ctx.lineWidth = 0.75;
+            ctx.lineWidth = 0.7;
             ctx.stroke();
           }
         }
       }
 
-      if (connections.length > 0 && Math.random() < 0.018 && dataPackets.length < 5) {
+      if (connections.length > 0 && Math.random() < 0.015 && dataPackets.length < 4) {
         const randomConn = connections[Math.floor(Math.random() * connections.length)];
         dataPackets.push({
           fromIdx: randomConn.i,
@@ -255,7 +255,7 @@ function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
         ctx.fillStyle = '#FFF';
         ctx.shadowBlur = 10;
         ctx.shadowColor = themeColor;
-        ctx.globalAlpha = 0.85;
+        ctx.globalAlpha = 0.8;
         ctx.fill();
         ctx.shadowBlur = 0;
         ctx.globalAlpha = 1;
@@ -511,21 +511,21 @@ const STACK_PIPELINES = [
 const SERVICES = [
   {
     id: 'sites',
-    icon: <Globe size={28} color="#38BDF8" />,
+    icon: <Globe size={26} color="#38BDF8" />,
     title: 'Сайты для бизнеса',
     desc: 'Продающие лендинги, каталоги услуг и интерактивные квиз-калькуляторы с конверсией x2–x3 и моментальной передачей заявок.',
     features: ['Next.js 15 & React 19', 'Квиз-калькуляторы сметы', 'PageSpeed 95–98/100', 'Mobile First верстка'],
   },
   {
     id: 'bots',
-    icon: <Bot size={28} color="#34D399" />,
+    icon: <Bot size={26} color="#34D399" />,
     title: 'Telegram-боты & TMA',
     desc: 'Чат-боты для автоматизации приема заявок, квалификации лидов, сбора клиентских брифов и интеграции с CRM.',
     features: ['Автоматический сбор брифов', 'Интеграция с базой данных', 'Уведомления менеджерам', 'Telegram Mini Apps (TMA)'],
   },
   {
     id: 'backend',
-    icon: <Server size={28} color="#818CF8" />,
+    icon: <Server size={26} color="#818CF8" />,
     title: 'Автоматизация и Backend',
     desc: 'Отказоустойчивые серверные микросервисы, REST API, парсинг данных, внутренние базы данных и сложная логика.',
     features: ['Java / Python / Node.js', 'PostgreSQL & Docker', 'Apache Kafka очереди', 'Высокая надежность (ACID)'],
@@ -879,12 +879,10 @@ export default function PortfolioHub() {
     return THEMES.find((t) => t.id === currentTheme)?.color || '#3B82F6';
   }, [currentTheme]);
 
-  // Current available modules for the selected project type
   const currentAvailableModules = useMemo(() => {
     return DYNAMIC_MODULES_BY_TYPE[calcType] || DYNAMIC_MODULES_BY_TYPE.landing;
   }, [calcType]);
 
-  // Change project type and intelligently preset relevant modules
   const handleSelectProjectType = (typeId: string) => {
     setCalcType(typeId);
     const newModules = DYNAMIC_MODULES_BY_TYPE[typeId] || [];
@@ -897,7 +895,6 @@ export default function PortfolioHub() {
     }
   };
 
-  // Calculator Computation
   const calculation = useMemo(() => {
     const selectedType = PROJECT_TYPES.find((t) => t.id === calcType) || PROJECT_TYPES[0];
     let totalPrice = selectedType.basePrice;
@@ -926,7 +923,6 @@ export default function PortfolioHub() {
   const animatedPrice = useAnimatedNumber(calculation.price, 360);
   const animatedDays = useAnimatedNumber(calculation.days, 280);
 
-  // Telegram Pre-filled URL
   const telegramMessageUrl = useMemo(() => {
     const selectedModsNames = selectedModules
       .map((id) => currentAvailableModules.find((m) => m.id === id)?.label)
@@ -1016,9 +1012,9 @@ export default function PortfolioHub() {
 
   return (
     <div style={{ overflowX: 'hidden', width: '100%' }}>
-      {/* Top Engineering Status Bar */}
-      <div style={{ background: '#040609', borderBottom: '1px solid rgba(255,255,255,0.05)', padding: '6px 0', fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+      {/* Top Engineering Status Bar (Desktop Only) */}
+      <div className="status-bar-wrapper" style={{ background: '#040609', borderBottom: '1px solid rgba(255,255,255,0.05)', padding: '6px 0', fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#34D399', fontWeight: 700 }}>
               <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10B981', display: 'inline-block', boxShadow: '0 0 8px #10B981' }}></span>
@@ -1029,33 +1025,27 @@ export default function PortfolioHub() {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
             <span>Next.js 15 Turbopack</span>
-            <span>&lt;45ms</span>
+            <span>latency: &lt;45ms</span>
           </div>
         </div>
       </div>
 
       {/* Top Navigation */}
-      <header style={{ borderBottom: '1px solid var(--border-subtle)', padding: '12px 0', backgroundColor: 'rgba(6, 8, 13, 0.94)', backdropFilter: 'blur(20px)', position: 'sticky', top: 0, zIndex: 50 }}>
+      <header style={{ borderBottom: '1px solid var(--border-subtle)', padding: '10px 0', backgroundColor: 'rgba(6, 8, 13, 0.94)', backdropFilter: 'blur(20px)', position: 'sticky', top: 0, zIndex: 50 }}>
         <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
           {/* Logo & Brand */}
-          <a href="#hero" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
-            <div style={{ width: 38, height: 38, borderRadius: 10, background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '1rem', color: '#FFF', boxShadow: '0 4px 14px rgba(var(--color-primary-rgb), 0.4)', border: '1px solid rgba(255,255,255,0.2)', flexShrink: 0 }}>
+          <a href="#hero" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', minWidth: 0 }}>
+            <div style={{ width: 36, height: 36, borderRadius: 10, background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.95rem', color: '#FFF', boxShadow: '0 4px 14px rgba(var(--color-primary-rgb), 0.4)', border: '1px solid rgba(255,255,255,0.2)', flexShrink: 0 }}>
               AG
             </div>
-            <div>
-              <div style={{ fontWeight: 800, fontSize: '1rem', color: '#FFF', letterSpacing: '-0.02em', lineHeight: 1.2 }}>Айдар Гарипов</div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--color-primary-light)', fontFamily: 'var(--font-mono)' }}>Full-Stack & Bot Dev</div>
+            <div style={{ minWidth: 0, overflow: 'hidden' }}>
+              <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#FFF', letterSpacing: '-0.02em', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>Айдар Гарипов</div>
+              <div className="desktop-only" style={{ fontSize: '0.7rem', color: 'var(--color-primary-light)', fontFamily: 'var(--font-mono)' }}>Full-Stack & Bot Dev</div>
             </div>
           </a>
 
           {/* Desktop Navigation Links */}
-          <nav style={{ display: 'none' }} className="desktop-nav">
-            <style>{`
-              @media (min-width: 960px) {
-                .desktop-nav { display: flex !important; gap: 4px; align-items: center; }
-                .mobile-toggle-btn { display: none !important; }
-              }
-            `}</style>
+          <nav className="desktop-only" style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
             {navItems.map((item) => {
               const isActive = activeSection === item.id;
               return (
@@ -1081,9 +1071,9 @@ export default function PortfolioHub() {
           </nav>
 
           {/* Right Header Actions */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            {/* Theme Palette */}
-            <div style={{ display: 'flex', gap: '4px', background: 'rgba(255,255,255,0.04)', padding: '4px 6px', borderRadius: 10, border: '1px solid var(--border-subtle)' }} title="Сменить тему">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+            {/* Desktop Theme Palette */}
+            <div className="desktop-only" style={{ display: 'flex', gap: '4px', background: 'rgba(255,255,255,0.04)', padding: '4px 6px', borderRadius: 10, border: '1px solid var(--border-subtle)' }} title="Сменить тему">
               {THEMES.map((th) => (
                 <button
                   key={th.id}
@@ -1107,27 +1097,57 @@ export default function PortfolioHub() {
             </div>
 
             {/* Telegram Header CTA */}
-            <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn" style={{ padding: '8px 14px', fontSize: '0.8125rem' }}>
-              <TelegramIcon size={15} /> <span style={{ display: 'inline' }}>Обсудить</span>
+            <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn" style={{ padding: '7px 14px', fontSize: '0.78rem', minHeight: 36 }}>
+              <TelegramIcon size={14} /> <span>Обсудить</span>
             </a>
 
             {/* Mobile Menu Toggle Button */}
             <button
               type="button"
-              className="mobile-toggle-btn cyber-btn-ghost"
+              className="cyber-btn-ghost"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              style={{ padding: '8px 10px', minHeight: '38px', borderRadius: '10px' }}
+              style={{ display: 'inline-flex', padding: '7px 10px', minHeight: '36px', borderRadius: '10px' }}
               aria-label="Меню"
             >
-              {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              <style>{`
+                @media (min-width: 769px) {
+                  .mobile-menu-btn { display: none !important; }
+                }
+              `}</style>
+              {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
           </div>
         </div>
 
         {/* Mobile Dropdown Menu Drawer */}
         {mobileMenuOpen && (
-          <div style={{ background: 'rgba(6, 8, 13, 0.98)', borderTop: '1px solid var(--border-subtle)', padding: '16px 20px', marginTop: '12px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ background: 'rgba(6, 8, 13, 0.98)', borderTop: '1px solid var(--border-subtle)', padding: '16px 20px', marginTop: '10px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', paddingBottom: '10px', borderBottom: '1px solid var(--border-subtle)' }}>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>Тема оформления:</span>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                {THEMES.map((th) => (
+                  <button
+                    key={th.id}
+                    type="button"
+                    onClick={() => changeTheme(th.id)}
+                    style={{
+                      width: 22,
+                      height: 22,
+                      borderRadius: '50%',
+                      background: th.color,
+                      border: currentTheme === th.id ? '2px solid #FFF' : '1px solid transparent',
+                      cursor: 'pointer',
+                      transform: currentTheme === th.id ? 'scale(1.15)' : 'scale(0.9)',
+                      boxShadow: currentTheme === th.id ? `0 0 8px ${th.color}` : 'none',
+                    }}
+                    title={th.name}
+                    aria-label={th.name}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {navItems.map((item) => {
                 const isActive = activeSection === item.id;
                 return (
@@ -1139,9 +1159,9 @@ export default function PortfolioHub() {
                       color: isActive ? 'var(--color-primary-light)' : '#FFF',
                       backgroundColor: isActive ? 'rgba(var(--color-primary-rgb), 0.15)' : 'rgba(255,255,255,0.02)',
                       border: `1px solid ${isActive ? 'rgba(var(--color-primary-rgb), 0.4)' : 'var(--border-subtle)'}`,
-                      padding: '12px 16px',
-                      borderRadius: 12,
-                      fontSize: '0.95rem',
+                      padding: '10px 14px',
+                      borderRadius: 10,
+                      fontSize: '0.9rem',
                       fontWeight: 600,
                       textDecoration: 'none',
                       display: 'flex',
@@ -1150,7 +1170,7 @@ export default function PortfolioHub() {
                     }}
                   >
                     <span>{item.label}</span>
-                    <ArrowRight size={16} color="var(--color-primary-light)" />
+                    <ArrowRight size={14} color="var(--color-primary-light)" />
                   </a>
                 );
               })}
@@ -1160,88 +1180,88 @@ export default function PortfolioHub() {
       </header>
 
       {/* Hero Section */}
-      <section id="hero" style={{ padding: '60px 0 50px 0', position: 'relative', overflow: 'hidden' }}>
+      <section id="hero" style={{ padding: '48px 0 40px 0', position: 'relative', overflow: 'hidden' }}>
         <HeroInteractiveCanvas themeColor={activeThemeColor} />
 
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '40px', alignItems: 'center' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '32px', alignItems: 'center' }}>
             {/* Left: Commercial Result Copy */}
             <div>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 12px', borderRadius: 9999, background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.3)', color: '#34D399', fontSize: '0.78rem', fontWeight: 700, marginBottom: '16px' }}>
-                <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10B981', display: 'inline-block', boxShadow: '0 0 10px #10B981', flexShrink: 0 }}></span>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: 9999, background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.3)', color: '#34D399', fontSize: '0.72rem', fontWeight: 700, marginBottom: '14px' }}>
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10B981', display: 'inline-block', boxShadow: '0 0 8px #10B981', flexShrink: 0 }}></span>
                 Открыт для проектов • Запуск под ключ
               </div>
 
-              <h1 style={{ fontSize: 'clamp(1.85rem, 5vw, 3.2rem)', lineHeight: 1.18, marginBottom: '16px', letterSpacing: '-0.03em' }}>
+              <h1 className="hero-h1" style={{ fontSize: 'clamp(1.6rem, 4vw, 3.2rem)', lineHeight: 1.2, marginBottom: '14px', letterSpacing: '-0.02em' }}>
                 Сайты, Telegram-боты и <span className="glow-accent">автоматизация бизнеса</span> под ключ
               </h1>
 
-              <p style={{ fontSize: 'clamp(0.95rem, 2.5vw, 1.15rem)', color: 'var(--text-secondary)', lineHeight: 1.55, marginBottom: '20px', maxWidth: 580 }}>
+              <p style={{ fontSize: 'clamp(0.88rem, 2vw, 1.12rem)', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '18px', maxWidth: 580 }}>
                 Создаю современные сайты, сервисы и Telegram-ботов, которые помогают получать заявки и автоматизировать работу бизнеса.
               </p>
 
               {/* Technologies Proof Tagline */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginBottom: '28px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap', marginBottom: '22px' }}>
                 {['Next.js', 'Python', 'Java', 'PostgreSQL', 'Docker', 'Telegram API'].map((t, idx) => (
-                  <span key={idx} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-subtle)', color: 'var(--color-primary-light)', padding: '3px 8px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
+                  <span key={idx} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-subtle)', color: 'var(--color-primary-light)', padding: '2px 7px', borderRadius: 5, fontSize: '0.7rem', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
                     {t}
                   </span>
                 ))}
               </div>
 
-              <div className="hero-buttons-wrapper" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
-                <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn" style={{ padding: '14px 28px', fontSize: '0.95rem' }}>
-                  <TelegramIcon size={18} /> Обсудить проект
+              <div className="hero-buttons-wrapper" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+                <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn" style={{ padding: '13px 26px', fontSize: '0.9rem' }}>
+                  <TelegramIcon size={16} /> Обсудить проект
                 </a>
-                <a href="#calculator" className="cyber-btn-ghost" style={{ padding: '14px 22px', fontSize: '0.95rem' }}>
-                  <Calculator size={18} /> Рассчитать смету
+                <a href="#calculator" className="cyber-btn-ghost" style={{ padding: '13px 20px', fontSize: '0.9rem' }}>
+                  <Calculator size={16} /> Рассчитать смету
                 </a>
               </div>
 
               {/* Stats Row */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: '30px', paddingTop: '20px', borderTop: '1px solid var(--border-subtle)', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginTop: '24px', paddingTop: '16px', borderTop: '1px solid var(--border-subtle)', flexWrap: 'wrap' }}>
                 <div>
-                  <div style={{ fontSize: '1.3rem', fontWeight: 900, color: '#FFF', fontFamily: 'var(--font-heading)' }}>10+</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Кейсов в портфолио</div>
+                  <div style={{ fontSize: '1.15rem', fontWeight: 900, color: '#FFF', fontFamily: 'var(--font-heading)' }}>10+</div>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Кейсов</div>
                 </div>
-                <div style={{ width: 1, height: 28, background: 'var(--border-subtle)' }}></div>
+                <div style={{ width: 1, height: 24, background: 'var(--border-subtle)' }}></div>
                 <div>
-                  <div style={{ fontSize: '1.3rem', fontWeight: 900, color: '#34D399', fontFamily: 'var(--font-heading)' }}>98/100</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Скорость PageSpeed</div>
+                  <div style={{ fontSize: '1.15rem', fontWeight: 900, color: '#34D399', fontFamily: 'var(--font-heading)' }}>98/100</div>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>PageSpeed</div>
                 </div>
-                <div style={{ width: 1, height: 28, background: 'var(--border-subtle)' }}></div>
+                <div style={{ width: 1, height: 24, background: 'var(--border-subtle)' }}></div>
                 <div>
-                  <div style={{ fontSize: '1.3rem', fontWeight: 900, color: 'var(--color-primary-light)', fontFamily: 'var(--font-heading)' }}>0%</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Посредников</div>
+                  <div style={{ fontSize: '1.15rem', fontWeight: 900, color: 'var(--color-primary-light)', fontFamily: 'var(--font-heading)' }}>0%</div>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Посредников</div>
                 </div>
               </div>
             </div>
 
-            {/* Right: The Exact Interactive Architecture Map with Ambient Glow */}
+            {/* Right: The Exact Interactive Architecture Map */}
             <div style={{ position: 'relative', width: '100%', maxWidth: '100%' }}>
               <div
                 style={{
                   position: 'absolute',
                   inset: '-10px',
-                  background: 'radial-gradient(circle at 60% 50%, rgba(var(--color-primary-rgb), 0.2) 0%, transparent 70%)',
-                  filter: 'blur(30px)',
+                  background: 'radial-gradient(circle at 60% 50%, rgba(var(--color-primary-rgb), 0.18) 0%, transparent 70%)',
+                  filter: 'blur(25px)',
                   pointerEvents: 'none',
                   zIndex: 0,
                 }}
               />
 
-              <div className="cyber-card" style={{ position: 'relative', zIndex: 1, padding: '20px', border: '1px solid rgba(var(--color-primary-rgb), 0.35)', boxShadow: '0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(var(--color-primary-rgb), 0.15)', width: '100%' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '8px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+              <div className="cyber-card" style={{ position: 'relative', zIndex: 1, padding: '16px', border: '1px solid rgba(var(--color-primary-rgb), 0.35)', boxShadow: '0 16px 40px rgba(0,0,0,0.5)', width: '100%' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                     <Activity size={14} color="var(--color-primary-light)" /> Interactive Architecture Map
                   </div>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '0.7rem', color: '#34D399', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
-                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10B981' }}></span> Live
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.68rem', color: '#34D399', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
+                    <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#10B981' }}></span> Live
                   </span>
                 </div>
 
                 {/* Node System */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'center', width: '100%' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', alignItems: 'center', width: '100%' }}>
                   {/* 1. Node: USER */}
                   <div
                     onMouseEnter={() => setActiveArchNode('user')}
@@ -1250,25 +1270,25 @@ export default function PortfolioHub() {
                       width: '100%',
                       background: activeArchNode === 'user' ? 'rgba(244, 63, 94, 0.2)' : 'rgba(255, 255, 255, 0.03)',
                       border: `1px solid ${activeArchNode === 'user' ? '#F43F5E' : 'var(--border-subtle)'}`,
-                      borderRadius: 10,
-                      padding: '8px 12px',
+                      borderRadius: 8,
+                      padding: '7px 10px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
                       cursor: 'pointer',
                       transition: 'all 0.2s ease',
-                      minHeight: 42,
+                      minHeight: 38,
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <User size={15} color="#F43F5E" />
-                      <span style={{ fontWeight: 800, fontSize: '0.82rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>USER</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <User size={14} color="#F43F5E" />
+                      <span style={{ fontWeight: 800, fontSize: '0.78rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>USER</span>
                     </div>
-                    <span style={{ fontSize: '0.68rem', color: '#F43F5E', fontFamily: 'var(--font-mono)' }}>Client</span>
+                    <span style={{ fontSize: '0.65rem', color: '#F43F5E', fontFamily: 'var(--font-mono)' }}>Client</span>
                   </div>
 
                   {/* Arrow 1 */}
-                  <div style={{ color: activeArchNode === 'web' || activeArchNode === 'user' ? 'var(--color-primary-light)' : 'var(--text-muted)', fontSize: '0.7rem', lineHeight: 1, fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ color: activeArchNode === 'web' || activeArchNode === 'user' ? 'var(--color-primary-light)' : 'var(--text-muted)', fontSize: '0.68rem', lineHeight: 1, fontFamily: 'var(--font-mono)' }}>
                     │<br />▼
                   </div>
 
@@ -1280,25 +1300,25 @@ export default function PortfolioHub() {
                       width: '100%',
                       background: activeArchNode === 'web' ? 'rgba(56, 189, 248, 0.2)' : 'rgba(56, 189, 248, 0.06)',
                       border: `1px solid ${activeArchNode === 'web' ? '#38BDF8' : 'rgba(56, 189, 248, 0.25)'}`,
-                      borderRadius: 10,
-                      padding: '8px 12px',
+                      borderRadius: 8,
+                      padding: '7px 10px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
                       cursor: 'pointer',
                       transition: 'all 0.2s ease',
-                      minHeight: 42,
+                      minHeight: 38,
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <Globe size={15} color="#38BDF8" />
-                      <span style={{ fontWeight: 800, fontSize: '0.82rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>NEXT.JS APP</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Globe size={14} color="#38BDF8" />
+                      <span style={{ fontWeight: 800, fontSize: '0.78rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>NEXT.JS APP</span>
                     </div>
-                    <span style={{ fontSize: '0.68rem', color: '#38BDF8', fontFamily: 'var(--font-mono)' }}>Frontend</span>
+                    <span style={{ fontSize: '0.65rem', color: '#38BDF8', fontFamily: 'var(--font-mono)' }}>Frontend</span>
                   </div>
 
                   {/* Arrow 2 */}
-                  <div style={{ color: activeArchNode === 'api' || activeArchNode === 'web' ? 'var(--color-primary-light)' : 'var(--text-muted)', fontSize: '0.7rem', lineHeight: 1, fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ color: activeArchNode === 'api' || activeArchNode === 'web' ? 'var(--color-primary-light)' : 'var(--text-muted)', fontSize: '0.68rem', lineHeight: 1, fontFamily: 'var(--font-mono)' }}>
                     │<br />▼
                   </div>
 
@@ -1310,48 +1330,48 @@ export default function PortfolioHub() {
                       width: '100%',
                       background: activeArchNode === 'api' ? 'rgba(129, 140, 248, 0.2)' : 'rgba(129, 140, 248, 0.06)',
                       border: `1px solid ${activeArchNode === 'api' ? '#818CF8' : 'rgba(129, 140, 248, 0.25)'}`,
-                      borderRadius: 10,
-                      padding: '8px 12px',
+                      borderRadius: 8,
+                      padding: '7px 10px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
                       cursor: 'pointer',
                       transition: 'all 0.2s ease',
-                      minHeight: 42,
+                      minHeight: 38,
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <Server size={15} color="#818CF8" />
-                      <span style={{ fontWeight: 800, fontSize: '0.82rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>FASTAPI</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Server size={14} color="#818CF8" />
+                      <span style={{ fontWeight: 800, fontSize: '0.78rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>FASTAPI</span>
                     </div>
-                    <span style={{ fontSize: '0.68rem', color: '#818CF8', fontFamily: 'var(--font-mono)' }}>Backend</span>
+                    <span style={{ fontSize: '0.65rem', color: '#818CF8', fontFamily: 'var(--font-mono)' }}>Backend</span>
                   </div>
 
                   {/* Arrow 3 (Split) */}
-                  <div style={{ color: activeArchNode === 'db_postgres' || activeArchNode === 'db_redis' ? 'var(--color-primary-light)' : 'var(--text-muted)', fontSize: '0.7rem', lineHeight: 1, fontFamily: 'var(--font-mono)', letterSpacing: '18px', paddingLeft: '18px' }}>
+                  <div style={{ color: activeArchNode === 'db_postgres' || activeArchNode === 'db_redis' ? 'var(--color-primary-light)' : 'var(--text-muted)', fontSize: '0.68rem', lineHeight: 1, fontFamily: 'var(--font-mono)', letterSpacing: '16px', paddingLeft: '16px' }}>
                     ││<br />▼▼
                   </div>
 
                   {/* 4. Split Nodes: POSTGRES & REDIS */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', width: '100%' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', width: '100%' }}>
                     <div
                       onMouseEnter={() => setActiveArchNode('db_postgres')}
                       onClick={() => setActiveArchNode('db_postgres')}
                       style={{
                         background: activeArchNode === 'db_postgres' ? 'rgba(251, 191, 36, 0.2)' : 'rgba(255, 255, 255, 0.03)',
                         border: `1px solid ${activeArchNode === 'db_postgres' ? '#FBBF24' : 'var(--border-subtle)'}`,
-                        borderRadius: 10,
-                        padding: '8px',
+                        borderRadius: 8,
+                        padding: '6px 8px',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '6px',
+                        gap: '5px',
                         cursor: 'pointer',
                         transition: 'all 0.2s ease',
-                        minHeight: 42,
+                        minHeight: 38,
                       }}
                     >
-                      <Database size={14} color="#FBBF24" />
-                      <span style={{ fontWeight: 800, fontSize: '0.74rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>POSTGRES</span>
+                      <Database size={13} color="#FBBF24" />
+                      <span style={{ fontWeight: 800, fontSize: '0.72rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>POSTGRES</span>
                     </div>
 
                     <div
@@ -1360,23 +1380,23 @@ export default function PortfolioHub() {
                       style={{
                         background: activeArchNode === 'db_redis' ? 'rgba(251, 146, 60, 0.2)' : 'rgba(255, 255, 255, 0.03)',
                         border: `1px solid ${activeArchNode === 'db_redis' ? '#FB923C' : 'var(--border-subtle)'}`,
-                        borderRadius: 10,
-                        padding: '8px',
+                        borderRadius: 8,
+                        padding: '6px 8px',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '6px',
+                        gap: '5px',
                         cursor: 'pointer',
                         transition: 'all 0.2s ease',
-                        minHeight: 42,
+                        minHeight: 38,
                       }}
                     >
-                      <HardDrive size={14} color="#FB923C" />
-                      <span style={{ fontWeight: 800, fontSize: '0.74rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>REDIS</span>
+                      <HardDrive size={13} color="#FB923C" />
+                      <span style={{ fontWeight: 800, fontSize: '0.72rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>REDIS</span>
                     </div>
                   </div>
 
                   {/* Arrow 4 */}
-                  <div style={{ color: activeArchNode === 'tg' ? '#229ED9' : 'var(--text-muted)', fontSize: '0.7rem', lineHeight: 1, fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ color: activeArchNode === 'tg' ? '#229ED9' : 'var(--text-muted)', fontSize: '0.68rem', lineHeight: 1, fontFamily: 'var(--font-mono)' }}>
                     │<br />▼
                   </div>
 
@@ -1388,37 +1408,37 @@ export default function PortfolioHub() {
                       width: '100%',
                       background: activeArchNode === 'tg' ? 'rgba(34, 158, 217, 0.25)' : 'rgba(34, 158, 217, 0.08)',
                       border: `1px solid ${activeArchNode === 'tg' ? '#229ED9' : 'rgba(34, 158, 217, 0.3)'}`,
-                      borderRadius: 10,
-                      padding: '8px 12px',
+                      borderRadius: 8,
+                      padding: '7px 10px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
                       cursor: 'pointer',
                       transition: 'all 0.2s ease',
-                      minHeight: 42,
+                      minHeight: 38,
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <TelegramIcon size={15} />
-                      <span style={{ fontWeight: 800, fontSize: '0.82rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>TELEGRAM</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <TelegramIcon size={14} />
+                      <span style={{ fontWeight: 800, fontSize: '0.78rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>TELEGRAM</span>
                     </div>
-                    <span style={{ fontSize: '0.68rem', color: '#34D399', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>Delivered</span>
+                    <span style={{ fontSize: '0.65rem', color: '#34D399', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>Delivered</span>
                   </div>
                 </div>
 
                 {/* Dynamic Live Inspector Panel */}
-                <div style={{ marginTop: '14px', background: 'rgba(0,0,0,0.5)', borderRadius: 10, border: `1px solid ${currentArchInfo.color}30`, padding: '10px 12px', transition: 'all 0.2s ease' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <span style={{ width: 7, height: 7, borderRadius: '50%', background: currentArchInfo.color, display: 'inline-block' }}></span>
-                      <span style={{ fontWeight: 800, fontSize: '0.8rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>{currentArchInfo.title}</span>
+                <div style={{ marginTop: '12px', background: 'rgba(0,0,0,0.5)', borderRadius: 8, border: `1px solid ${currentArchInfo.color}30`, padding: '8px 10px', transition: 'all 0.2s ease' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '3px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: currentArchInfo.color, display: 'inline-block' }}></span>
+                      <span style={{ fontWeight: 800, fontSize: '0.75rem', color: '#FFF', fontFamily: 'var(--font-mono)' }}>{currentArchInfo.title}</span>
                     </div>
-                    <span style={{ fontSize: '0.68rem', color: currentArchInfo.color, fontWeight: 700, fontFamily: 'var(--font-mono)' }}>{currentArchInfo.layerBadge}</span>
+                    <span style={{ fontSize: '0.65rem', color: currentArchInfo.color, fontWeight: 700, fontFamily: 'var(--font-mono)' }}>{currentArchInfo.layerBadge}</span>
                   </div>
-                  <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.35, marginBottom: '4px' }}>
+                  <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', lineHeight: 1.35, marginBottom: '3px' }}>
                     {currentArchInfo.desc}
                   </p>
-                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                     ⚡ {currentArchInfo.metrics}
                   </div>
                 </div>
@@ -1429,41 +1449,41 @@ export default function PortfolioHub() {
       </section>
 
       {/* Explicit Services Section */}
-      <section id="services" style={{ padding: '70px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
+      <section id="services" style={{ padding: '60px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', maxWidth: 680, margin: '0 auto 40px auto' }}>
-            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
+          <div style={{ textAlign: 'center', maxWidth: 680, margin: '0 auto 32px auto' }}>
+            <div style={{ color: 'var(--color-primary)', fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px', fontFamily: 'var(--font-mono)' }}>
               &lt; services /&gt;
             </div>
-            <h2 style={{ fontSize: 'clamp(1.75rem, 4.5vw, 2.4rem)', marginBottom: '10px' }}>Что я могу сделать для вашего бизнеса</h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Конкретные продукты, решающие задачи продаж, обслуживания клиентов и автоматизации</p>
+            <h2 className="section-h2" style={{ fontSize: 'clamp(1.4rem, 3.5vw, 2.4rem)', marginBottom: '8px' }}>Что я могу сделать для вашего бизнеса</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Конкретные продукты, решающие задачи продаж и автоматизации</p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '18px' }}>
             {SERVICES.map((srv) => (
-              <div key={srv.id} className="cyber-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div key={srv.id} className="cyber-card" style={{ padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div>
-                  <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(255,255,255,0.04)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-subtle)', marginBottom: '16px' }}>
+                  <div style={{ width: 44, height: 44, borderRadius: 10, background: 'rgba(255,255,255,0.04)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-subtle)', marginBottom: '14px' }}>
                     {srv.icon}
                   </div>
 
-                  <h3 style={{ fontSize: '1.25rem', marginBottom: '10px', color: '#FFF' }}>{srv.title}</h3>
-                  <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.55, marginBottom: '20px' }}>
+                  <h3 style={{ fontSize: '1.15rem', marginBottom: '8px', color: '#FFF' }}>{srv.title}</h3>
+                  <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '16px' }}>
                     {srv.desc}
                   </p>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '24px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '20px' }}>
                     {srv.features.map((feat, fIdx) => (
-                      <div key={fIdx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', color: 'var(--text-primary)' }}>
-                        <CheckCircle2 size={15} color="var(--color-primary-light)" style={{ flexShrink: 0 }} />
+                      <div key={fIdx} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: 'var(--text-primary)' }}>
+                        <CheckCircle2 size={14} color="var(--color-primary-light)" style={{ flexShrink: 0 }} />
                         <span>{feat}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <a href="#calculator" className="cyber-btn-ghost" style={{ padding: '12px 16px', fontSize: '0.85rem', justifyContent: 'center', width: '100%' }}>
-                  Рассчитать стоимость <ArrowRight size={16} />
+                <a href="#calculator" className="cyber-btn-ghost" style={{ padding: '10px 14px', fontSize: '0.82rem', justifyContent: 'center', width: '100%' }}>
+                  Рассчитать стоимость <ArrowRight size={14} />
                 </a>
               </div>
             ))}
@@ -1472,18 +1492,18 @@ export default function PortfolioHub() {
       </section>
 
       {/* Case Studies Section */}
-      <section id="cases" style={{ padding: '70px 0' }}>
+      <section id="cases" style={{ padding: '60px 0' }}>
         <div className="container">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px', marginBottom: '32px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '14px', marginBottom: '28px' }}>
             <div>
-              <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ color: 'var(--color-primary)', fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px', fontFamily: 'var(--font-mono)' }}>
                 &lt; all-projects /&gt;
               </div>
-              <h2 style={{ fontSize: 'clamp(1.75rem, 4.5vw, 2.4rem)' }}>Реализованные кейсы ({CASES.length})</h2>
+              <h2 className="section-h2" style={{ fontSize: 'clamp(1.4rem, 3.5vw, 2.4rem)' }}>Реализованные кейсы ({CASES.length})</h2>
             </div>
 
             {/* Filter Tabs with Mobile Swipe Scroll */}
-            <div className="scroll-pills-container" style={{ background: 'var(--bg-surface)', padding: '4px', borderRadius: 12, border: '1px solid var(--border-subtle)', maxWidth: '100%' }}>
+            <div className="scroll-pills-container" style={{ background: 'var(--bg-surface)', padding: '3px', borderRadius: 10, border: '1px solid var(--border-subtle)', maxWidth: '100%' }}>
               {[
                 { id: 'all', label: `Все кейсы (${CASES.length})` },
                 { id: 'web', label: 'Сайты (6)' },
@@ -1495,17 +1515,17 @@ export default function PortfolioHub() {
                   type="button"
                   onClick={() => setFilter(tab.id as any)}
                   style={{
-                    padding: '8px 14px',
-                    borderRadius: 8,
+                    padding: '6px 12px',
+                    borderRadius: 7,
                     border: 'none',
                     background: filter === tab.id ? 'var(--color-primary)' : 'transparent',
                     color: filter === tab.id ? '#FFF' : 'var(--text-muted)',
                     fontWeight: 700,
-                    fontSize: '0.78rem',
+                    fontSize: '0.75rem',
                     cursor: 'pointer',
                     transition: 'all 0.2s',
                     whiteSpace: 'nowrap',
-                    minHeight: 36,
+                    minHeight: 32,
                   }}
                 >
                   {tab.label}
@@ -1515,7 +1535,7 @@ export default function PortfolioHub() {
           </div>
 
           {/* Cases Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
             {filteredCases.map((project) => (
               <div
                 key={project.id}
@@ -1528,51 +1548,51 @@ export default function PortfolioHub() {
               >
                 <div>
                   {/* Case Preview Image */}
-                  <div style={{ height: 180, backgroundImage: `url('${project.image}')`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
+                  <div style={{ height: 160, backgroundImage: `url('${project.image}')`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
                     <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(12, 16, 26, 0.95) 0%, transparent 60%)' }} />
-                    <span style={{ position: 'absolute', top: 12, left: 12, background: 'rgba(6, 8, 13, 0.88)', backdropFilter: 'blur(8px)', color: project.accentColor, border: `1px solid ${project.accentColor}40`, padding: '4px 10px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 800 }}>
+                    <span style={{ position: 'absolute', top: 10, left: 10, background: 'rgba(6, 8, 13, 0.88)', backdropFilter: 'blur(6px)', color: project.accentColor, border: `1px solid ${project.accentColor}40`, padding: '3px 8px', borderRadius: 5, fontSize: '0.7rem', fontWeight: 800 }}>
                       {project.categoryLabel}
                     </span>
                   </div>
 
                   {/* Case Content */}
-                  <div style={{ padding: '20px' }}>
-                    <h3 style={{ fontSize: '1.2rem', marginBottom: '14px', color: '#FFF' }}>{project.title}</h3>
+                  <div style={{ padding: '16px' }}>
+                    <h3 style={{ fontSize: '1.1rem', marginBottom: '12px', color: '#FFF' }}>{project.title}</h3>
 
                     {/* Problem */}
-                    <div style={{ marginBottom: '10px' }}>
-                      <div style={{ fontSize: '0.72rem', color: '#EF4444', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '2px' }}>
+                    <div style={{ marginBottom: '8px' }}>
+                      <div style={{ fontSize: '0.68rem', color: '#EF4444', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '2px' }}>
                         Проблема бизнеса
                       </div>
-                      <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
                         {project.problem}
                       </div>
                     </div>
 
                     {/* Solution */}
-                    <div style={{ marginBottom: '10px' }}>
-                      <div style={{ fontSize: '0.72rem', color: '#60A5FA', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '2px' }}>
+                    <div style={{ marginBottom: '8px' }}>
+                      <div style={{ fontSize: '0.68rem', color: '#60A5FA', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '2px' }}>
                         Решение
                       </div>
-                      <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
                         {project.solution}
                       </div>
                     </div>
 
                     {/* Business Result */}
-                    <div style={{ marginBottom: '14px', background: 'rgba(16, 185, 129, 0.08)', padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(16, 185, 129, 0.2)' }}>
-                      <div style={{ fontSize: '0.72rem', color: '#34D399', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '2px' }}>
+                    <div style={{ marginBottom: '12px', background: 'rgba(16, 185, 129, 0.08)', padding: '8px 10px', borderRadius: 7, border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                      <div style={{ fontSize: '0.68rem', color: '#34D399', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '2px' }}>
                         Результат для бизнеса
                       </div>
-                      <div style={{ fontSize: '0.82rem', color: '#E2E8F0', fontWeight: 500, lineHeight: 1.45 }}>
+                      <div style={{ fontSize: '0.8rem', color: '#E2E8F0', fontWeight: 500, lineHeight: 1.4 }}>
                         {project.businessResult}
                       </div>
                     </div>
 
                     {/* Stack tags */}
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '6px' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '4px' }}>
                       {project.stack.map((s, sIdx) => (
-                        <span key={sIdx} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border-subtle)', color: 'var(--text-muted)', padding: '2px 6px', borderRadius: 6, fontSize: '0.7rem', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>
+                        <span key={sIdx} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border-subtle)', color: 'var(--text-muted)', padding: '2px 5px', borderRadius: 4, fontSize: '0.68rem', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>
                           {s}
                         </span>
                       ))}
@@ -1581,16 +1601,16 @@ export default function PortfolioHub() {
                 </div>
 
                 {/* Actions */}
-                <div className="case-actions-grid" style={{ padding: '0 20px 20px 20px', display: 'grid', gridTemplateColumns: project.demoUrl ? '1.2fr 0.8fr' : '1fr', gap: '10px' }}>
+                <div className="case-actions-grid" style={{ padding: '0 16px 16px 16px', display: 'grid', gridTemplateColumns: project.demoUrl ? '1.2fr 0.8fr' : '1fr', gap: '8px' }}>
                   {project.demoUrl && (
                     <a
                       href={project.demoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="cyber-btn"
-                      style={{ padding: '10px 14px', fontSize: '0.82rem' }}
+                      style={{ padding: '9px 12px', fontSize: '0.8rem', minHeight: 38 }}
                     >
-                      Смотреть демо <ArrowUpRight size={15} />
+                      Смотреть демо <ArrowUpRight size={14} />
                     </a>
                   )}
                   <a
@@ -1598,9 +1618,9 @@ export default function PortfolioHub() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="cyber-btn-ghost"
-                    style={{ padding: '10px 12px', fontSize: '0.82rem', justifyContent: 'center' }}
+                    style={{ padding: '9px 10px', fontSize: '0.8rem', justifyContent: 'center', minHeight: 38 }}
                   >
-                    <GithubIcon size={15} /> Исходники
+                    <GithubIcon size={14} /> Исходники
                   </a>
                 </div>
               </div>
@@ -1610,25 +1630,25 @@ export default function PortfolioHub() {
       </section>
 
       {/* Trust Section */}
-      <section id="trust" style={{ padding: '70px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
+      <section id="trust" style={{ padding: '60px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 40px auto' }}>
-            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px', fontFamily: 'var(--font-mono)' }}>
+          <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 32px auto' }}>
+            <div style={{ color: 'var(--color-primary)', fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px', fontFamily: 'var(--font-mono)' }}>
               &lt; why-me /&gt;
             </div>
-            <h2 style={{ fontSize: 'clamp(1.75rem, 4.5vw, 2.4rem)', marginBottom: '10px' }}>Почему со мной работают</h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Прозрачные условия, надежность и фокус на решении бизнес-задач</p>
+            <h2 className="section-h2" style={{ fontSize: 'clamp(1.4rem, 3.5vw, 2.4rem)', marginBottom: '8px' }}>Почему со мной работают</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Прозрачные условия, надежность и фокус на решении бизнес-задач</p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '14px' }}>
             {WHY_WORK_WITH_ME.map((item, idx) => (
-              <div key={idx} className="cyber-card" style={{ background: 'var(--bg-main)', padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div key={idx} className="cyber-card" style={{ background: 'var(--bg-main)', padding: '16px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div>
-                  <span style={{ display: 'inline-block', padding: '3px 8px', borderRadius: 6, background: 'rgba(var(--color-primary-rgb), 0.12)', color: 'var(--color-primary-light)', fontSize: '0.72rem', fontWeight: 800, marginBottom: '12px', fontFamily: 'var(--font-mono)' }}>
+                  <span style={{ display: 'inline-block', padding: '3px 7px', borderRadius: 5, background: 'rgba(var(--color-primary-rgb), 0.12)', color: 'var(--color-primary-light)', fontSize: '0.7rem', fontWeight: 800, marginBottom: '10px', fontFamily: 'var(--font-mono)' }}>
                     {item.badge}
                   </span>
-                  <h3 style={{ fontSize: '1.1rem', color: '#FFF', marginBottom: '8px' }}>{item.title}</h3>
-                  <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>{item.desc}</p>
+                  <h3 style={{ fontSize: '1.05rem', color: '#FFF', marginBottom: '6px' }}>{item.title}</h3>
+                  <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -1637,24 +1657,24 @@ export default function PortfolioHub() {
       </section>
 
       {/* 4 Steps Workflow Section */}
-      <section id="workflow" style={{ padding: '70px 0' }}>
+      <section id="workflow" style={{ padding: '60px 0' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 40px auto' }}>
-            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px', fontFamily: 'var(--font-mono)' }}>
+          <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 32px auto' }}>
+            <div style={{ color: 'var(--color-primary)', fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px', fontFamily: 'var(--font-mono)' }}>
               &lt; workflow /&gt;
             </div>
-            <h2 style={{ fontSize: 'clamp(1.75rem, 4.5vw, 2.4rem)', marginBottom: '10px' }}>Как проходит работа</h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>4 понятных этапа от первого сообщения до готового продукта</p>
+            <h2 className="section-h2" style={{ fontSize: 'clamp(1.4rem, 3.5vw, 2.4rem)', marginBottom: '8px' }}>Как проходит работа</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>4 понятных этапа от первого сообщения до готового продукта</p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '18px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '14px' }}>
             {WORKFLOW_STEPS.map((step, idx) => (
-              <div key={idx} className="cyber-card" style={{ padding: '22px 20px', position: 'relative' }}>
-                <div style={{ fontSize: '1.75rem', fontWeight: 900, color: 'var(--color-primary-light)', fontFamily: 'var(--font-heading)', opacity: 0.4, marginBottom: '10px' }}>
+              <div key={idx} className="cyber-card" style={{ padding: '18px 16px', position: 'relative' }}>
+                <div style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--color-primary-light)', fontFamily: 'var(--font-heading)', opacity: 0.4, marginBottom: '8px' }}>
                   {step.step}
                 </div>
-                <h3 style={{ fontSize: '1.15rem', color: '#FFF', marginBottom: '8px' }}>{step.title}</h3>
-                <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>{step.desc}</p>
+                <h3 style={{ fontSize: '1.05rem', color: '#FFF', marginBottom: '6px' }}>{step.title}</h3>
+                <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{step.desc}</p>
               </div>
             ))}
           </div>
@@ -1662,27 +1682,27 @@ export default function PortfolioHub() {
       </section>
 
       {/* Interactive Project Cost & Timeline Calculator */}
-      <section id="calculator" style={{ padding: '70px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
+      <section id="calculator" style={{ padding: '60px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', maxWidth: 700, margin: '0 auto 40px auto' }}>
-            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px', fontFamily: 'var(--font-mono)' }}>
+          <div style={{ textAlign: 'center', maxWidth: 700, margin: '0 auto 32px auto' }}>
+            <div style={{ color: 'var(--color-primary)', fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px', fontFamily: 'var(--font-mono)' }}>
               &lt; calculator /&gt;
             </div>
-            <h2 style={{ fontSize: 'clamp(1.75rem, 4.5vw, 2.4rem)', marginBottom: '10px' }}>Калькулятор стоимости и сроков</h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
+            <h2 className="section-h2" style={{ fontSize: 'clamp(1.4rem, 3.5vw, 2.4rem)', marginBottom: '8px' }}>Калькулятор стоимости и сроков</h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
               Сконфигурируйте параметры разработки вашего проекта и получите моментальный предварительный расчёт
             </p>
           </div>
 
-          <div className="calculator-layout-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '28px', alignItems: 'start' }}>
+          <div className="calculator-layout-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px', alignItems: 'start' }}>
             {/* Left Config Panel */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {/* Step 1 */}
-              <div className="cyber-card" style={{ padding: '20px' }}>
-                <div style={{ fontSize: '0.82rem', color: 'var(--color-primary-light)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '14px', fontFamily: 'var(--font-mono)' }}>
+              <div className="cyber-card" style={{ padding: '16px' }}>
+                <div style={{ fontSize: '0.78rem', color: 'var(--color-primary-light)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px', fontFamily: 'var(--font-mono)' }}>
                   Шаг 1. Тип разработки
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '10px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '8px' }}>
                   {PROJECT_TYPES.map((type) => {
                     const isSelected = calcType === type.id;
                     return (
@@ -1692,13 +1712,13 @@ export default function PortfolioHub() {
                         onClick={() => handleSelectProjectType(type.id)}
                         className={`calc-option-btn ${isSelected ? 'active' : ''}`}
                       >
-                        <div style={{ fontWeight: 800, fontSize: '0.9rem', color: isSelected ? '#FFF' : 'var(--text-primary)' }}>
+                        <div style={{ fontWeight: 800, fontSize: '0.88rem', color: isSelected ? '#FFF' : 'var(--text-primary)' }}>
                           {type.title}
                         </div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.35 }}>
+                        <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: 1.3 }}>
                           {type.desc}
                         </div>
-                        <div style={{ fontSize: '0.78rem', color: 'var(--color-primary-light)', fontWeight: 700, marginTop: '4px', fontFamily: 'var(--font-mono)' }}>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--color-primary-light)', fontWeight: 700, marginTop: '2px', fontFamily: 'var(--font-mono)' }}>
                           от {type.basePrice.toLocaleString('ru-RU')} ₽ • {type.baseDays} дн.
                         </div>
                       </button>
@@ -1708,11 +1728,11 @@ export default function PortfolioHub() {
               </div>
 
               {/* Step 2 */}
-              <div className="cyber-card" style={{ padding: '20px' }}>
-                <div style={{ fontSize: '0.82rem', color: 'var(--color-primary-light)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '14px', fontFamily: 'var(--font-mono)' }}>
+              <div className="cyber-card" style={{ padding: '16px' }}>
+                <div style={{ fontSize: '0.78rem', color: 'var(--color-primary-light)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px', fontFamily: 'var(--font-mono)' }}>
                   Шаг 2. Дополнительные модули ({calculation.typeTitle})
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   {currentAvailableModules.map((mod) => {
                     const isChecked = selectedModules.includes(mod.id);
                     return (
@@ -1722,15 +1742,15 @@ export default function PortfolioHub() {
                         onClick={() => toggleModule(mod.id)}
                         className={`calc-checkbox-btn ${isChecked ? 'active' : ''}`}
                       >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <div style={{ width: 18, height: 18, borderRadius: 5, border: `2px solid ${isChecked ? 'var(--color-primary)' : 'var(--border-subtle)'}`, background: isChecked ? 'var(--color-primary)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                            {isChecked && <Check size={12} color="#FFF" />}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <div style={{ width: 16, height: 16, borderRadius: 4, border: `2px solid ${isChecked ? 'var(--color-primary)' : 'var(--border-subtle)'}`, background: isChecked ? 'var(--color-primary)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                            {isChecked && <Check size={11} color="#FFF" />}
                           </div>
-                          <span style={{ fontSize: '0.84rem', color: isChecked ? '#FFF' : 'var(--text-secondary)', fontWeight: isChecked ? 600 : 400 }}>
+                          <span style={{ fontSize: '0.82rem', color: isChecked ? '#FFF' : 'var(--text-secondary)', fontWeight: isChecked ? 600 : 400 }}>
                             {mod.label}
                           </span>
                         </div>
-                        <div style={{ fontSize: '0.78rem', color: 'var(--color-primary-light)', fontFamily: 'var(--font-mono)', fontWeight: 700, flexShrink: 0 }}>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--color-primary-light)', fontFamily: 'var(--font-mono)', fontWeight: 700, flexShrink: 0 }}>
                           +{mod.price.toLocaleString('ru-RU')} ₽
                         </div>
                       </button>
@@ -1740,25 +1760,25 @@ export default function PortfolioHub() {
               </div>
 
               {/* Step 3 */}
-              <div className="cyber-card" style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '14px', flexWrap: 'wrap' }}>
+              <div className="cyber-card" style={{ padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', flexWrap: 'wrap' }}>
                 <div>
-                  <div style={{ fontWeight: 800, fontSize: '0.9rem', color: '#FFF' }}>⚡ Экспресс-запуск проекта</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Приоритетная разработка и сдача в 2 раза быстрее</div>
+                  <div style={{ fontWeight: 800, fontSize: '0.85rem', color: '#FFF' }}>⚡ Экспресс-запуск проекта</div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Приоритетная разработка и сдача в 2 раза быстрее</div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsExpress(!isExpress)}
                   style={{
-                    padding: '8px 16px',
-                    borderRadius: 10,
+                    padding: '6px 14px',
+                    borderRadius: 8,
                     border: `1px solid ${isExpress ? 'var(--color-primary)' : 'var(--border-subtle)'}`,
                     background: isExpress ? 'rgba(var(--color-primary-rgb), 0.2)' : 'transparent',
                     color: isExpress ? 'var(--color-primary-light)' : 'var(--text-muted)',
                     fontWeight: 700,
-                    fontSize: '0.8rem',
+                    fontSize: '0.78rem',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
-                    minHeight: 40,
+                    minHeight: 36,
                   }}
                 >
                   {isExpress ? '✓ Включено (+25%)' : 'Обычный темп'}
@@ -1767,52 +1787,52 @@ export default function PortfolioHub() {
             </div>
 
             {/* Right Summary Card */}
-            <div className="cyber-card calculator-summary-card" style={{ padding: '24px', border: '1px solid rgba(var(--color-primary-rgb), 0.35)', boxShadow: '0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(var(--color-primary-rgb), 0.15)', position: 'sticky', top: 100 }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', gap: '8px', flexWrap: 'wrap' }}>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '4px 10px', borderRadius: 6, background: 'rgba(var(--color-primary-rgb), 0.15)', color: 'var(--color-primary-light)', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'var(--font-mono)' }}>
+            <div className="cyber-card calculator-summary-card" style={{ padding: '20px', border: '1px solid rgba(var(--color-primary-rgb), 0.35)', boxShadow: '0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(var(--color-primary-rgb), 0.15)', position: 'sticky', top: 90 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', gap: '6px', flexWrap: 'wrap' }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '3px 8px', borderRadius: 6, background: 'rgba(var(--color-primary-rgb), 0.15)', color: 'var(--color-primary-light)', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'var(--font-mono)' }}>
                   Итоговый расчёт
                 </div>
-                <span style={{ fontSize: '0.7rem', color: 'var(--color-primary-light)', background: 'rgba(255,255,255,0.04)', padding: '3px 8px', borderRadius: 6, border: '1px solid var(--border-subtle)', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
-                  CONFIG: {selectedModules.length}/{currentAvailableModules.length} MODULES
+                <span style={{ fontSize: '0.68rem', color: 'var(--color-primary-light)', background: 'rgba(255,255,255,0.04)', padding: '3px 6px', borderRadius: 5, border: '1px solid var(--border-subtle)', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
+                  CONFIG: {selectedModules.length}/{currentAvailableModules.length}
                 </span>
               </div>
 
-              <div style={{ marginBottom: '18px' }}>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '2px' }}>Выбранный тип:</div>
-                <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#FFF' }}>{calculation.typeTitle}</div>
+              <div style={{ marginBottom: '14px' }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '2px' }}>Выбранный тип:</div>
+                <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#FFF' }}>{calculation.typeTitle}</div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', padding: '16px 0', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)', marginBottom: '20px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', padding: '14px 0', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)', marginBottom: '16px' }}>
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--text-muted)', fontSize: '0.75rem', marginBottom: '2px' }}>
-                    <Coins size={14} color="var(--color-primary-light)" /> Ориентировочно
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--text-muted)', fontSize: '0.72rem', marginBottom: '2px' }}>
+                    <Coins size={13} color="var(--color-primary-light)" /> Ориентировочно
                   </div>
-                  <div style={{ fontSize: '1.45rem', fontWeight: 900, color: '#FFF', fontFamily: 'var(--font-heading)' }}>
+                  <div style={{ fontSize: '1.35rem', fontWeight: 900, color: '#FFF', fontFamily: 'var(--font-heading)' }}>
                     ~{animatedPrice.toLocaleString('ru-RU')} ₽
                   </div>
                 </div>
 
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--text-muted)', fontSize: '0.75rem', marginBottom: '2px' }}>
-                    <Clock size={14} color="var(--color-primary-light)" /> Срок
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--text-muted)', fontSize: '0.72rem', marginBottom: '2px' }}>
+                    <Clock size={13} color="var(--color-primary-light)" /> Срок
                   </div>
-                  <div style={{ fontSize: '1.45rem', fontWeight: 900, color: '#34D399', fontFamily: 'var(--font-heading)' }}>
+                  <div style={{ fontSize: '1.35rem', fontWeight: 900, color: '#34D399', fontFamily: 'var(--font-heading)' }}>
                     {animatedDays} дн.
                   </div>
                 </div>
               </div>
 
-              <div style={{ marginBottom: '20px' }}>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '8px' }}>Включенные модули ({selectedModules.length}):</div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <div style={{ marginBottom: '16px' }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '6px' }}>Включенные модули ({selectedModules.length}):</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                   {selectedModules.length === 0 ? (
-                    <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>Базовая комплектация</div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>Базовая комплектация</div>
                   ) : (
                     selectedModules.map((mId) => {
                       const mod = currentAvailableModules.find((m) => m.id === mId);
                       return (
-                        <div key={mId} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                          <Check size={13} color="var(--color-primary-light)" style={{ flexShrink: 0 }} />
+                        <div key={mId} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                          <Check size={12} color="var(--color-primary-light)" style={{ flexShrink: 0 }} />
                           <span>{mod?.label || mId}</span>
                         </div>
                       );
@@ -1826,13 +1846,13 @@ export default function PortfolioHub() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="cyber-btn"
-                style={{ width: '100%', padding: '14px', fontSize: '0.9rem' }}
+                style={{ width: '100%', padding: '12px', fontSize: '0.85rem', minHeight: 40 }}
               >
-                <TelegramIcon size={16} /> Обсудить в Telegram ➔
+                <TelegramIcon size={15} /> Обсудить в Telegram ➔
               </a>
 
-              <div style={{ textAlign: 'center', marginTop: '10px', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                Конфигурация автоматически передастся в диалог с Айдаром
+              <div style={{ textAlign: 'center', marginTop: '8px', fontSize: '0.68rem', color: 'var(--text-muted)' }}>
+                Конфигурация автоматически передастся в чат
               </div>
             </div>
           </div>
@@ -1840,36 +1860,36 @@ export default function PortfolioHub() {
       </section>
 
       {/* Layered Architectural Tech Stack Matrix */}
-      <section id="technologies" style={{ padding: '70px 0' }}>
+      <section id="technologies" style={{ padding: '60px 0' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 40px auto' }}>
-            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px', fontFamily: 'var(--font-mono)' }}>
+          <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 32px auto' }}>
+            <div style={{ color: 'var(--color-primary)', fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px', fontFamily: 'var(--font-mono)' }}>
               &lt; tech-pipelines /&gt;
             </div>
-            <h2 style={{ fontSize: 'clamp(1.75rem, 4.5vw, 2.4rem)', marginBottom: '10px' }}>Архитектурный стек технологий</h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Сквозной пайплайн разработки от пользовательского интерфейса до облачной инфраструктуры</p>
+            <h2 className="section-h2" style={{ fontSize: 'clamp(1.4rem, 3.5vw, 2.4rem)', marginBottom: '8px' }}>Архитектурный стек технологий</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Сквозной пайплайн разработки от интерфейса до инфраструктуры</p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '18px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
             {STACK_PIPELINES.map((pipeline, pIdx) => (
-              <div key={pIdx} className="cyber-card" style={{ padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div key={pIdx} className="cyber-card" style={{ padding: '16px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '8px' }}>
-                    <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#FFF' }}>{pipeline.layer}</div>
-                    <span style={{ fontSize: '0.68rem', color: pipeline.color, background: `${pipeline.color}15`, padding: '2px 6px', borderRadius: 4, fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '6px' }}>
+                    <div style={{ fontWeight: 800, fontSize: '0.9rem', color: '#FFF' }}>{pipeline.layer}</div>
+                    <span style={{ fontSize: '0.65rem', color: pipeline.color, background: `${pipeline.color}15`, padding: '2px 5px', borderRadius: 4, fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
                       {pipeline.tag}
                     </span>
                   </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     {pipeline.items.map((item, iIdx) => (
-                      <div key={iIdx} style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255,255,255,0.02)', padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border-subtle)' }}>
-                        <div style={{ width: 26, height: 26, borderRadius: 6, background: 'rgba(255,255,255,0.04)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                          {TECH_ICONS[item.name] || <span style={{ width: 6, height: 6, borderRadius: '50%', background: pipeline.color }}></span>}
+                      <div key={iIdx} style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.02)', padding: '6px 8px', borderRadius: 6, border: '1px solid var(--border-subtle)' }}>
+                        <div style={{ width: 24, height: 24, borderRadius: 5, background: 'rgba(255,255,255,0.04)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                          {TECH_ICONS[item.name] || <span style={{ width: 5, height: 5, borderRadius: '50%', background: pipeline.color }}></span>}
                         </div>
                         <div>
-                          <div style={{ fontWeight: 700, fontSize: '0.84rem', color: '#FFF' }}>{item.name}</div>
-                          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{item.role}</div>
+                          <div style={{ fontWeight: 700, fontSize: '0.8rem', color: '#FFF' }}>{item.name}</div>
+                          <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{item.role}</div>
                         </div>
                       </div>
                     ))}
@@ -1882,27 +1902,27 @@ export default function PortfolioHub() {
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" style={{ padding: '70px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
+      <section id="faq" style={{ padding: '60px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
         <div className="container" style={{ maxWidth: 860 }}>
-          <div style={{ textAlign: 'center', margin: '0 auto 40px auto' }}>
-            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px', fontFamily: 'var(--font-mono)' }}>
+          <div style={{ textAlign: 'center', margin: '0 auto 32px auto' }}>
+            <div style={{ color: 'var(--color-primary)', fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px', fontFamily: 'var(--font-mono)' }}>
               &lt; faq /&gt;
             </div>
-            <h2 style={{ fontSize: 'clamp(1.75rem, 4.5vw, 2.4rem)', marginBottom: '10px' }}>Часто задаваемые вопросы</h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Ответы на популярные вопросы о процессе, оплате и гарантиях</p>
+            <h2 className="section-h2" style={{ fontSize: 'clamp(1.4rem, 3.5vw, 2.4rem)', marginBottom: '8px' }}>Часто задаваемые вопросы</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Ответы на популярные вопросы о процессе, оплате и гарантиях</p>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {FAQ_ITEMS.map((item, idx) => {
               const isOpen = openFaq === idx;
               return (
-                <div key={idx} className="cyber-card" style={{ background: 'var(--bg-main)', padding: '18px 20px', cursor: 'pointer' }} onClick={() => setOpenFaq(isOpen ? null : idx)}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-                    <h3 style={{ fontSize: '0.98rem', color: '#FFF' }}>{item.q}</h3>
-                    <ChevronDown size={18} color="var(--color-primary-light)" style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.25s ease', flexShrink: 0 }} />
+                <div key={idx} className="cyber-card" style={{ background: 'var(--bg-main)', padding: '14px 16px', cursor: 'pointer' }} onClick={() => setOpenFaq(isOpen ? null : idx)}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}>
+                    <h3 style={{ fontSize: '0.92rem', color: '#FFF' }}>{item.q}</h3>
+                    <ChevronDown size={16} color="var(--color-primary-light)" style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.25s ease', flexShrink: 0 }} />
                   </div>
                   {isOpen && (
-                    <p style={{ marginTop: '12px', fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.55, borderTop: '1px solid var(--border-subtle)', paddingTop: '10px' }}>
+                    <p style={{ marginTop: '10px', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5, borderTop: '1px solid var(--border-subtle)', paddingTop: '8px' }}>
                       {item.a}
                     </p>
                   )}
@@ -1914,25 +1934,25 @@ export default function PortfolioHub() {
       </section>
 
       {/* High-Converting Final CTA Section */}
-      <section id="contacts" style={{ padding: '80px 0', background: 'radial-gradient(circle at 50% 100%, rgba(var(--color-primary-rgb), 0.18) 0%, transparent 60%)' }}>
+      <section id="contacts" style={{ padding: '60px 0', background: 'radial-gradient(circle at 50% 100%, rgba(var(--color-primary-rgb), 0.18) 0%, transparent 60%)' }}>
         <div className="container" style={{ maxWidth: 840, textAlign: 'center' }}>
-          <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px', fontFamily: 'var(--font-mono)' }}>
+          <div style={{ color: 'var(--color-primary)', fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px', fontFamily: 'var(--font-mono)' }}>
             &lt; start-project /&gt;
           </div>
-          <h2 style={{ fontSize: 'clamp(1.85rem, 5vw, 2.8rem)', marginBottom: '14px' }}>Есть задача или идея?</h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', marginBottom: '32px', lineHeight: 1.55, maxWidth: 680, margin: '0 auto 32px auto' }}>
+          <h2 className="section-h2" style={{ fontSize: 'clamp(1.5rem, 4vw, 2.6rem)', marginBottom: '10px' }}>Есть задача или идея?</h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '24px', lineHeight: 1.5, maxWidth: 680, margin: '0 auto 24px auto' }}>
             Опишите её в Telegram. Я предложу вариант реализации и помогу определить оптимальный формат проекта.
           </p>
 
-          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
             <a
               href="https://t.me/Aidar_RG"
               target="_blank"
               rel="noopener noreferrer"
               className="cyber-btn"
-              style={{ padding: '16px 36px', fontSize: '1rem' }}
+              style={{ padding: '14px 30px', fontSize: '0.95rem' }}
             >
-              <TelegramIcon size={18} /> Обсудить проект
+              <TelegramIcon size={16} /> Обсудить проект
             </a>
 
             <a
@@ -1940,48 +1960,48 @@ export default function PortfolioHub() {
               target="_blank"
               rel="noopener noreferrer"
               className="cyber-btn-ghost"
-              style={{ padding: '16px 24px', fontSize: '1rem' }}
+              style={{ padding: '14px 20px', fontSize: '0.95rem' }}
             >
-              <GithubIcon size={18} /> GitHub
+              <GithubIcon size={16} /> GitHub
             </a>
 
             <button
               type="button"
               onClick={copyEmail}
               className="cyber-btn-ghost"
-              style={{ padding: '16px 20px', fontSize: '1rem' }}
+              style={{ padding: '14px 18px', fontSize: '0.95rem' }}
               title="Скопировать email"
             >
-              <Mail size={16} color="var(--color-primary-light)" />
-              <span>{copiedEmail ? 'Email скопирован!' : 'Email'}</span>
+              <Mail size={15} color="var(--color-primary-light)" />
+              <span>{copiedEmail ? 'Скопирован!' : 'Email'}</span>
             </button>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer style={{ padding: '36px 0', borderTop: '1px solid var(--border-subtle)', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.84rem', background: '#05070B' }}>
+      <footer style={{ padding: '28px 0', borderTop: '1px solid var(--border-subtle)', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8rem', background: '#05070B' }}>
         <div className="container">
-          <div style={{ fontWeight: 800, color: '#FFF', fontSize: '1rem', marginBottom: '6px' }}>Айдар Гарипов — Full-Stack & Bot Developer</div>
-          <p style={{ color: 'var(--color-primary-light)', fontFamily: 'var(--font-mono)', fontSize: '0.82rem', marginTop: '4px' }}>
+          <div style={{ fontWeight: 800, color: '#FFF', fontSize: '0.95rem', marginBottom: '4px' }}>Айдар Гарипов — Full-Stack & Bot Developer</div>
+          <p style={{ color: 'var(--color-primary-light)', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', marginTop: '2px' }}>
             Сделано с терминалом и любовью ❤️
           </p>
-          <p style={{ marginTop: '10px', fontSize: '0.72rem' }}>© {new Date().getFullYear()} Все права защищены. garipov-ar.github.io</p>
+          <p style={{ marginTop: '8px', fontSize: '0.7rem' }}>© {new Date().getFullYear()} Все права защищены. garipov-ar.github.io</p>
         </div>
       </footer>
 
-      {/* Back to Top */}
+      {/* Back to Top (Safely offset) */}
       {showScrollTop && (
         <button
           type="button"
           onClick={scrollToTop}
           style={{
             position: 'fixed',
-            bottom: '24px',
-            right: '20px',
-            width: '44px',
-            height: '44px',
-            borderRadius: '12px',
+            bottom: '16px',
+            right: '16px',
+            width: '38px',
+            height: '38px',
+            borderRadius: '10px',
             background: 'rgba(12, 16, 26, 0.92)',
             backdropFilter: 'blur(12px)',
             border: '1px solid rgba(var(--color-primary-rgb), 0.4)',
@@ -1991,13 +2011,13 @@ export default function PortfolioHub() {
             justifyContent: 'center',
             cursor: 'pointer',
             boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(var(--color-primary-rgb), 0.25)',
-            zIndex: 90,
+            zIndex: 80,
             transition: 'all 0.25s ease',
           }}
           title="Наверх"
           aria-label="Наверх"
         >
-          <ChevronUp size={20} color="var(--color-primary-light)" />
+          <ChevronUp size={18} color="var(--color-primary-light)" />
         </button>
       )}
 
@@ -2006,31 +2026,31 @@ export default function PortfolioHub() {
         <div
           style={{
             position: 'fixed',
-            bottom: '16px',
+            bottom: '12px',
             left: '50%',
             transform: 'translateX(-50%)',
-            width: 'calc(100% - 32px)',
-            maxWidth: '640px',
+            width: 'calc(100% - 24px)',
+            maxWidth: '600px',
             background: 'rgba(12, 16, 26, 0.96)',
             backdropFilter: 'blur(20px)',
             border: '1px solid rgba(var(--color-primary-rgb), 0.3)',
-            borderRadius: '16px',
-            padding: '16px 20px',
+            borderRadius: '14px',
+            padding: '12px 16px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            gap: '16px',
+            gap: '12px',
             boxShadow: '0 16px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(var(--color-primary-rgb), 0.15)',
             zIndex: 100,
             flexWrap: 'wrap',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, minWidth: '220px' }}>
-            <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(var(--color-primary-rgb), 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary-light)', flexShrink: 0 }}>
-              <Cookie size={18} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, minWidth: '200px' }}>
+            <div style={{ width: 28, height: 28, borderRadius: 7, background: 'rgba(var(--color-primary-rgb), 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary-light)', flexShrink: 0 }}>
+              <Cookie size={16} />
             </div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
-              Этот сайт использует файлы cookie для улучшения пользовательского опыта и аналитики.
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+              Этот сайт использует файлы cookie для аналитики и улучшения UX.
             </div>
           </div>
 
@@ -2038,7 +2058,7 @@ export default function PortfolioHub() {
             type="button"
             onClick={acceptCookies}
             className="cyber-btn"
-            style={{ padding: '8px 18px', fontSize: '0.82rem', borderRadius: 8, minHeight: 38 }}
+            style={{ padding: '6px 14px', fontSize: '0.78rem', borderRadius: 7, minHeight: 32 }}
           >
             Принять
           </button>
