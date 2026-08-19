@@ -2,7 +2,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  Code2,
   ExternalLink,
   Send,
   Sparkles,
@@ -16,19 +15,8 @@ import {
   ArrowUpRight,
   Calculator,
   Terminal as TerminalIcon,
-  Cpu,
-  Database,
-  Globe,
-  Palette,
-  Server,
-  Workflow,
-  Shield,
-  Bot,
   Copy,
   Check,
-  CreditCard,
-  MessageSquareCode,
-  LayoutGrid,
 } from 'lucide-react';
 
 const GithubIcon = ({ size = 18 }: { size?: number }) => (
@@ -223,6 +211,128 @@ function HeroInteractiveCanvas() {
   );
 }
 
+// Tech Brand SVG Icons
+const TECH_ICONS: Record<string, React.ReactNode> = {
+  'Python': (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M11.91 2C6.44 2 6.78 4.38 6.78 4.38L6.79 6.84H12V7.61H3.69S2 7.42 2 12.87c0 5.46 1.48 5.25 1.48 5.25h2.21v-3.11s-.12-3.69 3.65-3.69h5.18s3.53.06 3.53-3.44V4.44S18.57 2 11.91 2zM9.4 3.73a.87.87 0 110 1.74.87.87 0 010-1.74z" fill="#38BDF8"/>
+      <path d="M12.09 22c5.47 0 5.13-2.38 5.13-2.38l-.01-2.46H12v-.77h8.31s1.69.19 1.69-5.26c0-5.46-1.48-5.25-1.48-5.25h-2.21v3.11s.12 3.69-3.65 3.69H9.48s-3.53-.06-3.53 3.44v3.44S5.43 22 12.09 22zm2.51-1.73a.87.87 0 110-1.74.87.87 0 010 1.74z" fill="#FBBF24"/>
+    </svg>
+  ),
+  'Java': (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M8.8 17.5c-2.3.2-3.8.7-3.8 1.3 0 .9 3.1 1.7 7 1.7s7-.8 7-1.7c0-.6-1.5-1.1-3.8-1.3" stroke="#F87171" strokeWidth="1.6" strokeLinecap="round"/>
+      <path d="M9 13.5c-1.8.3-2.8.7-2.8 1.2 0 .8 2.6 1.5 5.8 1.5 3.2 0 5.8-.7 5.8-1.5 0-.5-1-1-2.8-1.2" stroke="#F87171" strokeWidth="1.6" strokeLinecap="round"/>
+      <path d="M12 2c1 2-2 3.5-2 5.5s3 3.5 1 5.5" stroke="#F87171" strokeWidth="1.8" strokeLinecap="round"/>
+      <path d="M15 4c1 1.5-1.5 2.5-1.5 4s2 2.5.5 4" stroke="#F87171" strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  ),
+  'Node.js': (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M12 2l8.66 5v10L12 22l-8.66-5V7L12 2z" fill="#34D399" opacity="0.2"/>
+      <path d="M12 2l8.66 5v10L12 22l-8.66-5V7L12 2z" stroke="#34D399" strokeWidth="1.6"/>
+      <path d="M12 6.5l5 3v5l-5 3-5-3v-5l5-3z" fill="#34D399"/>
+    </svg>
+  ),
+  'Next.js 15': (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="10" fill="#000" stroke="#FFF" strokeWidth="1.6"/>
+      <path d="M15 8v8M9 8v8l7.5-9" stroke="#FFF" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  'React 19': (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <ellipse cx="12" cy="12" rx="10" ry="4.2" stroke="#60A5FA" strokeWidth="1.5" transform="rotate(30 12 12)"/>
+      <ellipse cx="12" cy="12" rx="10" ry="4.2" stroke="#60A5FA" strokeWidth="1.5" transform="rotate(90 12 12)"/>
+      <ellipse cx="12" cy="12" rx="10" ry="4.2" stroke="#60A5FA" strokeWidth="1.5" transform="rotate(150 12 12)"/>
+      <circle cx="12" cy="12" r="1.8" fill="#60A5FA"/>
+    </svg>
+  ),
+  'TypeScript': (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <rect width="24" height="24" rx="4" fill="#3178C6"/>
+      <path d="M11.5 9H6.5V11H8V18H10V11H11.5V9Z" fill="#FFF"/>
+      <path d="M17.8 11.2C17.4 10.4 16.5 10 15.3 10C13.8 10 12.8 10.8 12.8 12.1C12.8 14.5 16 13.7 16 15.4C16 16.2 15.3 16.6 14.2 16.6C13.1 16.6 12.2 16 11.8 15.2L10.3 16.1C11 17.5 12.4 18.2 14.2 18.2C16.4 18.2 17.8 17.1 17.8 15.4C17.8 13 14.6 13.8 14.6 12.2C14.6 11.6 15.1 11.3 15.9 11.3C16.7 11.3 17.3 11.7 17.6 12.3L17.8 11.2Z" fill="#FFF"/>
+    </svg>
+  ),
+  'Telegram Bot API': (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="11" fill="#229ED9"/>
+      <path d="M17.5 7.5L5.5 12.2l4.3 2.1 2.2 4.3 1.2-3.4 4.3-7.7z" fill="#FFF"/>
+      <path d="M9.8 14.3l3.4-3.4" stroke="#229ED9" strokeWidth="1.2"/>
+    </svg>
+  ),
+  'Docker': (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M22 12.5c-.5-.4-1.5-.4-2.1 0-.3-1.6-1.5-2.7-3-2.7h-.5c-.3-1.4-1.5-2.3-2.9-2.3-1.6 0-3 1.2-3 2.8H4c-1.1 0-2 .9-2 2 0 4.4 3.6 8 8 8 5.3 0 9.8-3.8 10-9.1.7.3 1.5.1 2-.7z" fill="#38BDF8" opacity="0.2"/>
+      <path d="M22 12.5c-.5-.4-1.5-.4-2.1 0-.3-1.6-1.5-2.7-3-2.7h-.5c-.3-1.4-1.5-2.3-2.9-2.3-1.6 0-3 1.2-3 2.8H4c-1.1 0-2 .9-2 2 0 4.4 3.6 8 8 8 5.3 0 9.8-3.8 10-9.1.7.3 1.5.1 2-.7z" stroke="#38BDF8" strokeWidth="1.5"/>
+      <rect x="5" y="9.5" width="2" height="2" fill="#38BDF8"/>
+      <rect x="8" y="9.5" width="2" height="2" fill="#38BDF8"/>
+      <rect x="8" y="7" width="2" height="2" fill="#38BDF8"/>
+    </svg>
+  ),
+  'Kubernetes': (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="10" stroke="#326CE5" strokeWidth="1.5"/>
+      <polygon points="12,4 19,8 19,16 12,20 5,16 5,8" stroke="#326CE5" strokeWidth="1.4" fill="none"/>
+      <circle cx="12" cy="12" r="3" fill="#326CE5"/>
+    </svg>
+  ),
+  'PostgreSQL': (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <ellipse cx="12" cy="7" rx="8" ry="3.5" stroke="#818CF8" strokeWidth="1.6"/>
+      <path d="M4 7v10c0 1.9 3.6 3.5 8 3.5s8-1.6 8-3.5V7" stroke="#818CF8" strokeWidth="1.6"/>
+      <path d="M4 12c0 1.9 3.6 3.5 8 3.5s8-1.6 8-3.5" stroke="#818CF8" strokeWidth="1.6"/>
+    </svg>
+  ),
+  'RabbitMQ': (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="16" rx="4" fill="#FF6600" opacity="0.15"/>
+      <path d="M12 7c-2.5 0-4 1.5-4 4 0 1.5.5 3 2 3.8v2.2h4v-2.2c1.5-.8 2-2.3 2-3.8 0-2.5-1.5-4-4-4z" fill="#FB923C"/>
+      <circle cx="10.5" cy="10.5" r="1" fill="#FFF"/>
+      <circle cx="13.5" cy="10.5" r="1" fill="#FFF"/>
+    </svg>
+  ),
+  'Nginx': (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <polygon points="12,2 21.5,7.5 21.5,18.5 12,24 2.5,18.5 2.5,7.5" fill="#009639" opacity="0.2"/>
+      <polygon points="12,2 21.5,7.5 21.5,18.5 12,24 2.5,18.5 2.5,7.5" stroke="#34D399" strokeWidth="1.6"/>
+      <path d="M8 8v8l8-8v8" stroke="#FFF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  'Linux': (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M12 3c-2.8 0-4 2.5-4 5.5 0 1.5.5 3 1 4.5-.8.5-2 1.5-2 3.5 0 2.5 2.5 4.5 7 4.5s7-2 7-4.5c0-2-1.2-3-2-3.5.5-1.5 1-3 1-4.5 0-3-1.2-5.5-4-5.5z" stroke="#FBBF24" strokeWidth="1.6" fill="#FBBF24" fillOpacity="0.2"/>
+      <circle cx="10" cy="7.5" r="1" fill="#FFF"/>
+      <circle cx="14" cy="7.5" r="1" fill="#FFF"/>
+      <ellipse cx="12" cy="10" rx="1.5" ry="1" fill="#F59E0B"/>
+    </svg>
+  ),
+  'Tailwind CSS': (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M6 12c.7-2 2-3 4-3 3 0 3 3 6 3 2 0 3.3-1 4-3-.7 2-2 3-4 3-3 0-3-3-6-3-2 0-3.3 1-4 3zm-4 5c.7-2 2-3 4-3 3 0 3 3 6 3 2 0 3.3-1 4-3-.7 2-2 3-4 3-3 0-3-3-6-3-2 0-3.3 1-4 3z" fill="#38BDF8"/>
+    </svg>
+  ),
+  'Git & CI/CD': (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <rect width="18" height="18" rx="3" transform="rotate(45 12 12)" stroke="#F43F5E" strokeWidth="1.6" fill="#F43F5E" fillOpacity="0.15"/>
+      <circle cx="12" cy="8" r="1.5" fill="#FFF"/>
+      <circle cx="12" cy="16" r="1.5" fill="#FFF"/>
+      <circle cx="16" cy="12" r="1.5" fill="#FFF"/>
+      <path d="M12 9.5v5M12 12h2.5" stroke="#FFF" strokeWidth="1.5"/>
+    </svg>
+  ),
+  'Figma': (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M8 2h4v5H8a2.5 2.5 0 010-5z" fill="#F24E1E"/>
+      <path d="M12 2h4a2.5 2.5 0 010 5h-4V2z" fill="#FF7262"/>
+      <path d="M8 7h4v5H8a2.5 2.5 0 010-5z" fill="#A259FF"/>
+      <circle cx="14.5" cy="9.5" r="2.5" fill="#1ABCFE"/>
+      <path d="M8 12h4v5a2.5 2.5 0 11-4-2.5V12z" fill="#0ACF83"/>
+    </svg>
+  ),
+};
+
 interface Project {
   id: string;
   title: string;
@@ -355,24 +465,24 @@ const PROJECTS: Project[] = [
   },
 ];
 
-// Unified Developer Technologies: Original + Modern Web
+// 16 Real Technologies
 const TECHNOLOGIES = [
-  { name: 'Python', category: 'Backend / Scripting', color: '#38BDF8' },
-  { name: 'Java', category: 'Backend & Enterprise', color: '#F87171' },
-  { name: 'Node.js', category: 'Runtime & APIs', color: '#34D399' },
-  { name: 'Next.js 15', category: 'Full-Stack Web', color: '#FFFFFF' },
-  { name: 'React 19', category: 'Frontend UI', color: '#60A5FA' },
-  { name: 'TypeScript', category: 'Language', color: '#3B82F6' },
-  { name: 'Telegram Bot API', category: 'Bots & Mini Apps', color: '#229ED9' },
-  { name: 'PostgreSQL', category: 'Database', color: '#818CF8' },
-  { name: 'Docker', category: 'Containers', color: '#38BDF8' },
-  { name: 'Kubernetes', category: 'Orchestration', color: '#60A5FA' },
-  { name: 'RabbitMQ', category: 'Message Queue', color: '#FB923C' },
-  { name: 'Nginx', category: 'Web Server', color: '#34D399' },
-  { name: 'Linux', category: 'OS & Infrastructure', color: '#FBBF24' },
-  { name: 'Tailwind CSS', category: 'Styling', color: '#38BDF8' },
-  { name: 'Git & CI/CD', category: 'DevOps', color: '#F43F5E' },
-  { name: 'Figma', category: 'UX/UI Design', color: '#C084FC' },
+  { name: 'Python', category: 'Backend / Scripts' },
+  { name: 'Java', category: 'Backend & Enterprise' },
+  { name: 'Node.js', category: 'Runtime & APIs' },
+  { name: 'Next.js 15', category: 'Full-Stack Web' },
+  { name: 'React 19', category: 'Frontend UI' },
+  { name: 'TypeScript', category: 'Language' },
+  { name: 'Telegram Bot API', category: 'Bots & Mini Apps' },
+  { name: 'PostgreSQL', category: 'Database' },
+  { name: 'Docker', category: 'Containers' },
+  { name: 'Kubernetes', category: 'Orchestration' },
+  { name: 'RabbitMQ', category: 'Message Queue' },
+  { name: 'Nginx', category: 'Web Server' },
+  { name: 'Linux', category: 'OS & Infrastructure' },
+  { name: 'Tailwind CSS', category: 'Styling' },
+  { name: 'Git & CI/CD', category: 'DevOps' },
+  { name: 'Figma', category: 'UX/UI Design' },
 ];
 
 const INITIAL_LOGS = [
@@ -401,15 +511,13 @@ export default function PortfolioHub() {
 
     let response = '';
     if (cleanCmd === 'help') {
-      response = 'Доступные команды: projects, stack, contact, stats, clear, reload';
+      response = 'Доступные команды: projects, stack, contact, clear, reload';
     } else if (cleanCmd === 'projects') {
       response = `В базе 6 кейсов: ${PROJECTS.map((p) => p.title.split('—')[0].trim()).join(', ')}`;
     } else if (cleanCmd === 'stack') {
-      response = 'Стек: Python, Java, Node.js, Next.js 15, React 19, TypeScript, Docker, Kubernetes, PostgreSQL, RabbitMQ, Linux, Tailwind CSS';
+      response = 'Стек: Python, Java, Node.js, Next.js 15, React 19, TypeScript, Docker, Kubernetes, PostgreSQL, RabbitMQ, Nginx, Linux, Tailwind CSS';
     } else if (cleanCmd === 'contact') {
       response = 'Telegram: @Aidar_RG (https://t.me/Aidar_RG) | Email: disprogar@gmail.com';
-    } else if (cleanCmd === 'stats') {
-      response = 'Метрики: 6 проектов, PageSpeed 98/100, 100% Mobile First, Конверсия x2.8';
     } else if (cleanCmd === 'clear') {
       setLogs([]);
       setCmdInput('');
@@ -495,7 +603,7 @@ export default function PortfolioHub() {
           </div>
 
           {/* Interactive Terminal Window */}
-          <div id="terminal" style={{ maxWidth: 900, margin: '0 auto 60px auto' }}>
+          <div id="terminal" style={{ maxWidth: 900, margin: '0 auto 20px auto' }}>
             <div className="terminal-window">
               <div className="terminal-header">
                 <div className="terminal-dots">
@@ -532,30 +640,10 @@ export default function PortfolioHub() {
               </div>
             </div>
           </div>
-
-          {/* Clean Quick Metrics Strip */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px', background: 'rgba(12, 16, 26, 0.85)', backdropFilter: 'blur(16px)', border: '1px solid var(--border-subtle)', borderRadius: 20, padding: '24px', boxShadow: '0 12px 36px rgba(0,0,0,0.4)' }}>
-            <div>
-              <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#60A5FA', fontFamily: 'var(--font-heading)' }}>6</div>
-              <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>Реализованных проектов</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#34D399', fontFamily: 'var(--font-heading)' }}>98/100</div>
-              <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>PageSpeed производительность</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#A78BFA', fontFamily: 'var(--font-heading)' }}>100%</div>
-              <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>Mobile First адаптивность</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#FBBF24', fontFamily: 'var(--font-heading)' }}>x2.8</div>
-              <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>Конверсия с калькулятором</div>
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* Technologies Section (Original + Modern Web) */}
+      {/* Technologies Section with Real Brand SVG Icons */}
       <section id="technologies" style={{ padding: '80px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
         <div className="container">
           <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 48px auto' }}>
@@ -566,7 +654,7 @@ export default function PortfolioHub() {
             <p style={{ color: 'var(--text-muted)' }}>Инструменты разработки масштабируемых систем и веб-сервисов</p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px' }}>
             {TECHNOLOGIES.map((tech, idx) => (
               <div
                 key={idx}
@@ -575,15 +663,17 @@ export default function PortfolioHub() {
                   background: 'var(--bg-main)',
                   padding: '18px 20px',
                   display: 'flex',
-                  flexDirection: 'column',
-                  gap: '6px',
+                  alignItems: 'center',
+                  gap: '14px',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontWeight: 700, fontSize: '1rem', color: '#FFF' }}>{tech.name}</span>
-                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: tech.color, boxShadow: `0 0 8px ${tech.color}` }}></span>
+                <div style={{ width: 38, height: 38, borderRadius: 10, background: 'rgba(255,255,255,0.04)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: '1px solid rgba(255,255,255,0.08)' }}>
+                  {TECH_ICONS[tech.name] || <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#3B82F6' }}></span>}
                 </div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{tech.category}</span>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#FFF' }}>{tech.name}</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{tech.category}</div>
+                </div>
               </div>
             ))}
           </div>
