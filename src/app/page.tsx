@@ -93,7 +93,6 @@ function HeroInteractiveCanvas() {
       parent.addEventListener('mouseleave', handleMouseLeave);
     }
 
-    // Particle nodes
     const particleCount = Math.min(Math.floor((width * height) / 12000), 75);
     const particles: {
       x: number;
@@ -122,13 +121,11 @@ function HeroInteractiveCanvas() {
     }
 
     const render = () => {
-      // Smooth lerp mouse
       mouse.x += (mouse.targetX - mouse.x) * 0.1;
       mouse.y += (mouse.targetY - mouse.y) * 0.1;
 
       ctx.clearRect(0, 0, width, height);
 
-      // Draw Cursor Spotlight Glow
       if (mouse.isHovering) {
         const gradient = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, mouse.radius * 1.5);
         gradient.addColorStop(0, 'rgba(59, 130, 246, 0.18)');
@@ -138,18 +135,14 @@ function HeroInteractiveCanvas() {
         ctx.fillRect(0, 0, width, height);
       }
 
-      // Update & Draw Particles
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
-
         p.x += p.vx;
         p.y += p.vy;
 
-        // Bounce from walls
         if (p.x < 0 || p.x > width) p.vx *= -1;
         if (p.y < 0 || p.y > height) p.vy *= -1;
 
-        // Mouse interaction (repel / attract)
         const dx = mouse.x - p.x;
         const dy = mouse.y - p.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -163,7 +156,6 @@ function HeroInteractiveCanvas() {
           p.radius += (p.baseRadius - p.radius) * 0.1;
         }
 
-        // Draw particle
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
@@ -174,7 +166,6 @@ function HeroInteractiveCanvas() {
         ctx.shadowBlur = 0;
         ctx.globalAlpha = 1;
 
-        // Connect particle to mouse if close
         if (mouse.isHovering && dist < mouse.radius) {
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
@@ -184,7 +175,6 @@ function HeroInteractiveCanvas() {
           ctx.stroke();
         }
 
-        // Connect particles with each other
         for (let j = i + 1; j < particles.length; j++) {
           const p2 = particles[j];
           const pjdx = p.x - p2.x;
@@ -236,12 +226,12 @@ function HeroInteractiveCanvas() {
 interface Project {
   id: string;
   title: string;
-  category: 'web' | 'bots' | 'backend';
+  category: 'construction' | 'services';
   categoryLabel: string;
   description: string;
   features: string[];
   stack: string[];
-  demoUrl?: string;
+  demoUrl: string;
   githubUrl: string;
   image: string;
   accentColor: string;
@@ -252,8 +242,8 @@ const PROJECTS: Project[] = [
   {
     id: 'nordic',
     title: 'Nordic Craft — Строительная компания',
-    category: 'web',
-    categoryLabel: 'Next.js & Frontend',
+    category: 'construction',
+    categoryLabel: 'Строительство и архитектура',
     description: 'Премиальный адаптивный сайт для строительной компании с интерактивным 5-шаговым квиз-калькулятором сметы и ипотеки.',
     features: [
       '5-шаговый интерактивный квиз-калькулятор стоимости и ипотеки',
@@ -271,8 +261,8 @@ const PROJECTS: Project[] = [
   {
     id: 'echo',
     title: 'Гостевой комплекс «ЭХО»',
-    category: 'web',
-    categoryLabel: 'Next.js & Frontend',
+    category: 'construction',
+    categoryLabel: 'Посуточная аренда & Спа',
     description: 'Атмосферный лендинг для загородного комплекса в таежном стиле с переключателем домов, умным букингом и спа-ритуалами.',
     features: [
       'Интерактивный переключатель (A-Frame «Шалаш» vs «Большой дом»)',
@@ -288,82 +278,10 @@ const PROJECTS: Project[] = [
     metrics: 'Dynamic Pricing • 2 объекта',
   },
   {
-    id: 'transaction-engine',
-    title: 'Transaction Processing Engine — Highload',
-    category: 'backend',
-    categoryLabel: 'Backend & Highload',
-    description: 'Высоконагруженный распределенный движок процессинга финансовых транзакций с очередями сообщений и защитой от сбоев.',
-    features: [
-      'Асинхронная обработка потока транзакций через Apache Kafka',
-      'Гарантия идемпотентности и строгой целостности данных (ACID)',
-      'Тюнинг JVM памяти и оптимизация пула соединений PostgreSQL',
-      'Архитектура микросервисов с метриками и мониторингом',
-    ],
-    stack: ['Java 21', 'Spring Boot 3', 'Apache Kafka', 'PostgreSQL', 'Docker', 'JVM Tuning'],
-    githubUrl: 'https://github.com/garipov-ar/transaction-engine',
-    image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1000&q=80',
-    accentColor: '#38BDF8',
-    metrics: 'High Throughput • Kafka Pipeline',
-  },
-  {
-    id: 'field-support',
-    title: 'Field Support System — Telecom Bot + CMS',
-    category: 'bots',
-    categoryLabel: 'Telegram Боты & CMS',
-    description: 'Корпоративная экосистема для выездных инженеров связи: Telegram-бот для регламентов и CMS-панель управления базой знаний.',
-    features: [
-      'Telegram-бот для мгновенного поиска регламентов и схем оборудования',
-      'CMS-панель для диспетчеров и технических авторов',
-      'Интеграция с реляционной базой данных PostgreSQL',
-      'Система разграничения прав доступа и логирование запросов',
-    ],
-    stack: ['Java', 'Spring Boot', 'Telegram Bot API', 'PostgreSQL', 'REST API', 'Docker'],
-    githubUrl: 'https://github.com/garipov-ar/field-support-system',
-    image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1000&q=80',
-    accentColor: '#818CF8',
-    metrics: 'Telegram Bot + CMS • PostgreSQL',
-  },
-  {
-    id: 'audit-log',
-    title: 'Immutable Financial Audit Log Service',
-    category: 'backend',
-    categoryLabel: 'Backend & Highload',
-    description: 'Отказоустойчивый сервис неизменяемого аудита финансовых транзакций и системных событий (WORM-паттерн).',
-    features: [
-      'Защита записей аудита от модификации и несанкционированного удаления',
-      'Партиционирование таблиц PostgreSQL для работы с миллионами записей',
-      'REST API для быстрой интеграции с банковскими шлюзами',
-      'Полная трассировка действий операторов и транзакций',
-    ],
-    stack: ['Java', 'Spring Boot', 'PostgreSQL', 'REST API', 'Docker'],
-    githubUrl: 'https://github.com/garipov-ar/audit-log-service',
-    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=80',
-    accentColor: '#A78BFA',
-    metrics: 'Immutable Audit • Enterprise',
-  },
-  {
-    id: 'briefy-bot',
-    title: 'Briefy Bot — Умный Telegram-бот сбора брифов',
-    category: 'bots',
-    categoryLabel: 'Telegram Боты & CMS',
-    description: 'Интерактивный Telegram-бот для автоматизированного анкетирования клиентов, сбора ТЗ и передачи структурированных лидов.',
-    features: [
-      'Пошаговый сценарий опроса клиентов с валидацией ответов',
-      'Генерация структурированного брифа в Telegram и экспорт',
-      'Удобные Inline-кнопки и сохранение состояния диалога',
-      'Мгновенное уведомление менеджеров о новой заполненной заявке',
-    ],
-    stack: ['Python', 'aiogram', 'Telegram Bot API', 'SQLite/PostgreSQL'],
-    githubUrl: 'https://github.com/garipov-ar/briefy-bot',
-    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1000&q=80',
-    accentColor: '#F43F5E',
-    metrics: 'Python • aiogram • Брифы',
-  },
-  {
     id: 'door',
     title: 'Дверь-Мастер — Установка межкомнатных дверей',
-    category: 'web',
-    categoryLabel: 'Next.js & Frontend',
+    category: 'services',
+    categoryLabel: 'Бытовые услуги',
     description: 'Высококонверсионный сайт для мастеров по установке дверей с онлайн-калькулятором, врезкой магнитных замков и гарантией 2 года.',
     features: [
       'Калькулятор стоимости (распашные, Invisible, купе, доборы, врезка)',
@@ -381,8 +299,8 @@ const PROJECTS: Project[] = [
   {
     id: 'demolition',
     title: 'Демонтаж-Про — Демонтажные работы под ключ',
-    category: 'web',
-    categoryLabel: 'Next.js & Frontend',
+    category: 'services',
+    categoryLabel: 'Бытовые услуги',
     description: 'Продающий лендинг по сносу стен, перегородок, стяжки и вывозу строительного мусора контейнерами 8–27 м³.',
     features: [
       'Калькулятор демонтажа по площади пола и типу стен',
@@ -400,8 +318,8 @@ const PROJECTS: Project[] = [
   {
     id: 'handyman',
     title: 'Муж на час 24/7 — Срочный бытовой ремонт',
-    category: 'web',
-    categoryLabel: 'Next.js & Frontend',
+    category: 'services',
+    categoryLabel: 'Бытовые услуги',
     description: 'Лендинг службы срочного мелкого ремонта с интерактивным чек-листом услуг и выездом мастера за 45 минут.',
     features: [
       'Интерактивный чек-лист бытовых услуг с автоматическим подсчетом сметы',
@@ -419,8 +337,8 @@ const PROJECTS: Project[] = [
   {
     id: 'electrical',
     title: 'Электро-Монтаж — Электромонтажные работы',
-    category: 'web',
-    categoryLabel: 'Next.js & Frontend',
+    category: 'services',
+    categoryLabel: 'Бытовые услуги',
     description: 'Экспертный сайт по электромонтажу в квартирах и домах по ГОСТ и ПУЭ с онлайн-расчетом проекта и сборкой щитов.',
     features: [
       'Калькулятор стоимости по типу жилья (1к, 2к, 3к, коттедж) и материалу стен',
@@ -437,100 +355,38 @@ const PROJECTS: Project[] = [
   },
 ];
 
-const BOT_SERVICES = [
-  {
-    title: 'Лидогенерация & CRM Боты',
-    icon: MessageSquareCode,
-    color: '#38BDF8',
-    desc: 'Мгновенный перехват заявок с сайтов, распределение по менеджерам, интеграция с Битрикс24, amoCRM и Google Таблицами.',
-  },
-  {
-    title: 'Telegram Mini Apps (WebApps)',
-    icon: LayoutGrid,
-    color: '#818CF8',
-    desc: 'Полноценные веб-приложения внутри Telegram (магазины, каталоги, квизы на Next.js/React) без установки сторонних приложений.',
-  },
-  {
-    title: 'Боты с онлайн-оплатой',
-    icon: CreditCard,
-    color: '#34D399',
-    desc: 'Прием платежей через ЮKassa, CloudPayments, эквайринг банков, платные подписки, продажа цифровых товаров и инфопродуктов.',
-  },
-  {
-    title: 'AI Ассистенты & Автоматизация',
-    icon: Bot,
-    color: '#FBBF24',
-    desc: 'Умные чат-боты с интеграцией нейросетей (OpenAI GPT, Claude, DeepSeek) для автоматических консультаций и поддержки 24/7.',
-  },
-];
-
-const STACK_CATEGORIES = [
-  {
-    title: 'Frontend & UI Core',
-    icon: Code2,
-    color: '#60A5FA',
-    skills: [
-      'Next.js 15 (App Router, Turbopack, SSG/SSR)',
-      'React 19 & TypeScript 5',
-      'Tailwind CSS & CSS Modules',
-      'Framer Motion & микроанимации',
-      'Mobile First адаптивность',
-      'Google PageSpeed 95+ (Core Web Vitals)',
-    ],
-  },
-  {
-    title: 'Backend & Highload Systems',
-    icon: Server,
-    color: '#38BDF8',
-    skills: [
-      'Java 21 & Spring Boot 3 (Security, Data)',
-      'Apache Kafka (распределенные очереди)',
-      'Node.js, Express & Python (FastAPI/aiogram)',
-      'PostgreSQL, MySQL, Redis кэширование',
-      'REST API, WebSockets & gRPC',
-      'Docker контейнеризация & микросервисы',
-    ],
-  },
-  {
-    title: 'Telegram Боты & Mini Apps',
-    icon: Bot,
-    color: '#34D399',
-    skills: [
-      'Telegram Bot API (Node.js / Python / Java)',
-      'Telegram Mini Apps (TMA / WebApp SDK)',
-      'Telegraf, grammY, aiogram',
-      'Платежи в Telegram (ЮKassa, Stars)',
-      'Интерактивные Inline-меню & FSM стейты',
-      'AI-боты (OpenAI / DeepSeek API)',
-    ],
-  },
-  {
-    title: 'DevOps, Cloud & UX/UI',
-    icon: Palette,
-    color: '#FBBF24',
-    skills: [
-      'GitHub Actions (автоматический CI/CD)',
-      'Vercel, GitHub Pages, Nginx, Linux',
-      'Figma (Pixel-Perfect верстка)',
-      'SEO-оптимизация & Schema.org / OpenGraph',
-      'Интерактивные квиз-калькуляторы',
-      'CRM интеграции (Bitrix24, amoCRM)',
-    ],
-  },
+// Unified Developer Technologies: Original + Modern Web
+const TECHNOLOGIES = [
+  { name: 'Python', category: 'Backend / Scripting', color: '#38BDF8' },
+  { name: 'Java', category: 'Backend & Enterprise', color: '#F87171' },
+  { name: 'Node.js', category: 'Runtime & APIs', color: '#34D399' },
+  { name: 'Next.js 15', category: 'Full-Stack Web', color: '#FFFFFF' },
+  { name: 'React 19', category: 'Frontend UI', color: '#60A5FA' },
+  { name: 'TypeScript', category: 'Language', color: '#3B82F6' },
+  { name: 'Telegram Bot API', category: 'Bots & Mini Apps', color: '#229ED9' },
+  { name: 'PostgreSQL', category: 'Database', color: '#818CF8' },
+  { name: 'Docker', category: 'Containers', color: '#38BDF8' },
+  { name: 'Kubernetes', category: 'Orchestration', color: '#60A5FA' },
+  { name: 'RabbitMQ', category: 'Message Queue', color: '#FB923C' },
+  { name: 'Nginx', category: 'Web Server', color: '#34D399' },
+  { name: 'Linux', category: 'OS & Infrastructure', color: '#FBBF24' },
+  { name: 'Tailwind CSS', category: 'Styling', color: '#38BDF8' },
+  { name: 'Git & CI/CD', category: 'DevOps', color: '#F43F5E' },
+  { name: 'Figma', category: 'UX/UI Design', color: '#C084FC' },
 ];
 
 const INITIAL_LOGS = [
-  '⚡ [aidar@hub ~]$ init interactive-ecosystem --prod',
-  '✔ [neural-mesh] Interactive Cursor Particle Canvas active (60 FPS)',
+  '⚡ [aidar@hub ~]$ init portfolio-core --prod',
   '✔ [kernel] Loaded Next.js 15.1 (Turbopack) & React 19.0.0',
-  '✔ [backend] Java 21 / Spring Boot 3 & Apache Kafka ready',
-  '✔ [telegram] Bot Gateway & Mini Apps SDK mounted: @Aidar_RG',
-  '✔ [cases] 10 live production repositories indexed & verified',
-  '💡 [terminal] Hover hero canvas to interact with neural grid nodes.',
+  '✔ [stack] Python, Java, Node.js, Next.js, Docker, Kubernetes, PostgreSQL ready',
+  '✔ [cases] 6 live production projects verified & mounted',
+  '✔ [network] Status: 200 OK | Core Web Vitals: 98/100',
+  '✔ [telegram] Gateway ready: https://t.me/Aidar_RG',
+  '💡 [terminal] Type "help" or click any project below to inspect.',
 ];
 
 export default function PortfolioHub() {
-  const [filter, setFilter] = useState<'all' | 'web' | 'bots' | 'backend'>('all');
+  const [filter, setFilter] = useState<'all' | 'construction' | 'services'>('all');
   const [logs, setLogs] = useState<string[]>(INITIAL_LOGS);
   const [cmdInput, setCmdInput] = useState('');
   const [copiedEmail, setCopiedEmail] = useState(false);
@@ -545,19 +401,15 @@ export default function PortfolioHub() {
 
     let response = '';
     if (cleanCmd === 'help') {
-      response = 'Доступные команды: projects, web, bots, backend, stack, contact, stats, clear, reload';
+      response = 'Доступные команды: projects, stack, contact, stats, clear, reload';
     } else if (cleanCmd === 'projects') {
-      response = `Всего 10 проектов: 6 Web (Next.js), 2 Telegram Боты, 2 Highload Backend (Kafka/Spring Boot)`;
-    } else if (cleanCmd === 'backend') {
-      response = 'Backend: Transaction Processing Engine (Kafka, Java 21), Immutable Audit Log Service (Spring Boot, PostgreSQL)';
-    } else if (cleanCmd === 'bots') {
-      response = 'Telegram: Field Support System Bot (Java/CMS), Briefy Bot (Python/aiogram), CRM Lead Capture Bots';
+      response = `В базе 6 кейсов: ${PROJECTS.map((p) => p.title.split('—')[0].trim()).join(', ')}`;
     } else if (cleanCmd === 'stack') {
-      response = 'Стек: Next.js 15, React 19, TypeScript, Java 21 / Spring Boot 3, Apache Kafka, Python, Telegram Bot API, PostgreSQL, Docker, CI/CD';
+      response = 'Стек: Python, Java, Node.js, Next.js 15, React 19, TypeScript, Docker, Kubernetes, PostgreSQL, RabbitMQ, Linux, Tailwind CSS';
     } else if (cleanCmd === 'contact') {
       response = 'Telegram: @Aidar_RG (https://t.me/Aidar_RG) | Email: disprogar@gmail.com';
     } else if (cleanCmd === 'stats') {
-      response = 'Метрики: 10 проектов, PageSpeed 98/100, Highload Kafka Engine, 100% Mobile First, Конверсия x2.8';
+      response = 'Метрики: 6 проектов, PageSpeed 98/100, 100% Mobile First, Конверсия x2.8';
     } else if (cleanCmd === 'clear') {
       setLogs([]);
       setCmdInput('');
@@ -591,14 +443,14 @@ export default function PortfolioHub() {
             </div>
             <div>
               <div style={{ fontWeight: 800, fontSize: '1.15rem', color: '#FFF', letterSpacing: '-0.02em' }}>Айдар Гарипов</div>
-              <div style={{ fontSize: '0.75rem', color: '#38BDF8', fontFamily: 'var(--font-mono)' }}>Full-Stack & Telegram Bot Developer</div>
+              <div style={{ fontSize: '0.75rem', color: '#38BDF8', fontFamily: 'var(--font-mono)' }}>Web & Software Developer</div>
             </div>
           </div>
 
           <nav style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-            <a href="#projects" style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none' }}>Проекты</a>
-            <a href="#bots" style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none' }}>Telegram Боты</a>
-            <a href="#stack" style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none' }}>Стек</a>
+            <a href="#projects" style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none' }}>Кейсы</a>
+            <a href="#technologies" style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none' }}>Технологии</a>
+            <a href="#terminal" style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none' }}>Терминал</a>
             <a href="#contacts" style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none' }}>Контакты</a>
           </nav>
 
@@ -618,29 +470,26 @@ export default function PortfolioHub() {
         <HeroInteractiveCanvas />
 
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ textAlign: 'center', maxWidth: 920, margin: '0 auto 50px auto' }}>
+          <div style={{ textAlign: 'center', maxWidth: 900, margin: '0 auto 50px auto' }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', borderRadius: 9999, background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.3)', color: '#34D399', fontSize: '0.8125rem', fontWeight: 700, marginBottom: '24px' }}>
               <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10B981', display: 'inline-block', boxShadow: '0 0 10px #10B981' }}></span>
-              Full-Stack разработка • Сайты, Боты & Высоконагруженный Backend
+              Открыт для новых проектов и заказов
             </div>
 
             <h1 style={{ fontSize: 'clamp(2.3rem, 5.2vw, 3.6rem)', lineHeight: 1.15, marginBottom: '24px' }}>
-              Разработка веб-сервисов, <span className="glow-accent">Telegram-ботов</span> и Backend-систем
+              Разработка современных сайтов на <span className="glow-accent">Next.js 15 & React 19</span>
             </h1>
 
-            <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', lineHeight: 1.65, maxWidth: 800, margin: '0 auto 36px auto' }}>
-              Создаю продающие сайты на Next.js 15, многофункциональных Telegram-ботов (Mini Apps, CRM, оплаты) и отказоустойчивые Backend-системы на Java/Spring Boot & Kafka.
+            <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', lineHeight: 1.65, maxWidth: 760, margin: '0 auto 36px auto' }}>
+              Создаю сверхбыстрые веб-приложения и продающие посадочные страницы с интерактивными квиз-калькуляторами сметы, плавной анимацией и интеграцией с Telegram / CRM.
             </p>
 
             <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
               <a href="#projects" className="cyber-btn" style={{ padding: '16px 36px', fontSize: '1rem' }}>
-                Смотреть проекты ({PROJECTS.length}) ➔
-              </a>
-              <a href="#bots" className="cyber-btn-ghost" style={{ padding: '16px 28px', fontSize: '1rem' }}>
-                <Bot size={18} /> Telegram Боты & WebApps
+                Смотреть кейсы ({PROJECTS.length}) ➔
               </a>
               <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn-ghost" style={{ padding: '16px 28px', fontSize: '1rem' }}>
-                <TelegramIcon size={18} /> Связаться в Telegram
+                <TelegramIcon size={18} /> Написать в Telegram
               </a>
             </div>
           </div>
@@ -655,7 +504,7 @@ export default function PortfolioHub() {
                   <div className="terminal-dot" style={{ background: '#10B981' }}></div>
                 </div>
                 <div style={{ fontSize: '0.75rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <TerminalIcon size={13} /> aidar-garipov@fullstack-core: ~
+                  <TerminalIcon size={13} /> aidar-garipov@portfolio-hub: ~
                 </div>
                 <div style={{ width: 40 }}></div>
               </div>
@@ -675,7 +524,7 @@ export default function PortfolioHub() {
                     type="text"
                     value={cmdInput}
                     onChange={(e) => setCmdInput(e.target.value)}
-                    placeholder="введите команду (help, projects, backend, bots, stack, contact)..."
+                    placeholder="введите команду (help, projects, stack, contact)..."
                     style={{ flex: 1, background: 'transparent', border: 'none', color: '#FFF', fontFamily: 'var(--font-mono)', fontSize: '0.84rem', outline: 'none' }}
                   />
                   <span className="cursor-blink"></span>
@@ -684,108 +533,59 @@ export default function PortfolioHub() {
             </div>
           </div>
 
-          {/* Quick Metrics Strip */}
+          {/* Clean Quick Metrics Strip */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px', background: 'rgba(12, 16, 26, 0.85)', backdropFilter: 'blur(16px)', border: '1px solid var(--border-subtle)', borderRadius: 20, padding: '24px', boxShadow: '0 12px 36px rgba(0,0,0,0.4)' }}>
             <div>
-              <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#60A5FA', fontFamily: 'var(--font-heading)' }}>10</div>
-              <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>Проектов в портфолио</div>
+              <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#60A5FA', fontFamily: 'var(--font-heading)' }}>6</div>
+              <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>Реализованных проектов</div>
             </div>
             <div>
-              <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#38BDF8', fontFamily: 'var(--font-heading)' }}>TG + TMA</div>
-              <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>Боты & Mini Apps под ключ</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#34D399', fontFamily: 'var(--font-heading)' }}>Kafka + Java</div>
-              <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>Highload Backend процессинг</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#FBBF24', fontFamily: 'var(--font-heading)' }}>98/100</div>
+              <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#34D399', fontFamily: 'var(--font-heading)' }}>98/100</div>
               <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>PageSpeed производительность</div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Telegram Bots & WebApps Section */}
-      <section id="bots" style={{ padding: '80px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
-        <div className="container">
-          <div style={{ textAlign: 'center', maxWidth: 680, margin: '0 auto 48px auto' }}>
-            <div style={{ color: '#38BDF8', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
-              &lt; telegram-ecosystem /&gt;
+            <div>
+              <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#A78BFA', fontFamily: 'var(--font-heading)' }}>100%</div>
+              <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>Mobile First адаптивность</div>
             </div>
-            <h2 style={{ fontSize: '2.2rem', marginBottom: '12px' }}>Разработка Telegram-ботов & Mini Apps</h2>
-            <p style={{ color: 'var(--text-muted)' }}>Автоматизация продаж, лидогенерация, прием платежей и WebApps прямо в мессенджере</p>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '24px', marginBottom: '40px' }}>
-            {BOT_SERVICES.map((srv, idx) => {
-              const IconComp = srv.icon;
-              return (
-                <div key={idx} className="cyber-card" style={{ background: 'var(--bg-main)', padding: '28px' }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 12, background: `${srv.color}18`, border: `1px solid ${srv.color}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: srv.color, marginBottom: '18px' }}>
-                    <IconComp size={22} />
-                  </div>
-                  <h3 style={{ fontSize: '1.15rem', color: '#FFF', marginBottom: '10px' }}>{srv.title}</h3>
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', lineHeight: 1.6 }}>{srv.desc}</p>
-                </div>
-              );
-            })}
-          </div>
-
-          <div style={{ textAlign: 'center' }}>
-            <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn" style={{ padding: '14px 32px' }}>
-              <Bot size={18} /> Заказать Telegram-бота / Mini App ➔
-            </a>
+            <div>
+              <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#FBBF24', fontFamily: 'var(--font-heading)' }}>x2.8</div>
+              <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>Конверсия с калькулятором</div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Tech Stack Matrix */}
-      <section id="stack" style={{ padding: '80px 0', borderBottom: '1px solid var(--border-subtle)', background: 'var(--bg-main)' }}>
+      {/* Technologies Section (Original + Modern Web) */}
+      <section id="technologies" style={{ padding: '80px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
         <div className="container">
           <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 48px auto' }}>
             <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
-              &lt; tech-stack /&gt;
+              &lt; technologies /&gt;
             </div>
-            <h2 style={{ fontSize: '2.2rem', marginBottom: '12px' }}>Технологический арсенал</h2>
-            <p style={{ color: 'var(--text-muted)' }}>Комплексный стек от Next.js и Telegram API до Java/Kafka микросервисов</p>
+            <h2 style={{ fontSize: '2.2rem', marginBottom: '12px' }}>Стек технологий</h2>
+            <p style={{ color: 'var(--text-muted)' }}>Инструменты разработки масштабируемых систем и веб-сервисов</p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))', gap: '24px' }}>
-            {STACK_CATEGORIES.map((cat, idx) => {
-              const IconComp = cat.icon;
-              return (
-                <div
-                  key={idx}
-                  className="cyber-card"
-                  style={{
-                    background: 'var(--bg-surface)',
-                    padding: '28px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-                      <div style={{ width: 44, height: 44, borderRadius: 12, background: `${cat.color}18`, border: `1px solid ${cat.color}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: cat.color }}>
-                        <IconComp size={22} />
-                      </div>
-                      <h3 style={{ fontSize: '1.15rem', color: '#FFF' }}>{cat.title}</h3>
-                    </div>
-
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                      {cat.skills.map((skill, sIdx) => (
-                        <div key={sIdx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-                          <CheckCircle2 size={16} color={cat.color} style={{ flexShrink: 0, marginTop: 3 }} />
-                          <span style={{ color: '#E2E8F0' }}>{skill}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))', gap: '16px' }}>
+            {TECHNOLOGIES.map((tech, idx) => (
+              <div
+                key={idx}
+                className="cyber-card"
+                style={{
+                  background: 'var(--bg-main)',
+                  padding: '18px 20px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '6px',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontWeight: 700, fontSize: '1rem', color: '#FFF' }}>{tech.name}</span>
+                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: tech.color, boxShadow: `0 0 8px ${tech.color}` }}></span>
                 </div>
-              );
-            })}
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{tech.category}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -796,18 +596,17 @@ export default function PortfolioHub() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '20px', marginBottom: '48px' }}>
             <div>
               <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
-                &lt; all-projects /&gt;
+                &lt; case-studies /&gt;
               </div>
-              <h2 style={{ fontSize: '2.5rem' }}>Реализованные проекты ({PROJECTS.length})</h2>
+              <h2 style={{ fontSize: '2.5rem' }}>Реализованные веб-решения</h2>
             </div>
 
             {/* Filter Tabs */}
-            <div style={{ display: 'flex', gap: '8px', background: 'var(--bg-surface)', padding: '6px', borderRadius: 14, border: '1px solid var(--border-subtle)', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '8px', background: 'var(--bg-surface)', padding: '6px', borderRadius: 14, border: '1px solid var(--border-subtle)' }}>
               {[
-                { id: 'all', label: `Все проекты (${PROJECTS.length})` },
-                { id: 'web', label: 'Next.js & Лендинги (6)' },
-                { id: 'bots', label: 'Telegram Боты (2)' },
-                { id: 'backend', label: 'Backend & Highload (2)' },
+                { id: 'all', label: 'Все проекты (6)' },
+                { id: 'construction', label: 'Строительство и аренда (2)' },
+                { id: 'services', label: 'Бытовые услуги (4)' },
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -883,18 +682,16 @@ export default function PortfolioHub() {
                 </div>
 
                 {/* Actions */}
-                <div style={{ padding: '0 24px 24px 24px', display: 'grid', gridTemplateColumns: project.demoUrl ? '1.2fr 0.8fr' : '1fr', gap: '12px' }}>
-                  {project.demoUrl && (
-                    <a
-                      href={project.demoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="cyber-btn"
-                      style={{ padding: '12px 18px', fontSize: '0.875rem' }}
-                    >
-                      Демо сайта <ArrowUpRight size={16} />
-                    </a>
-                  )}
+                <div style={{ padding: '0 24px 24px 24px', display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '12px' }}>
+                  <a
+                    href={project.demoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="cyber-btn"
+                    style={{ padding: '12px 18px', fontSize: '0.875rem' }}
+                  >
+                    Демо сайта <ArrowUpRight size={16} />
+                  </a>
                   <a
                     href={project.githubUrl}
                     target="_blank"
@@ -902,7 +699,7 @@ export default function PortfolioHub() {
                     className="cyber-btn-ghost"
                     style={{ padding: '12px 14px', fontSize: '0.875rem', justifyContent: 'center' }}
                   >
-                    <GithubIcon size={16} /> Исходный код
+                    <GithubIcon size={16} /> Исходники
                   </a>
                 </div>
               </div>
@@ -919,7 +716,7 @@ export default function PortfolioHub() {
           </div>
           <h2 style={{ fontSize: '2.5rem', marginBottom: '16px' }}>Готовы обсудить ваш проект?</h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginBottom: '40px', lineHeight: 1.6 }}>
-            Напишите мне в Telegram или на электронную почту — обсудим сайт, Telegram-бота или Backend-сервис, подберем архитектуру и сделаем запуск.
+            Напишите мне в Telegram или на электронную почту — проведу консультацию, подберем архитектуру и сделаем быстрый запуск.
           </p>
 
           <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
@@ -975,7 +772,7 @@ export default function PortfolioHub() {
       {/* Footer */}
       <footer style={{ padding: '40px 0', borderTop: '1px solid var(--border-subtle)', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.875rem', background: '#05070B' }}>
         <div className="container">
-          <div style={{ fontWeight: 800, color: '#FFF', fontSize: '1.1rem', marginBottom: '8px' }}>Айдар Гарипов — Full-Stack & Telegram Bot Developer</div>
+          <div style={{ fontWeight: 800, color: '#FFF', fontSize: '1.1rem', marginBottom: '8px' }}>Айдар Гарипов — Web & Software Developer</div>
           <p style={{ color: '#60A5FA', fontFamily: 'var(--font-mono)', fontSize: '0.875rem', marginTop: '6px' }}>
             Сделано с терминалом и любовью ❤️
           </p>
