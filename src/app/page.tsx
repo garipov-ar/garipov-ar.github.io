@@ -622,7 +622,7 @@ const CASES: CaseProject[] = [
   },
 ];
 
-// Project Calculator Options
+// Project Calculator Types & Dynamic Modules per Type
 const PROJECT_TYPES = [
   {
     id: 'landing',
@@ -654,13 +654,43 @@ const PROJECT_TYPES = [
   },
 ];
 
-const MODULE_OPTIONS = [
-  { id: 'quiz', label: 'Интерактивный квиз-калькулятор сметы', price: 10000, days: 2 },
-  { id: 'crm', label: 'Интеграция с Telegram-ботом / CRM', price: 8000, days: 1 },
-  { id: 'cms', label: 'CMS-панель управления контентом', price: 15000, days: 3 },
-  { id: 'pay', label: 'Модуль онлайн-оплаты / букинга', price: 12000, days: 2 },
-  { id: 'seo', label: 'PageSpeed 95+ и SEO-оптимизация', price: 8000, days: 1 },
-];
+interface ModuleOption {
+  id: string;
+  label: string;
+  price: number;
+  days: number;
+}
+
+const DYNAMIC_MODULES_BY_TYPE: Record<string, ModuleOption[]> = {
+  landing: [
+    { id: 'quiz', label: 'Интерактивный квиз-калькулятор сметы', price: 10000, days: 2 },
+    { id: 'tg_leads', label: 'Мгновенные уведомления о заявках в Telegram', price: 8000, days: 1 },
+    { id: 'payment', label: 'Модуль онлайн-оплаты / предоплаты (ЮKassa)', price: 12000, days: 2 },
+    { id: 'seo_speed', label: 'PageSpeed 95+ и расширенная SEO-разметка', price: 8000, days: 1 },
+    { id: 'ab_test', label: 'Настройка A/B тестирования офферов', price: 7000, days: 1 },
+  ],
+  service: [
+    { id: 'auth_cabinet', label: 'Личный кабинет пользователя и система прав', price: 18000, days: 3 },
+    { id: 'admin_cms', label: 'Админ-панель управления контентом и заказами', price: 22000, days: 4 },
+    { id: 'pay_gateway', label: 'Платежный шлюз (рекуррентные платежи/счета)', price: 15000, days: 2 },
+    { id: 'rest_integration', label: 'Интеграция со сторонними REST API / 1C', price: 16000, days: 3 },
+    { id: 'notifications', label: 'Email & Telegram система транзакционных рассылок', price: 10000, days: 2 },
+  ],
+  bot: [
+    { id: 'tma_app', label: 'Telegram Mini App (TMA веб-интерфейс в окне Telegram)', price: 22000, days: 4 },
+    { id: 'brief_collector', label: 'Модуль пошагового сбора и валидации брифов', price: 8000, days: 1 },
+    { id: 'bot_admin', label: 'Админ-панель управления ботом и рассылками', price: 12000, days: 2 },
+    { id: 'crm_sync', label: 'Двусторонняя интеграция с CRM (Bitrix24 / AmoCRM)', price: 14000, days: 2 },
+    { id: 'tg_payments', label: 'Прием платежей в боте (Telegram Stars / ЮKassa)', price: 10000, days: 2 },
+  ],
+  backend: [
+    { id: 'queues', label: 'Очереди сообщений (RabbitMQ / Apache Kafka)', price: 20000, days: 3 },
+    { id: 'redis_cache', label: 'Кэширование Redis и оптимизация SQL-индексов', price: 12000, days: 2 },
+    { id: 'docker_cicd', label: 'Контейнеризация Docker и автодеплой CI/CD', price: 15000, days: 2 },
+    { id: 'audit_worm', label: 'Неизменяемый WORM-аудит финансовых логов', price: 18000, days: 3 },
+    { id: 'data_parser', label: 'Фоновый парсер данных и агрегатор внешних API', price: 14000, days: 2 },
+  ],
+};
 
 // FAQ Items
 const FAQ_ITEMS = [
@@ -696,7 +726,7 @@ export default function PortfolioHub() {
 
   // Calculator State
   const [calcType, setCalcType] = useState<string>('landing');
-  const [selectedModules, setSelectedModules] = useState<string[]>(['quiz', 'crm']);
+  const [selectedModules, setSelectedModules] = useState<string[]>(['quiz', 'tg_leads']);
   const [isExpress, setIsExpress] = useState<boolean>(false);
 
   const filteredCases = filter === 'all' ? CASES : CASES.filter((c) => c.category === filter);
@@ -705,6 +735,25 @@ export default function PortfolioHub() {
     return THEMES.find((t) => t.id === currentTheme)?.color || '#3B82F6';
   }, [currentTheme]);
 
+  // Current available modules for the selected project type
+  const currentAvailableModules = useMemo(() => {
+    return DYNAMIC_MODULES_BY_TYPE[calcType] || DYNAMIC_MODULES_BY_TYPE.landing;
+  }, [calcType]);
+
+  // Change project type and intelligently preset relevant modules
+  const handleSelectProjectType = (typeId: string) => {
+    setCalcType(typeId);
+    const newModules = DYNAMIC_MODULES_BY_TYPE[typeId] || [];
+    // Default to the first two modules of that category
+    if (newModules.length >= 2) {
+      setSelectedModules([newModules[0].id, newModules[1].id]);
+    } else if (newModules.length === 1) {
+      setSelectedModules([newModules[0].id]);
+    } else {
+      setSelectedModules([]);
+    }
+  };
+
   // Calculator Computation
   const calculation = useMemo(() => {
     const selectedType = PROJECT_TYPES.find((t) => t.id === calcType) || PROJECT_TYPES[0];
@@ -712,7 +761,7 @@ export default function PortfolioHub() {
     let totalDays = selectedType.baseDays;
 
     selectedModules.forEach((modId) => {
-      const mod = MODULE_OPTIONS.find((m) => m.id === modId);
+      const mod = currentAvailableModules.find((m) => m.id === modId);
       if (mod) {
         totalPrice += mod.price;
         totalDays += mod.days;
@@ -729,12 +778,12 @@ export default function PortfolioHub() {
       price: totalPrice,
       days: totalDays,
     };
-  }, [calcType, selectedModules, isExpress]);
+  }, [calcType, selectedModules, isExpress, currentAvailableModules]);
 
   // Telegram Pre-filled URL
   const telegramMessageUrl = useMemo(() => {
     const selectedModsNames = selectedModules
-      .map((id) => MODULE_OPTIONS.find((m) => m.id === id)?.label)
+      .map((id) => currentAvailableModules.find((m) => m.id === id)?.label)
       .filter(Boolean)
       .join(', ');
 
@@ -745,7 +794,7 @@ export default function PortfolioHub() {
 💰 Расчетная смета: ~${calculation.price.toLocaleString('ru-RU')} ₽ (срок: ${calculation.days} дн.)`;
 
     return `https://t.me/Aidar_RG?text=${encodeURIComponent(text)}`;
-  }, [calculation, selectedModules, isExpress]);
+  }, [calculation, selectedModules, isExpress, currentAvailableModules]);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('garipov_theme_accent') || 'blue';
@@ -1369,7 +1418,7 @@ export default function PortfolioHub() {
                       <button
                         key={type.id}
                         type="button"
-                        onClick={() => setCalcType(type.id)}
+                        onClick={() => handleSelectProjectType(type.id)}
                         className={`calc-option-btn ${isSelected ? 'active' : ''}`}
                       >
                         <div style={{ fontWeight: 800, fontSize: '0.95rem', color: isSelected ? '#FFF' : 'var(--text-primary)' }}>
@@ -1390,10 +1439,10 @@ export default function PortfolioHub() {
               {/* Step 2 */}
               <div className="cyber-card" style={{ padding: '24px' }}>
                 <div style={{ fontSize: '0.875rem', color: 'var(--color-primary-light)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px', fontFamily: 'var(--font-mono)' }}>
-                  Шаг 2. Дополнительные модули
+                  Шаг 2. Дополнительные модули ({calculation.typeTitle})
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  {MODULE_OPTIONS.map((mod) => {
+                  {currentAvailableModules.map((mod) => {
                     const isChecked = selectedModules.includes(mod.id);
                     return (
                       <button
@@ -1483,11 +1532,11 @@ export default function PortfolioHub() {
                     <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>Базовая комплектация</div>
                   ) : (
                     selectedModules.map((mId) => {
-                      const mod = MODULE_OPTIONS.find((m) => m.id === mId);
+                      const mod = currentAvailableModules.find((m) => m.id === mId);
                       return (
                         <div key={mId} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                           <Check size={14} color="var(--color-primary-light)" />
-                          <span>{mod?.label}</span>
+                          <span>{mod?.label || mId}</span>
                         </div>
                       );
                     })
