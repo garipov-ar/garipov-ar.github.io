@@ -17,6 +17,13 @@ import {
   Calculator,
   Terminal,
   Cpu,
+  Database,
+  Globe,
+  Palette,
+  Server,
+  Workflow,
+  Shield,
+  Bot,
 } from 'lucide-react';
 
 const GithubIcon = ({ size = 18 }: { size?: number }) => (
@@ -151,6 +158,61 @@ const PROJECTS: Project[] = [
   },
 ];
 
+const STACK_CATEGORIES = [
+  {
+    title: 'Frontend & UI Core',
+    icon: Code2,
+    color: '#60A5FA',
+    skills: [
+      'Next.js 15 (App Router & Server Actions)',
+      'React 19 & TypeScript 5',
+      'Tailwind CSS & CSS Modules',
+      'Framer Motion анимации',
+      'Адаптивный дизайн (Mobile First)',
+      'Google PageSpeed 95+ Оптимизация',
+    ],
+  },
+  {
+    title: 'Backend, API & Интеграции',
+    icon: Server,
+    color: '#34D399',
+    skills: [
+      'Node.js & REST API',
+      'Telegram Bot API (лиды и уведомления)',
+      'CRM интеграции (Bitrix24, amoCRM)',
+      'Yandex Maps / 2GIS Карты',
+      'Webhooks & Google Sheets экспорт',
+      'Email / SMS шлюзы (Resend, SMTP)',
+    ],
+  },
+  {
+    title: 'Базы данных & Cloud / DevOps',
+    icon: Database,
+    color: '#A78BFA',
+    skills: [
+      'PostgreSQL, MySQL, SQLite',
+      'Prisma ORM & Supabase',
+      'GitHub Actions (CI/CD деплой)',
+      'Vercel, GitHub Pages, Docker',
+      'Nginx & SSL безопасность',
+      'Redis кэширование',
+    ],
+  },
+  {
+    title: 'UX/UI Дизайн & Маркетинг',
+    icon: Palette,
+    color: '#FBBF24',
+    skills: [
+      'Figma (Pixel-Perfect верстка)',
+      'Интерактивные квиз-калькуляторы',
+      'SEO-оптимизация & Schema.org микроразметка',
+      'OpenGraph соц-превью',
+      'UX-копирайтинг и офферы под ключ',
+      'A/B тестирование конверсии',
+    ],
+  },
+];
+
 export default function PortfolioHub() {
   const [filter, setFilter] = useState<'all' | 'construction' | 'services'>('all');
 
@@ -236,46 +298,54 @@ export default function PortfolioHub() {
         </div>
       </section>
 
-      {/* Tech Stack Section */}
-      <section id="stack" style={{ padding: '60px 0', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)', background: 'var(--bg-surface)' }}>
+      {/* Expanded Tech Stack Section */}
+      <section id="stack" style={{ padding: '80px 0', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)', background: 'var(--bg-surface)' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px' }}>Технологический стек</div>
-            <h3 style={{ fontSize: '1.7rem' }}>Современные и надежные инструменты разработки</h3>
+          <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 48px auto' }}>
+            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>
+              Технологический арсенал
+            </div>
+            <h2 style={{ fontSize: '2.2rem', marginBottom: '12px' }}>Полный стек технологий & навыков</h2>
+            <p style={{ color: 'var(--text-muted)' }}>Комплексная разработка от UX-прототипирования до деплоя и CRM-интеграций</p>
           </div>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
-            {[
-              'Next.js 15 (App Router)',
-              'React 19',
-              'TypeScript',
-              'CSS Modules',
-              'Tailwind CSS',
-              'Static Export (SSG)',
-              'Telegram Bot API',
-              'Responsive Design',
-              'SEO & Schema.org',
-              'GitHub Actions CI/CD',
-              'PageSpeed 95+',
-            ].map((tech, idx) => (
-              <span
-                key={idx}
-                style={{
-                  background: 'var(--bg-surface-elevated)',
-                  border: '1px solid var(--border-medium)',
-                  padding: '10px 18px',
-                  borderRadius: 12,
-                  fontSize: '0.875rem',
-                  fontWeight: 600,
-                  color: '#FFF',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                }}
-              >
-                <Code2 size={16} color="var(--color-primary)" /> {tech}
-              </span>
-            ))}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))', gap: '24px' }}>
+            {STACK_CATEGORIES.map((cat, idx) => {
+              const IconComp = cat.icon;
+              return (
+                <div
+                  key={idx}
+                  style={{
+                    background: 'var(--bg-main)',
+                    borderRadius: 20,
+                    border: '1px solid var(--border-subtle)',
+                    padding: '28px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+                  }}
+                >
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+                      <div style={{ width: 44, height: 44, borderRadius: 12, background: `${cat.color}18`, border: `1px solid ${cat.color}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: cat.color }}>
+                        <IconComp size={22} />
+                      </div>
+                      <h3 style={{ fontSize: '1.15rem', color: '#FFF' }}>{cat.title}</h3>
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      {cat.skills.map((skill, sIdx) => (
+                        <div key={sIdx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+                          <CheckCircle2 size={16} color={cat.color} style={{ flexShrink: 0, marginTop: 3 }} />
+                          <span style={{ color: '#E2E8F0' }}>{skill}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
