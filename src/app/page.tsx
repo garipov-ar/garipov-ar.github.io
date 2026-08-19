@@ -310,7 +310,7 @@ const TECH_ICONS: Record<string, React.ReactNode> = {
   ),
   'Tailwind CSS': (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M6 12c.7-2 2-3 4-3 3 0 3 3 6 3 2 0 3.3-1 4-3-.7 2-2 3-4 3-3 0-3-3-6-3-2 0-3.3 1-4 3zm-4 5c.7-2 2-3 4-3 3 0 3 3 6 3 2 0 3.3-1 4-3-.7 2-2 3-4 3-3 0-3-3-6-3-2 0-3.3 1-4 3z" fill="#38BDF8"/>
+      <path d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.336 6.182 14.975 4.8 12.001 4.8zm-6 7.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624 1.177 1.194 2.538 2.576 5.512 2.576 3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.336 13.382 8.975 12 6.001 12z" fill="#38BDF8"/>
     </svg>
   ),
   'Git & CI/CD': (
@@ -320,15 +320,6 @@ const TECH_ICONS: Record<string, React.ReactNode> = {
       <circle cx="12" cy="16" r="1.5" fill="#FFF"/>
       <circle cx="16" cy="12" r="1.5" fill="#FFF"/>
       <path d="M12 9.5v5M12 12h2.5" stroke="#FFF" strokeWidth="1.5"/>
-    </svg>
-  ),
-  'Figma': (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M8 2h4v5H8a2.5 2.5 0 010-5z" fill="#F24E1E"/>
-      <path d="M12 2h4a2.5 2.5 0 010 5h-4V2z" fill="#FF7262"/>
-      <path d="M8 7h4v5H8a2.5 2.5 0 010-5z" fill="#A259FF"/>
-      <circle cx="14.5" cy="9.5" r="2.5" fill="#1ABCFE"/>
-      <path d="M8 12h4v5a2.5 2.5 0 11-4-2.5V12z" fill="#0ACF83"/>
     </svg>
   ),
 };
@@ -482,7 +473,6 @@ const TECHNOLOGIES = [
   { name: 'Linux', category: 'OS & Infrastructure' },
   { name: 'Tailwind CSS', category: 'Styling' },
   { name: 'Git & CI/CD', category: 'DevOps' },
-  { name: 'Figma', category: 'UX/UI Design' },
 ];
 
 const INITIAL_LOGS = [
