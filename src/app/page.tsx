@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import {
   ExternalLink,
   Send,
@@ -18,6 +18,10 @@ import {
   Check,
   ChevronUp,
   Cookie,
+  Palette,
+  Clock,
+  Coins,
+  MessageSquare,
 } from 'lucide-react';
 
 const GithubIcon = ({ size = 18 }: { size?: number }) => (
@@ -34,8 +38,16 @@ const TelegramIcon = ({ size = 18 }: { size?: number }) => (
   </svg>
 );
 
+// Theme Accent Palettes
+const THEMES = [
+  { id: 'blue', name: 'Electric Blue', color: '#3B82F6' },
+  { id: 'emerald', name: 'Emerald Matrix', color: '#10B981' },
+  { id: 'violet', name: 'Neon Violet', color: '#8B5CF6' },
+  { id: 'amber', name: 'Cyber Amber', color: '#F59E0B' },
+];
+
 // Interactive Hero Particle Network Background
-function HeroInteractiveCanvas() {
+function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -94,8 +106,6 @@ function HeroInteractiveCanvas() {
       alpha: number;
     }[] = [];
 
-    const colors = ['#3B82F6', '#60A5FA', '#38BDF8', '#818CF8', '#34D399'];
-
     for (let i = 0; i < particleCount; i++) {
       particles.push({
         x: Math.random() * width,
@@ -104,7 +114,7 @@ function HeroInteractiveCanvas() {
         vy: (Math.random() - 0.5) * 0.8,
         baseRadius: Math.random() * 2 + 1,
         radius: Math.random() * 2 + 1,
-        color: colors[Math.floor(Math.random() * colors.length)],
+        color: themeColor,
         alpha: Math.random() * 0.5 + 0.3,
       });
     }
@@ -117,8 +127,8 @@ function HeroInteractiveCanvas() {
 
       if (mouse.isHovering) {
         const gradient = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, mouse.radius * 1.5);
-        gradient.addColorStop(0, 'rgba(59, 130, 246, 0.18)');
-        gradient.addColorStop(0.5, 'rgba(99, 102, 241, 0.06)');
+        gradient.addColorStop(0, `${themeColor}2e`);
+        gradient.addColorStop(0.5, `${themeColor}0f`);
         gradient.addColorStop(1, 'transparent');
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, width, height);
@@ -147,10 +157,10 @@ function HeroInteractiveCanvas() {
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
+        ctx.fillStyle = themeColor;
         ctx.globalAlpha = p.alpha;
         ctx.shadowBlur = 10;
-        ctx.shadowColor = p.color;
+        ctx.shadowColor = themeColor;
         ctx.fill();
         ctx.shadowBlur = 0;
         ctx.globalAlpha = 1;
@@ -159,7 +169,7 @@ function HeroInteractiveCanvas() {
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(mouse.x, mouse.y);
-          ctx.strokeStyle = `rgba(96, 165, 250, ${(1 - dist / mouse.radius) * 0.45})`;
+          ctx.strokeStyle = `${themeColor}66`;
           ctx.lineWidth = 1;
           ctx.stroke();
         }
@@ -174,7 +184,7 @@ function HeroInteractiveCanvas() {
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(59, 130, 246, ${(1 - pjdist / 110) * 0.18})`;
+            ctx.strokeStyle = `${themeColor}2e`;
             ctx.lineWidth = 0.8;
             ctx.stroke();
           }
@@ -194,7 +204,7 @@ function HeroInteractiveCanvas() {
         parent.removeEventListener('mouseleave', handleMouseLeave);
       }
     };
-  }, []);
+  }, [themeColor]);
 
   return (
     <canvas
@@ -548,33 +558,129 @@ const TECHNOLOGIES = [
   { name: 'Git & CI/CD', category: 'DevOps' },
 ];
 
+// Project Calculator Presets
+const PROJECT_TYPES = [
+  {
+    id: 'landing',
+    title: 'Продающий Landing Page',
+    desc: 'Высококонверсионный сайт на Next.js 15 с анимацией и адаптивностью',
+    basePrice: 35000,
+    baseDays: 5,
+  },
+  {
+    id: 'service',
+    title: 'Веб-сервис / Платформа',
+    desc: 'Индивидуальное full-stack приложение с личным кабинетом или букингом',
+    basePrice: 65000,
+    baseDays: 12,
+  },
+  {
+    id: 'bot',
+    title: 'Telegram-бот / TMA',
+    desc: 'Чат-бот с логикой, базой данных или Telegram Mini App',
+    basePrice: 28000,
+    baseDays: 4,
+  },
+  {
+    id: 'backend',
+    title: 'Backend API & Highload',
+    desc: 'Масштабируемый серверный сервис на Java/Kafka/PostgreSQL',
+    basePrice: 55000,
+    baseDays: 10,
+  },
+];
+
+const MODULE_OPTIONS = [
+  { id: 'quiz', label: 'Интерактивный квиз-калькулятор сметы', price: 10000, days: 2 },
+  { id: 'crm', label: 'Интеграция с Telegram-ботом / CRM', price: 8000, days: 1 },
+  { id: 'cms', label: 'CMS-панель управления контентом', price: 15000, days: 3 },
+  { id: 'pay', label: 'Модуль онлайн-оплаты / букинга', price: 12000, days: 2 },
+  { id: 'seo', label: 'PageSpeed 95+ и SEO-оптимизация', price: 8000, days: 1 },
+];
+
 export default function PortfolioHub() {
   const [filter, setFilter] = useState<'all' | 'web' | 'bots' | 'backend'>('all');
   const [activeSection, setActiveSection] = useState<string>('hero');
+  const [currentTheme, setCurrentTheme] = useState<string>('blue');
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [cookieAccepted, setCookieAccepted] = useState(true); // Default true to prevent flash, checked in useEffect
+  const [cookieAccepted, setCookieAccepted] = useState(true);
   const [copiedEmail, setCopiedEmail] = useState(false);
+
+  // Calculator State
+  const [calcType, setCalcType] = useState<string>('landing');
+  const [selectedModules, setSelectedModules] = useState<string[]>(['quiz', 'crm']);
+  const [isExpress, setIsExpress] = useState<boolean>(false);
 
   const filteredProjects = filter === 'all' ? PROJECTS : PROJECTS.filter((p) => p.category === filter);
 
-  // Scroll spy & Scroll-to-top handler
+  // Active theme color
+  const activeThemeColor = useMemo(() => {
+    return THEMES.find((t) => t.id === currentTheme)?.color || '#3B82F6';
+  }, [currentTheme]);
+
+  // Dynamic Calculator Computation
+  const calculation = useMemo(() => {
+    const selectedType = PROJECT_TYPES.find((t) => t.id === calcType) || PROJECT_TYPES[0];
+    let totalPrice = selectedType.basePrice;
+    let totalDays = selectedType.baseDays;
+
+    selectedModules.forEach((modId) => {
+      const mod = MODULE_OPTIONS.find((m) => m.id === modId);
+      if (mod) {
+        totalPrice += mod.price;
+        totalDays += mod.days;
+      }
+    });
+
+    if (isExpress) {
+      totalPrice = Math.round(totalPrice * 1.25);
+      totalDays = Math.max(3, Math.round(totalDays * 0.6));
+    }
+
+    return {
+      typeTitle: selectedType.title,
+      price: totalPrice,
+      days: totalDays,
+    };
+  }, [calcType, selectedModules, isExpress]);
+
+  // Generate Telegram Pre-filled Message URL
+  const telegramMessageUrl = useMemo(() => {
+    const selectedModsNames = selectedModules
+      .map((id) => MODULE_OPTIONS.find((m) => m.id === id)?.label)
+      .filter(Boolean)
+      .join(', ');
+
+    const text = `Здравствуйте, Айдар! Хочу обсудить разработку проекта:
+📌 Тип: ${calculation.typeTitle}
+🔧 Модули: ${selectedModsNames || 'Без доп. модулей'}
+⚡ Темп: ${isExpress ? 'Срочный экспресс (быстрый запуск)' : 'Стандартный'}
+💰 Расчетная смета: ~${calculation.price.toLocaleString('ru-RU')} ₽ (срок: ${calculation.days} дн.)`;
+
+    return `https://t.me/Aidar_RG?text=${encodeURIComponent(text)}`;
+  }, [calculation, selectedModules, isExpress]);
+
+  // Theme Initializer and Scroll Spy
   useEffect(() => {
-    // Check cookies
+    // Theme setup
+    const savedTheme = localStorage.getItem('garipov_theme_accent') || 'blue';
+    setCurrentTheme(savedTheme);
+    document.documentElement.setAttribute('data-theme-accent', savedTheme);
+
+    // Cookie setup
     const savedCookie = localStorage.getItem('garipov_cookie_consent');
     if (!savedCookie) {
       setCookieAccepted(false);
     }
 
     const handleScroll = () => {
-      // Toggle back to top button
       if (window.scrollY > 300) {
         setShowScrollTop(true);
       } else {
         setShowScrollTop(false);
       }
 
-      // Determine active section
-      const sections = ['hero', 'technologies', 'projects', 'contacts'];
+      const sections = ['hero', 'technologies', 'projects', 'calculator', 'contacts'];
       const scrollPosition = window.scrollY + 200;
 
       for (let i = sections.length - 1; i >= 0; i--) {
@@ -591,6 +697,16 @@ export default function PortfolioHub() {
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const changeTheme = (themeId: string) => {
+    setCurrentTheme(themeId);
+    document.documentElement.setAttribute('data-theme-accent', themeId);
+    localStorage.setItem('garipov_theme_accent', themeId);
+  };
+
+  const toggleModule = (id: string) => {
+    setSelectedModules((prev) => (prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id]));
+  };
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -609,24 +725,26 @@ export default function PortfolioHub() {
 
   return (
     <div>
-      {/* Top Navigation with Active Section Highlighting */}
-      <header style={{ borderBottom: '1px solid var(--border-subtle)', padding: '16px 0', backgroundColor: 'rgba(6, 8, 13, 0.92)', backdropFilter: 'blur(20px)', position: 'sticky', top: 0, zIndex: 50 }}>
-        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+      {/* Top Navigation with Active Section Highlighting & Theme Switcher */}
+      <header style={{ borderBottom: '1px solid var(--border-subtle)', padding: '14px 0', backgroundColor: 'rgba(6, 8, 13, 0.92)', backdropFilter: 'blur(20px)', position: 'sticky', top: 0, zIndex: 50 }}>
+        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <div style={{ width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '1.2rem', color: '#FFF', boxShadow: '0 4px 18px rgba(59, 130, 246, 0.5)', border: '1px solid rgba(255,255,255,0.2)' }}>
+            <div style={{ width: 42, height: 42, borderRadius: 12, background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '1.15rem', color: '#FFF', boxShadow: '0 4px 18px rgba(var(--color-primary-rgb), 0.5)', border: '1px solid rgba(255,255,255,0.2)' }}>
               AG
             </div>
             <div>
-              <div style={{ fontWeight: 800, fontSize: '1.15rem', color: '#FFF', letterSpacing: '-0.02em' }}>Айдар Гарипов</div>
-              <div style={{ fontSize: '0.75rem', color: '#38BDF8', fontFamily: 'var(--font-mono)' }}>Web & Software Developer</div>
+              <div style={{ fontWeight: 800, fontSize: '1.1rem', color: '#FFF', letterSpacing: '-0.02em' }}>Айдар Гарипов</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--color-primary-light)', fontFamily: 'var(--font-mono)' }}>Web & Software Developer</div>
             </div>
           </div>
 
-          <nav style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          {/* Navigation Links */}
+          <nav style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
             {[
               { id: 'hero', label: 'Главная' },
               { id: 'technologies', label: 'Технологии' },
               { id: 'projects', label: 'Проекты' },
+              { id: 'calculator', label: 'Калькулятор' },
               { id: 'contacts', label: 'Контакты' },
             ].map((item) => {
               const isActive = activeSection === item.id;
@@ -636,11 +754,11 @@ export default function PortfolioHub() {
                   href={`#${item.id}`}
                   style={{
                     color: isActive ? '#FFF' : 'var(--text-secondary)',
-                    backgroundColor: isActive ? 'rgba(59, 130, 246, 0.15)' : 'transparent',
-                    border: `1px solid ${isActive ? 'rgba(59, 130, 246, 0.4)' : 'transparent'}`,
-                    padding: '8px 16px',
+                    backgroundColor: isActive ? 'rgba(var(--color-primary-rgb), 0.15)' : 'transparent',
+                    border: `1px solid ${isActive ? 'rgba(var(--color-primary-rgb), 0.4)' : 'transparent'}`,
+                    padding: '7px 14px',
                     borderRadius: 10,
-                    fontSize: '0.875rem',
+                    fontSize: '0.84rem',
                     fontWeight: isActive ? 700 : 500,
                     textDecoration: 'none',
                     transition: 'all 0.2s ease',
@@ -652,20 +770,45 @@ export default function PortfolioHub() {
             })}
           </nav>
 
+          {/* Theme Palette Switcher & Social Links */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <a href="https://github.com/garipov-ar" target="_blank" rel="noopener noreferrer" className="cyber-btn-ghost" style={{ padding: '8px 14px', fontSize: '0.8125rem' }}>
-              <GithubIcon size={16} /> GitHub
+            {/* Theme Selector */}
+            <div style={{ display: 'flex', gap: '6px', background: 'rgba(255,255,255,0.04)', padding: '5px 8px', borderRadius: 12, border: '1px solid var(--border-subtle)' }} title="Сменить акцент темы">
+              {THEMES.map((th) => (
+                <button
+                  key={th.id}
+                  type="button"
+                  onClick={() => changeTheme(th.id)}
+                  style={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: '50%',
+                    background: th.color,
+                    border: currentTheme === th.id ? '2px solid #FFF' : '1px solid transparent',
+                    cursor: 'pointer',
+                    transform: currentTheme === th.id ? 'scale(1.15)' : 'scale(0.9)',
+                    boxShadow: currentTheme === th.id ? `0 0 10px ${th.color}` : 'none',
+                    transition: 'all 0.2s ease',
+                  }}
+                  title={th.name}
+                  aria-label={th.name}
+                />
+              ))}
+            </div>
+
+            <a href="https://github.com/garipov-ar" target="_blank" rel="noopener noreferrer" className="cyber-btn-ghost" style={{ padding: '7px 12px', fontSize: '0.8125rem' }}>
+              <GithubIcon size={15} /> GitHub
             </a>
-            <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn" style={{ padding: '8px 18px', fontSize: '0.8125rem' }}>
-              <TelegramIcon size={16} /> @Aidar_RG
+            <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn" style={{ padding: '7px 16px', fontSize: '0.8125rem' }}>
+              <TelegramIcon size={15} /> @Aidar_RG
             </a>
           </div>
         </div>
       </header>
 
-      {/* Hero Section with Interactive Neural Mesh Canvas (No Terminal) */}
-      <section id="hero" style={{ padding: '110px 0 90px 0', position: 'relative', overflow: 'hidden' }}>
-        <HeroInteractiveCanvas />
+      {/* Hero Section with Interactive Neural Mesh Canvas */}
+      <section id="hero" style={{ padding: '100px 0 80px 0', position: 'relative', overflow: 'hidden' }}>
+        <HeroInteractiveCanvas themeColor={activeThemeColor} />
 
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <div style={{ textAlign: 'center', maxWidth: 900, margin: '0 auto' }}>
@@ -683,11 +826,14 @@ export default function PortfolioHub() {
             </p>
 
             <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <a href="#projects" className="cyber-btn" style={{ padding: '16px 36px', fontSize: '1.05rem' }}>
-                Смотреть проекты ({PROJECTS.length}) ➔
+              <a href="#calculator" className="cyber-btn" style={{ padding: '16px 34px', fontSize: '1.05rem' }}>
+                <Calculator size={18} /> Рассчитать проект ➔
               </a>
-              <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn-ghost" style={{ padding: '16px 28px', fontSize: '1.05rem' }}>
-                <TelegramIcon size={18} /> Написать в Telegram
+              <a href="#projects" className="cyber-btn-ghost" style={{ padding: '16px 28px', fontSize: '1.05rem' }}>
+                Смотреть проекты ({PROJECTS.length})
+              </a>
+              <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn-ghost" style={{ padding: '16px 24px', fontSize: '1.05rem' }}>
+                <TelegramIcon size={18} /> Telegram
               </a>
             </div>
           </div>
@@ -719,7 +865,7 @@ export default function PortfolioHub() {
                 }}
               >
                 <div style={{ width: 38, height: 38, borderRadius: 10, background: 'rgba(255,255,255,0.04)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: '1px solid rgba(255,255,255,0.08)' }}>
-                  {TECH_ICONS[tech.name] || <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#3B82F6' }}></span>}
+                  {TECH_ICONS[tech.name] || <span style={{ width: 10, height: 10, borderRadius: '50%', background: 'var(--color-primary)' }}></span>}
                 </div>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#FFF' }}>{tech.name}</div>
@@ -852,8 +998,180 @@ export default function PortfolioHub() {
         </div>
       </section>
 
+      {/* Interactive Project Cost & Timeline Calculator */}
+      <section id="calculator" style={{ padding: '90px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', maxWidth: 700, margin: '0 auto 48px auto' }}>
+            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
+              &lt; project-calculator /&gt;
+            </div>
+            <h2 style={{ fontSize: '2.5rem', marginBottom: '14px' }}>Калькулятор стоимости и сроков</h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem' }}>
+              Сконфигурируйте параметры разработки вашего проекта и получите моментальный предварительный расчёт
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '36px', alignItems: 'start' }}>
+            {/* Step 1 & 2: Options Configuration */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
+              {/* Step 1: Project Type */}
+              <div className="cyber-card" style={{ padding: '24px' }}>
+                <div style={{ fontSize: '0.875rem', color: 'var(--color-primary-light)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px', fontFamily: 'var(--font-mono)' }}>
+                  Шаг 1. Тип разработки
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
+                  {PROJECT_TYPES.map((type) => {
+                    const isSelected = calcType === type.id;
+                    return (
+                      <button
+                        key={type.id}
+                        type="button"
+                        onClick={() => setCalcType(type.id)}
+                        className={`calc-option-btn ${isSelected ? 'active' : ''}`}
+                      >
+                        <div style={{ fontWeight: 800, fontSize: '0.95rem', color: isSelected ? '#FFF' : 'var(--text-primary)' }}>
+                          {type.title}
+                        </div>
+                        <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>
+                          {type.desc}
+                        </div>
+                        <div style={{ fontSize: '0.82rem', color: 'var(--color-primary-light)', fontWeight: 700, marginTop: '4px', fontFamily: 'var(--font-mono)' }}>
+                          от {type.basePrice.toLocaleString('ru-RU')} ₽ • {type.baseDays} дн.
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Step 2: Additional Modules */}
+              <div className="cyber-card" style={{ padding: '24px' }}>
+                <div style={{ fontSize: '0.875rem', color: 'var(--color-primary-light)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px', fontFamily: 'var(--font-mono)' }}>
+                  Шаг 2. Дополнительные модули
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {MODULE_OPTIONS.map((mod) => {
+                    const isChecked = selectedModules.includes(mod.id);
+                    return (
+                      <button
+                        key={mod.id}
+                        type="button"
+                        onClick={() => toggleModule(mod.id)}
+                        className={`calc-checkbox-btn ${isChecked ? 'active' : ''}`}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                          <div style={{ width: 20, height: 20, borderRadius: 6, border: `2px solid ${isChecked ? 'var(--color-primary)' : 'var(--border-subtle)'}`, background: isChecked ? 'var(--color-primary)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            {isChecked && <Check size={14} color="#FFF" />}
+                          </div>
+                          <span style={{ fontSize: '0.9rem', color: isChecked ? '#FFF' : 'var(--text-secondary)', fontWeight: isChecked ? 600 : 400 }}>
+                            {mod.label}
+                          </span>
+                        </div>
+                        <div style={{ fontSize: '0.82rem', color: 'var(--color-primary-light)', fontFamily: 'var(--font-mono)', fontWeight: 700, flexShrink: 0 }}>
+                          +{mod.price.toLocaleString('ru-RU')} ₽
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Step 3: Speed option */}
+              <div className="cyber-card" style={{ padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
+                <div>
+                  <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#FFF' }}>⚡ Экспресс-запуск проекта</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Приоритетная разработка и сдача в 2 раза быстрее</div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsExpress(!isExpress)}
+                  style={{
+                    padding: '8px 18px',
+                    borderRadius: 10,
+                    border: `1px solid ${isExpress ? 'var(--color-primary)' : 'var(--border-subtle)'}`,
+                    background: isExpress ? 'rgba(var(--color-primary-rgb), 0.2)' : 'transparent',
+                    color: isExpress ? 'var(--color-primary-light)' : 'var(--text-muted)',
+                    fontWeight: 700,
+                    fontSize: '0.84rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  {isExpress ? '✓ Включено (+25%)' : 'Обычный темп'}
+                </button>
+              </div>
+            </div>
+
+            {/* Live Calculation Summary & One-Click Telegram CTA */}
+            <div className="cyber-card" style={{ padding: '32px', border: '1px solid rgba(var(--color-primary-rgb), 0.35)', boxShadow: '0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(var(--color-primary-rgb), 0.15)', position: 'sticky', top: 100 }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '4px 12px', borderRadius: 8, background: 'rgba(var(--color-primary-rgb), 0.15)', color: 'var(--color-primary-light)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '20px', fontFamily: 'var(--font-mono)' }}>
+                Итоговый расчёт
+              </div>
+
+              <div style={{ marginBottom: '24px' }}>
+                <div style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginBottom: '4px' }}>Выбранный тип:</div>
+                <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFF' }}>{calculation.typeTitle}</div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', padding: '20px 0', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)', marginBottom: '28px' }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)', fontSize: '0.8125rem', marginBottom: '4px' }}>
+                    <Coins size={15} color="var(--color-primary-light)" /> Ориентировочно
+                  </div>
+                  <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#FFF', fontFamily: 'var(--font-heading)' }}>
+                    ~{calculation.price.toLocaleString('ru-RU')} ₽
+                  </div>
+                </div>
+
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)', fontSize: '0.8125rem', marginBottom: '4px' }}>
+                    <Clock size={15} color="var(--color-primary-light)" /> Срок реализации
+                  </div>
+                  <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#34D399', fontFamily: 'var(--font-heading)' }}>
+                    {calculation.days} дн.
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '24px' }}>
+                <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', marginBottom: '8px' }}>Включенные модули ({selectedModules.length}):</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  {selectedModules.length === 0 ? (
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>Базовая комплектация</div>
+                  ) : (
+                    selectedModules.map((mId) => {
+                      const mod = MODULE_OPTIONS.find((m) => m.id === mId);
+                      return (
+                        <div key={mId} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                          <Check size={14} color="var(--color-primary-light)" />
+                          <span>{mod?.label}</span>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+
+              <a
+                href={telegramMessageUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="cyber-btn"
+                style={{ width: '100%', padding: '16px', fontSize: '0.95rem' }}
+              >
+                <TelegramIcon size={18} /> Обсудить в Telegram ➔
+              </a>
+
+              <div style={{ textAlign: 'center', marginTop: '12px', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                Конфигурация автоматически передастся в диалог с Айдаром
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Contacts / CTA */}
-      <section id="contacts" style={{ padding: '90px 0', borderTop: '1px solid var(--border-subtle)', background: 'radial-gradient(circle at 50% 100%, rgba(59, 130, 246, 0.15) 0%, transparent 60%)' }}>
+      <section id="contacts" style={{ padding: '90px 0', borderTop: '1px solid var(--border-subtle)', background: 'radial-gradient(circle at 50% 100%, rgba(var(--color-primary-rgb), 0.15) 0%, transparent 60%)' }}>
         <div className="container" style={{ maxWidth: 860, textAlign: 'center' }}>
           <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
             &lt; contact-me /&gt;
@@ -888,7 +1206,7 @@ export default function PortfolioHub() {
               }}
               title="Нажмите, чтобы скопировать email"
             >
-              <Mail size={18} color="#60A5FA" />
+              <Mail size={18} color="var(--color-primary-light)" />
               <span>disprogar@gmail.com</span>
               <span style={{ display: 'inline-flex', alignItems: 'center', marginLeft: '4px', opacity: 0.8 }}>
                 {copiedEmail ? <Check size={16} color="#34D399" /> : <Copy size={16} />}
@@ -917,7 +1235,7 @@ export default function PortfolioHub() {
       <footer style={{ padding: '40px 0', borderTop: '1px solid var(--border-subtle)', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.875rem', background: '#05070B' }}>
         <div className="container">
           <div style={{ fontWeight: 800, color: '#FFF', fontSize: '1.1rem', marginBottom: '8px' }}>Айдар Гарипов — Web & Software Developer</div>
-          <p style={{ color: '#60A5FA', fontFamily: 'var(--font-mono)', fontSize: '0.875rem', marginTop: '6px' }}>
+          <p style={{ color: 'var(--color-primary-light)', fontFamily: 'var(--font-mono)', fontSize: '0.875rem', marginTop: '6px' }}>
             Сделано с терминалом и любовью ❤️
           </p>
           <p style={{ marginTop: '12px', fontSize: '0.75rem' }}>© {new Date().getFullYear()} Все права защищены. garipov-ar.github.io</p>
@@ -938,20 +1256,20 @@ export default function PortfolioHub() {
             borderRadius: '14px',
             background: 'rgba(12, 16, 26, 0.9)',
             backdropFilter: 'blur(12px)',
-            border: '1px solid rgba(59, 130, 246, 0.4)',
+            border: '1px solid rgba(var(--color-primary-rgb), 0.4)',
             color: '#FFF',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
-            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(59, 130, 246, 0.25)',
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(var(--color-primary-rgb), 0.25)',
             zIndex: 90,
             transition: 'all 0.25s ease',
           }}
           title="Наверх"
           aria-label="Наверх"
         >
-          <ChevronUp size={22} color="#60A5FA" />
+          <ChevronUp size={22} color="var(--color-primary-light)" />
         </button>
       )}
 
@@ -967,20 +1285,20 @@ export default function PortfolioHub() {
             maxWidth: '680px',
             background: 'rgba(12, 16, 26, 0.95)',
             backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(59, 130, 246, 0.3)',
+            border: '1px solid rgba(var(--color-primary-rgb), 0.3)',
             borderRadius: '18px',
             padding: '18px 24px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             gap: '20px',
-            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(59, 130, 246, 0.15)',
+            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(var(--color-primary-rgb), 0.15)',
             zIndex: 100,
             flexWrap: 'wrap',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: '240px' }}>
-            <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(59, 130, 246, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#60A5FA', flexShrink: 0 }}>
+            <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(var(--color-primary-rgb), 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary-light)', flexShrink: 0 }}>
               <Cookie size={20} />
             </div>
             <div style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
