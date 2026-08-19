@@ -1223,10 +1223,11 @@ export default function PortfolioHub() {
             {/* Right: The Exact Interactive Architecture Map */}
             <div style={{ position: 'relative', width: '100%', maxWidth: '100%' }}>
               <div
+                className="ambient-glow-card"
                 style={{
                   position: 'absolute',
                   inset: '-10px',
-                  background: 'radial-gradient(circle at 60% 50%, rgba(var(--color-primary-rgb), 0.18) 0%, transparent 70%)',
+                  background: 'radial-gradient(circle at 60% 50%, rgba(var(--color-primary-rgb), 0.22) 0%, transparent 70%)',
                   filter: 'blur(25px)',
                   pointerEvents: 'none',
                   zIndex: 0,
