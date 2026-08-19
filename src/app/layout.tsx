@@ -2,9 +2,10 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Айдар Гарипов — Full-Stack & Frontend Разработчик | Next.js 15, React 19, TypeScript',
-  description: 'Создание современных сайтов, высококонверсионных веб-сервисов и квиз-калькуляторов под ключ. Скорость 95+ PageSpeed, чистый код, Telegram-интеграции.',
+  title: 'Айдар Гарипов — Разработка сайтов, веб-сервисов и Telegram-ботов под ключ',
+  description: 'Создание современных сайтов, высококонверсионных лендингов, квиз-калькуляторов и Telegram-ботов любой сложности (Mini Apps, CRM, прием заявок, оплаты).',
   authors: [{ name: 'Айдар Гарипов', url: 'https://garipov-ar.github.io/' }],
+  keywords: ['Айдар Гарипов', 'разработка сайтов', 'создание сайтов', 'Telegram бот', 'разработка телеграм ботов', 'Telegram Mini Apps', 'Next.js', 'React', 'TypeScript'],
   icons: {
     icon: 'icon.svg',
   },
