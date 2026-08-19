@@ -2,8 +2,9 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Артур Гарипов — Web & Full-Stack Developer | Портфолио проектов',
-  description: 'Разработка быстрых и конверсионных сайтов, квиз-калькуляторов и веб-сервисов под ключ на Next.js 15, React 19, TypeScript.',
+  title: 'Айдар Гарипов — Full-Stack & Frontend Разработчик | Next.js 15, React 19, TypeScript',
+  description: 'Создание современных сайтов, высококонверсионных веб-сервисов и квиз-калькуляторов под ключ. Скорость 95+ PageSpeed, чистый код, Telegram-интеграции.',
+  authors: [{ name: 'Айдар Гарипов', url: 'https://garipov-ar.github.io/' }],
   icons: {
     icon: 'icon.svg',
   },
