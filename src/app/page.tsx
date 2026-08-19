@@ -32,6 +32,9 @@ import {
   Globe,
   Cpu,
   ArrowRight,
+  Database,
+  Terminal as TerminalIcon,
+  Laptop,
 } from 'lucide-react';
 
 const GithubIcon = ({ size = 18 }: { size?: number }) => (
@@ -301,7 +304,7 @@ const TECH_ICONS: Record<string, React.ReactNode> = {
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <ellipse cx="12" cy="7" rx="8" ry="3.5" stroke="#818CF8" strokeWidth="1.6"/>
       <path d="M4 7v10c0 1.9 3.6 3.5 8 3.5s8-1.6 8-3.5V7" stroke="#818CF8" strokeWidth="1.6"/>
-      <path d="M4 12c0 1.9 3.6 3.5 8 3.5" stroke="#818CF8" strokeWidth="1.6"/>
+      <path d="M4 12c0 1.9 3.6 3.5 8 3.5s8-1.6 8-3.5" stroke="#818CF8" strokeWidth="1.6"/>
     </svg>
   ),
   'RabbitMQ': (
@@ -342,31 +345,52 @@ const TECH_ICONS: Record<string, React.ReactNode> = {
   ),
 };
 
-// 3 Core Products
-const PRODUCTS = [
+// 3 Core Products / Services
+const SERVICES = [
   {
     id: 'sites',
-    number: '01',
+    icon: <Globe size={28} color="#38BDF8" />,
     title: 'Сайты для бизнеса',
-    desc: 'Продающие посадочные страницы, каталоги и квиз-калькуляторы с конверсией x2–x3 и моментальной передачей лидов.',
-    icon: <Globe size={26} color="#38BDF8" />,
-    features: ['Next.js 15 & React 19', 'Квиз-калькуляторы сметы', 'PageSpeed 95–98 / 100', 'Mobile First верстка'],
+    desc: 'Продающие лендинги, каталоги услуг и интерактивные квиз-калькуляторы с конверсией x2–x3 и моментальной передачей заявок.',
+    features: ['Next.js 15 & React 19', 'Квиз-калькуляторы сметы', 'PageSpeed 95–98/100', 'Mobile First верстка'],
   },
   {
     id: 'bots',
-    number: '02',
+    icon: <Bot size={28} color="#34D399" />,
     title: 'Telegram-боты & TMA',
-    desc: 'Чат-боты для автоматизации приема заявок, квалификации лидов, сбора брифов и интеграции с CRM.',
-    icon: <Bot size={26} color="#34D399" />,
+    desc: 'Чат-боты для автоматизации приема заявок, квалификации лидов, сбора клиентских брифов и интеграции с CRM.',
     features: ['Автоматический сбор брифов', 'Интеграция с базой данных', 'Уведомления менеджерам', 'Telegram Mini Apps (TMA)'],
   },
   {
     id: 'backend',
-    number: '03',
-    title: 'Backend & Автоматизация',
-    desc: 'Отказоустойчивые серверные микросервисы, REST API, парсинг данных и интеграция внутренних систем.',
-    icon: <Server size={26} color="#818CF8" />,
+    icon: <Server size={28} color="#818CF8" />,
+    title: 'Автоматизация и Backend',
+    desc: 'Отказоустойчивые серверные микросервисы, REST API, парсинг данных, внутренние базы данных и сложная логика.',
     features: ['Java / Python / Node.js', 'PostgreSQL & Docker', 'Apache Kafka очереди', 'Высокая надежность (ACID)'],
+  },
+];
+
+// Why Work With Me / Trust
+const WHY_WORK_WITH_ME = [
+  {
+    title: 'От идеи до запуска',
+    desc: 'Помогаю определить оптимальное решение, проектирую логику, разрабатываю и публикую проект в прод под ключ.',
+    badge: 'Полный цикл',
+  },
+  {
+    title: 'Без посредников',
+    desc: 'Вы напрямую общаетесь с разработчиком. Никаких испорченных телефонов, затянутых правок и наценок веб-студий.',
+    badge: 'Прямая связь',
+  },
+  {
+    title: 'Full-stack подход',
+    desc: 'Frontend с плавной анимацией, надежный Backend, базы данных, серверный деплой и Telegram-интеграции из одних рук.',
+    badge: 'Комплексно',
+  },
+  {
+    title: 'Исходный код ваш',
+    desc: 'После завершения проекта вы получаете готовый результат и чистый исходный код в вашем GitHub-репозитории без привязки к конструкторам.',
+    badge: '100% владение',
   },
 ];
 
@@ -375,46 +399,22 @@ const WORKFLOW_STEPS = [
   {
     step: '01',
     title: 'Обсуждаем задачу',
-    desc: 'Созваниваемся или подробно разбираем проект в Telegram. Определяем цели бизнеса, ЦА и ключевые метрики.',
+    desc: 'Вы описываете идею, задачу или проблему бизнеса. Созваниваемся или разбираем проект в Telegram.',
   },
   {
     step: '02',
-    title: 'Формируем смету и ТЗ',
-    desc: 'Фиксируем архитектуру, список модулей, точные сроки и прозрачную фиксированную стоимость без скрытых наценок.',
+    title: 'Формируем решение',
+    desc: 'Определяем функциональность, стек, точные сроки и прозрачную фиксированную стоимость без скрытых доплат.',
   },
   {
     step: '03',
-    title: 'Разработка и тест',
-    desc: 'Пишу чистый код, разворачиваю тестовый стенд на живом домене. Вы видите процесс и вносите обратную связь.',
+    title: 'Разрабатываю проект',
+    desc: 'Пишу чистый код и регулярно показываю промежуточные результаты на живом тестовом домене.',
   },
   {
     step: '04',
-    title: 'Запуск и передача кода',
-    desc: 'Публикую проект в прод, подключаю домен, передаю все исходники в ваш репозиторий и даю гарантию на работу.',
-  },
-];
-
-// Trust Pillars
-const TRUST_POINTS = [
-  {
-    title: '10+ реализованных проектов',
-    desc: 'От конверсионных сайтов строительных компаний до отказоустойчивых enterprise-систем.',
-    badge: 'Практический опыт',
-  },
-  {
-    title: 'Полный цикл разработки под ключ',
-    desc: 'От архитектуры и интерактива до деплоя на быстрый хостинг и настройки Telegram-ботов.',
-    badge: 'Без подрядчиков',
-  },
-  {
-    title: 'Прямая связь с разработчиком',
-    desc: 'Никаких испорченных телефонов и наценок агентств. Быстрые правки и понимание задач бизнеса.',
-    badge: '100% фокус',
-  },
-  {
-    title: 'Чистый код и исходники у вас',
-    desc: 'Сайт строится на современных технологиях (Next.js, Python, Java, Docker), исходники принадлежат вам.',
-    badge: 'Надежность',
+    title: 'Запускаем в прод',
+    desc: 'Публикую проект в продакшн, подключаю домен, передаю исходный код и настраиваю уведомления.',
   },
 ];
 
@@ -572,7 +572,7 @@ const CASES: CaseProject[] = [
   },
 ];
 
-// Project Calculator Options
+// Project Calculator Presets
 const PROJECT_TYPES = [
   {
     id: 'landing',
@@ -711,7 +711,7 @@ export default function PortfolioHub() {
         setShowScrollTop(false);
       }
 
-      const sections = ['hero', 'products', 'trust', 'cases', 'workflow', 'calculator', 'technologies', 'faq', 'contacts'];
+      const sections = ['hero', 'services', 'cases', 'trust', 'workflow', 'calculator', 'technologies', 'faq', 'contacts'];
       const scrollPosition = window.scrollY + 220;
 
       for (let i = sections.length - 1; i >= 0; i--) {
@@ -772,9 +772,9 @@ export default function PortfolioHub() {
           {/* Navigation Links */}
           <nav style={{ display: 'flex', gap: '4px', alignItems: 'center', flexWrap: 'wrap' }}>
             {[
-              { id: 'products', label: 'Услуги' },
+              { id: 'services', label: 'Услуги' },
               { id: 'cases', label: 'Кейсы' },
-              { id: 'trust', label: 'Преимущества' },
+              { id: 'trust', label: 'Почему я' },
               { id: 'workflow', label: 'Процесс' },
               { id: 'calculator', label: 'Калькулятор' },
               { id: 'faq', label: 'FAQ' },
@@ -828,32 +828,41 @@ export default function PortfolioHub() {
             </div>
 
             <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn" style={{ padding: '8px 18px', fontSize: '0.8125rem' }}>
-              <TelegramIcon size={15} /> Обсудить проект
+              <TelegramIcon size={15} /> 💬 Обсудить проект
             </a>
           </div>
         </div>
       </header>
 
-      {/* Hero Section: High-converting Commercial Offer + Live Architecture Artifact */}
+      {/* Hero Section: Exact Commercial Result Headline + Architecture Flow */}
       <section id="hero" style={{ padding: '90px 0 80px 0', position: 'relative', overflow: 'hidden' }}>
         <HeroInteractiveCanvas themeColor={activeThemeColor} />
 
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '48px', alignItems: 'center' }}>
-            {/* Left: Commercial Copy */}
+            {/* Left: Commercial Result Copy */}
             <div>
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 14px', borderRadius: 9999, background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.3)', color: '#34D399', fontSize: '0.8125rem', fontWeight: 700, marginBottom: '20px' }}>
                 <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10B981', display: 'inline-block', boxShadow: '0 0 10px #10B981' }}></span>
-                Открыт для новых заказов • Запуск от 3 дней
+                Открыт для новых проектов • Запуск под ключ
               </div>
 
               <h1 style={{ fontSize: 'clamp(2.3rem, 4.2vw, 3.4rem)', lineHeight: 1.15, marginBottom: '20px', letterSpacing: '-0.03em' }}>
-                Разрабатываю сайты и <span className="glow-accent">Telegram-ботов</span>, которые приводят заявки
+                Сайты, Telegram-боты и <span className="glow-accent">автоматизация бизнеса</span> под ключ
               </h1>
 
-              <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '32px', maxWidth: 580 }}>
-                От продающих посадочных страниц с квиз-калькуляторами сметы до Telegram-ботов и надежных Backend-систем. Беру проект от идеи и ТЗ до запуска в прод.
+              <p style={{ fontSize: '1.18rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '24px', maxWidth: 580 }}>
+                Создаю современные сайты, сервисы и Telegram-ботов, которые помогают получать заявки и автоматизировать работу бизнеса.
               </p>
+
+              {/* Technologies Proof Tagline */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '32px' }}>
+                {['Next.js', 'Python', 'Java', 'PostgreSQL', 'Docker', 'Telegram API'].map((t, idx) => (
+                  <span key={idx} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-subtle)', color: 'var(--color-primary-light)', padding: '4px 10px', borderRadius: 8, fontSize: '0.78rem', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
+                    {t}
+                  </span>
+                ))}
+              </div>
 
               <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', alignItems: 'center' }}>
                 <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn" style={{ padding: '16px 32px', fontSize: '1rem' }}>
@@ -882,69 +891,80 @@ export default function PortfolioHub() {
               </div>
             </div>
 
-            {/* Right: Live Architecture & Flow Artifact */}
+            {/* Right: Senior Full-Stack System Architecture Diagram */}
             <div className="cyber-card" style={{ padding: '28px', border: '1px solid rgba(var(--color-primary-rgb), 0.3)', boxShadow: '0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(var(--color-primary-rgb), 0.15)' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '12px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                  <Cpu size={15} color="var(--color-primary-light)" /> System Architecture Flow
+                  <Cpu size={15} color="var(--color-primary-light)" /> Full-Stack Architecture
                 </div>
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: '#34D399', fontWeight: 700 }}>
-                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10B981' }}></span> Live 200 OK
+                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10B981' }}></span> Live Active
                 </span>
               </div>
 
-              {/* Connected Flow Diagram */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                {/* Node 1: Client Web */}
-                <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-subtle)', borderRadius: 12, padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div style={{ width: 34, height: 34, borderRadius: 8, background: 'rgba(56, 189, 248, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <Globe size={18} color="#38BDF8" />
-                    </div>
+              {/* Hierarchy Tree Diagram */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {/* 1. Web App */}
+                <div style={{ background: 'rgba(56, 189, 248, 0.08)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: 12, padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <Globe size={18} color="#38BDF8" />
                     <div>
-                      <div style={{ fontWeight: 800, fontSize: '0.9rem', color: '#FFF' }}>Frontend: Next.js 15 & React 19</div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Квиз-калькулятор • Скорость 98/100 • UI</div>
+                      <div style={{ fontWeight: 800, fontSize: '0.88rem', color: '#FFF' }}>WEB APP</div>
+                      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Next.js 15 • React 19 • Квизы • UI</div>
                     </div>
                   </div>
-                  <span style={{ fontSize: '0.75rem', color: '#38BDF8', fontFamily: 'var(--font-mono)' }}>Client</span>
+                  <span style={{ fontSize: '0.72rem', color: '#38BDF8', fontFamily: 'var(--font-mono)' }}>Client</span>
                 </div>
 
-                {/* Arrow */}
-                <div style={{ textAlign: 'center', color: 'var(--color-primary-light)', fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', opacity: 0.8 }}>
-                  <span>↓ HTTPS / REST API / Webhooks</span>
+                <div style={{ textAlign: 'center', color: 'var(--color-primary-light)', fontSize: '0.72rem', opacity: 0.8 }}>
+                  ↓ HTTPS / REST API
                 </div>
 
-                {/* Node 2: Backend Logic */}
-                <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-subtle)', borderRadius: 12, padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div style={{ width: 34, height: 34, borderRadius: 8, background: 'rgba(129, 140, 248, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <Server size={18} color="#818CF8" />
-                    </div>
+                {/* 2. API / Backend */}
+                <div style={{ background: 'rgba(129, 140, 248, 0.08)', border: '1px solid rgba(129, 140, 248, 0.25)', borderRadius: 12, padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <Server size={18} color="#818CF8" />
                     <div>
-                      <div style={{ fontWeight: 800, fontSize: '0.9rem', color: '#FFF' }}>Backend: Python / Java / Node.js</div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Обработка данных • PostgreSQL • Docker</div>
+                      <div style={{ fontWeight: 800, fontSize: '0.88rem', color: '#FFF' }}>API / BACKEND</div>
+                      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Python FastAPI • Java Spring Boot • Node.js</div>
                     </div>
                   </div>
-                  <span style={{ fontSize: '0.75rem', color: '#818CF8', fontFamily: 'var(--font-mono)' }}>Core API</span>
+                  <span style={{ fontSize: '0.72rem', color: '#818CF8', fontFamily: 'var(--font-mono)' }}>Server</span>
                 </div>
 
-                {/* Arrow */}
-                <div style={{ textAlign: 'center', color: 'var(--color-primary-light)', fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', opacity: 0.8 }}>
-                  <span>↓ Instant Lead Notification</span>
+                <div style={{ textAlign: 'center', color: 'var(--color-primary-light)', fontSize: '0.72rem', opacity: 0.8 }}>
+                  ↓ ACID Persistence
                 </div>
 
-                {/* Node 3: Telegram Bot */}
-                <div style={{ background: 'rgba(34, 158, 217, 0.08)', border: '1px solid rgba(34, 158, 217, 0.3)', borderRadius: 12, padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div style={{ width: 34, height: 34, borderRadius: 8, background: '#229ED9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <TelegramIcon size={18} />
-                    </div>
+                {/* 3. Database */}
+                <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid var(--border-subtle)', borderRadius: 12, padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <Database size={18} color="#FBBF24" />
                     <div>
-                      <div style={{ fontWeight: 800, fontSize: '0.9rem', color: '#FFF' }}>Telegram-бот & Уведомления</div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Заявка со сметой за 2 сек в телефон владельца</div>
+                      <div style={{ fontWeight: 800, fontSize: '0.88rem', color: '#FFF' }}>DATABASE</div>
+                      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>PostgreSQL • Redis • Docker Containers</div>
                     </div>
                   </div>
-                  <span style={{ fontSize: '0.75rem', color: '#34D399', fontWeight: 800, fontFamily: 'var(--font-mono)' }}>Delivered</span>
+                  <span style={{ fontSize: '0.72rem', color: '#FBBF24', fontFamily: 'var(--font-mono)' }}>Storage</span>
+                </div>
+
+                {/* Split Branch to Telegram & Automation */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '4px' }}>
+                  <div style={{ background: 'rgba(34, 158, 217, 0.1)', border: '1px solid rgba(34, 158, 217, 0.3)', borderRadius: 10, padding: '10px 12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
+                      <TelegramIcon size={14} />
+                      <span style={{ fontWeight: 800, fontSize: '0.8rem', color: '#FFF' }}>TELEGRAM</span>
+                    </div>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Заявки за 2 сек в бот</div>
+                  </div>
+
+                  <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: 10, padding: '10px 12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
+                      <Zap size={14} color="#34D399" />
+                      <span style={{ fontWeight: 800, fontSize: '0.8rem', color: '#FFF' }}>AUTOMATION</span>
+                    </div>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>CRM, Kafka, Брифы</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -952,37 +972,32 @@ export default function PortfolioHub() {
         </div>
       </section>
 
-      {/* 3 Core Products Section */}
-      <section id="products" style={{ padding: '80px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
+      {/* Explicit Services Section (Что я могу сделать для вашего бизнеса) */}
+      <section id="services" style={{ padding: '80px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 48px auto' }}>
+          <div style={{ textAlign: 'center', maxWidth: 680, margin: '0 auto 48px auto' }}>
             <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
-              &lt; solutions /&gt;
+              &lt; services /&gt;
             </div>
-            <h2 style={{ fontSize: '2.4rem', marginBottom: '12px' }}>3 продукта для роста вашего бизнеса</h2>
-            <p style={{ color: 'var(--text-muted)' }}>Каждое решение закрывает конкретную задачу: от привлечения лидов до автоматизации</p>
+            <h2 style={{ fontSize: '2.4rem', marginBottom: '12px' }}>Что я могу сделать для вашего бизнеса</h2>
+            <p style={{ color: 'var(--text-muted)' }}>Конкретные продукты, решающие задачи продаж, обслуживания клиентов и автоматизации</p>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
-            {PRODUCTS.map((prod) => (
-              <div key={prod.id} className="cyber-card" style={{ padding: '32px 28px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            {SERVICES.map((srv) => (
+              <div key={srv.id} className="cyber-card" style={{ padding: '32px 28px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-                    <div style={{ width: 50, height: 50, borderRadius: 14, background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-subtle)' }}>
-                      {prod.icon}
-                    </div>
-                    <span style={{ fontSize: '1.6rem', fontWeight: 900, color: 'var(--color-primary-light)', fontFamily: 'var(--font-heading)', opacity: 0.5 }}>
-                      {prod.number}
-                    </span>
+                  <div style={{ width: 54, height: 54, borderRadius: 14, background: 'rgba(255,255,255,0.04)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-subtle)', marginBottom: '20px' }}>
+                    {srv.icon}
                   </div>
 
-                  <h3 style={{ fontSize: '1.4rem', marginBottom: '12px', color: '#FFF' }}>{prod.title}</h3>
+                  <h3 style={{ fontSize: '1.4rem', marginBottom: '12px', color: '#FFF' }}>{srv.title}</h3>
                   <p style={{ fontSize: '0.9375rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '24px' }}>
-                    {prod.desc}
+                    {srv.desc}
                   </p>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '28px' }}>
-                    {prod.features.map((feat, fIdx) => (
+                    {srv.features.map((feat, fIdx) => (
                       <div key={fIdx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.84rem', color: 'var(--text-primary)' }}>
                         <CheckCircle2 size={16} color="var(--color-primary-light)" style={{ flexShrink: 0 }} />
                         <span>{feat}</span>
@@ -992,7 +1007,7 @@ export default function PortfolioHub() {
                 </div>
 
                 <a href="#calculator" className="cyber-btn-ghost" style={{ padding: '12px 18px', fontSize: '0.875rem', justifyContent: 'center' }}>
-                  Рассчитать этот продукт <ArrowRight size={16} />
+                  Рассчитать стоимость <ArrowRight size={16} />
                 </a>
               </div>
             ))}
@@ -1000,46 +1015,19 @@ export default function PortfolioHub() {
         </div>
       </section>
 
-      {/* Trust & Social Proof: Why Clients Choose Me */}
-      <section id="trust" style={{ padding: '80px 0' }}>
-        <div className="container">
-          <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 48px auto' }}>
-            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
-              &lt; why-me /&gt;
-            </div>
-            <h2 style={{ fontSize: '2.4rem', marginBottom: '12px' }}>Почему со мной выгодно работать</h2>
-            <p style={{ color: 'var(--text-muted)' }}>Надежность Senior-разработчика, прозрачные сроки и фокус на бизнес-результате</p>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
-            {TRUST_POINTS.map((item, idx) => (
-              <div key={idx} className="cyber-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                <div>
-                  <span style={{ display: 'inline-block', padding: '4px 10px', borderRadius: 6, background: 'rgba(var(--color-primary-rgb), 0.12)', color: 'var(--color-primary-light)', fontSize: '0.75rem', fontWeight: 800, marginBottom: '16px', fontFamily: 'var(--font-mono)' }}>
-                    {item.badge}
-                  </span>
-                  <h3 style={{ fontSize: '1.15rem', color: '#FFF', marginBottom: '10px' }}>{item.title}</h3>
-                  <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Repackaged Case Studies with Business Problem -> Solution -> Result */}
-      <section id="cases" style={{ padding: '90px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
+      {/* Case Studies Section */}
+      <section id="cases" style={{ padding: '90px 0' }}>
         <div className="container">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '20px', marginBottom: '48px' }}>
             <div>
               <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
-                &lt; case-studies /&gt;
+                &lt; all-projects /&gt;
               </div>
               <h2 style={{ fontSize: '2.5rem' }}>Реализованные кейсы ({CASES.length})</h2>
             </div>
 
             {/* Filter Tabs */}
-            <div style={{ display: 'flex', gap: '8px', background: 'var(--bg-main)', padding: '6px', borderRadius: 14, border: '1px solid var(--border-subtle)', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '8px', background: 'var(--bg-surface)', padding: '6px', borderRadius: 14, border: '1px solid var(--border-subtle)', flexWrap: 'wrap' }}>
               {[
                 { id: 'all', label: `Все кейсы (${CASES.length})` },
                 { id: 'web', label: 'Сайты для бизнеса (6)' },
@@ -1076,22 +1064,21 @@ export default function PortfolioHub() {
                 key={project.id}
                 className="cyber-card"
                 style={{
-                  background: 'var(--bg-main)',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                 }}
               >
                 <div>
-                  {/* Case Cover */}
-                  <div style={{ height: 210, backgroundImage: `url('${project.image}')`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
-                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(6, 8, 13, 0.95) 0%, transparent 60%)' }} />
+                  {/* Case Preview Image */}
+                  <div style={{ height: 220, backgroundImage: `url('${project.image}')`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
+                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(12, 16, 26, 0.95) 0%, transparent 60%)' }} />
                     <span style={{ position: 'absolute', top: 16, left: 16, background: 'rgba(6, 8, 13, 0.85)', backdropFilter: 'blur(8px)', color: project.accentColor, border: `1px solid ${project.accentColor}40`, padding: '6px 12px', borderRadius: 8, fontSize: '0.75rem', fontWeight: 800 }}>
                       {project.categoryLabel}
                     </span>
                   </div>
 
-                  {/* Case Body: Problem -> Solution -> Result */}
+                  {/* Case Content: Problem -> Solution -> Result */}
                   <div style={{ padding: '24px' }}>
                     <h3 style={{ fontSize: '1.3rem', marginBottom: '16px', color: '#FFF' }}>{project.title}</h3>
 
@@ -1165,15 +1152,42 @@ export default function PortfolioHub() {
         </div>
       </section>
 
-      {/* 4 Steps Workflow Section */}
+      {/* Trust Section (Почему со мной работают) */}
+      <section id="trust" style={{ padding: '80px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 48px auto' }}>
+            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
+              &lt; why-me /&gt;
+            </div>
+            <h2 style={{ fontSize: '2.4rem', marginBottom: '12px' }}>Почему со мной работают</h2>
+            <p style={{ color: 'var(--text-muted)' }}>Прозрачные условия, надежность и фокус на решении бизнес-задач</p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
+            {WHY_WORK_WITH_ME.map((item, idx) => (
+              <div key={idx} className="cyber-card" style={{ background: 'var(--bg-main)', padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <div>
+                  <span style={{ display: 'inline-block', padding: '4px 10px', borderRadius: 6, background: 'rgba(var(--color-primary-rgb), 0.12)', color: 'var(--color-primary-light)', fontSize: '0.75rem', fontWeight: 800, marginBottom: '16px', fontFamily: 'var(--font-mono)' }}>
+                    {item.badge}
+                  </span>
+                  <h3 style={{ fontSize: '1.15rem', color: '#FFF', marginBottom: '10px' }}>{item.title}</h3>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 4 Steps Workflow Section (Как проходит работа) */}
       <section id="workflow" style={{ padding: '90px 0' }}>
         <div className="container">
           <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 48px auto' }}>
             <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
               &lt; workflow /&gt;
             </div>
-            <h2 style={{ fontSize: '2.4rem', marginBottom: '12px' }}>Как строится работа</h2>
-            <p style={{ color: 'var(--text-muted)' }}>Прозрачные 4 шага от первой переписки до готового продукта в сети</p>
+            <h2 style={{ fontSize: '2.4rem', marginBottom: '12px' }}>Как проходит работа</h2>
+            <p style={{ color: 'var(--text-muted)' }}>4 простых и понятных этапа от первого сообщения до готового продукта</p>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px' }}>
@@ -1351,7 +1365,7 @@ export default function PortfolioHub() {
                 className="cyber-btn"
                 style={{ width: '100%', padding: '16px', fontSize: '0.95rem' }}
               >
-                <TelegramIcon size={18} /> Обсудить в Telegram ➔
+                <TelegramIcon size={18} /> 💬 Обсудить в Telegram ➔
               </a>
 
               <div style={{ textAlign: 'center', marginTop: '12px', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -1367,7 +1381,7 @@ export default function PortfolioHub() {
         <div className="container">
           <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 48px auto' }}>
             <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
-              &lt; tech-stack /&gt;
+              &lt; technologies /&gt;
             </div>
             <h2 style={{ fontSize: '2.2rem', marginBottom: '12px' }}>Стек и технологии</h2>
             <p style={{ color: 'var(--text-muted)' }}>Инструменты для создания быстрых интерфейсов и отказоустойчивых систем</p>
@@ -1410,7 +1424,7 @@ export default function PortfolioHub() {
             {FAQ_ITEMS.map((item, idx) => {
               const isOpen = openFaq === idx;
               return (
-                <div key={idx} className="cyber-card" style={{ padding: '20px 24px', cursor: 'pointer' }} onClick={() => setOpenFaq(isOpen ? null : idx)}>
+                <div key={idx} className="cyber-card" style={{ background: 'var(--bg-main)', padding: '20px 24px', cursor: 'pointer' }} onClick={() => setOpenFaq(isOpen ? null : idx)}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
                     <h3 style={{ fontSize: '1.05rem', color: '#FFF' }}>{item.q}</h3>
                     <ChevronDown size={20} color="var(--color-primary-light)" style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.25s ease' }} />
@@ -1433,9 +1447,9 @@ export default function PortfolioHub() {
           <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
             &lt; start-project /&gt;
           </div>
-          <h2 style={{ fontSize: 'clamp(2.2rem, 4.5vw, 3rem)', marginBottom: '18px' }}>Есть идея проекта или нужна автоматизация?</h2>
+          <h2 style={{ fontSize: 'clamp(2.2rem, 4.5vw, 3rem)', marginBottom: '18px' }}>Есть задача или идея?</h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1.15rem', marginBottom: '40px', lineHeight: 1.6, maxWidth: 680, margin: '0 auto 40px auto' }}>
-            Опишите задачу в Telegram — предложу оптимальный вариант реализации, стек и предварительный план запуска за 1 рабочий день.
+            Опишите её в Telegram. Я предложу вариант реализации и помогу определить оптимальный формат проекта.
           </p>
 
           <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
@@ -1444,9 +1458,9 @@ export default function PortfolioHub() {
               target="_blank"
               rel="noopener noreferrer"
               className="cyber-btn"
-              style={{ padding: '18px 38px', fontSize: '1.05rem' }}
+              style={{ padding: '18px 40px', fontSize: '1.05rem' }}
             >
-              <TelegramIcon size={20} /> 💬 Обсудить проект в Telegram
+              <TelegramIcon size={20} /> 💬 Обсудить проект
             </a>
 
             <a
