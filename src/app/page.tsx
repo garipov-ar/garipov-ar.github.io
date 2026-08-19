@@ -922,18 +922,50 @@ export default function PortfolioHub() {
             Напишите мне в Telegram или на электронную почту — обсудим сайт, Telegram-бота или Backend-сервис, подберем архитектуру и сделаем запуск.
           </p>
 
-          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '32px' }}>
-            <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn" style={{ padding: '16px 36px', fontSize: '1rem' }}>
-              <TelegramIcon size={18} /> Написать в Telegram (@Aidar_RG)
+          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
+            <a
+              href="https://t.me/Aidar_RG"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cyber-btn"
+              style={{ padding: '16px 32px', fontSize: '1rem' }}
+            >
+              <TelegramIcon size={18} /> Написать в Telegram
             </a>
-            <a href="mailto:disprogar@gmail.com" className="cyber-btn-ghost" style={{ padding: '16px 28px', fontSize: '1rem' }}>
-              <Mail size={18} /> disprogar@gmail.com
-            </a>
-            <button type="button" onClick={copyEmail} className="cyber-btn-ghost" style={{ padding: '16px 20px', fontSize: '1rem' }}>
-              {copiedEmail ? <Check size={18} color="#34D399" /> : <Copy size={18} />}
-              {copiedEmail ? 'Скопировано!' : 'Скопировать Email'}
+
+            <button
+              type="button"
+              onClick={copyEmail}
+              className="cyber-btn-ghost"
+              style={{
+                padding: '16px 24px',
+                fontSize: '1rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '10px',
+                cursor: 'pointer',
+              }}
+              title="Нажмите, чтобы скопировать email"
+            >
+              <Mail size={18} color="#60A5FA" />
+              <span>disprogar@gmail.com</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', marginLeft: '4px', opacity: 0.8 }}>
+                {copiedEmail ? <Check size={16} color="#34D399" /> : <Copy size={16} />}
+              </span>
+              {copiedEmail && (
+                <span style={{ fontSize: '0.8rem', color: '#34D399', fontWeight: 600, marginLeft: '4px' }}>
+                  (скопирован!)
+                </span>
+              )}
             </button>
-            <a href="https://github.com/garipov-ar" target="_blank" rel="noopener noreferrer" className="cyber-btn-ghost" style={{ padding: '16px 28px', fontSize: '1rem' }}>
+
+            <a
+              href="https://github.com/garipov-ar"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cyber-btn-ghost"
+              style={{ padding: '16px 26px', fontSize: '1rem' }}
+            >
               <GithubIcon size={18} /> GitHub Профиль
             </a>
           </div>
