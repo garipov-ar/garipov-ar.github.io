@@ -1601,7 +1601,7 @@ export default function PortfolioHub() {
                 </div>
 
                 {/* Actions */}
-                <div className="case-actions-grid" style={{ padding: '0 16px 16px 16px', display: 'grid', gridTemplateColumns: project.demoUrl ? '1.2fr 0.8fr' : '1fr', gap: '8px' }}>
+                <div className="case-actions-grid" style={{ padding: '0 16px 16px 16px', display: 'grid', gridTemplateColumns: project.demoUrl ? '1fr 1fr' : '1fr', gap: '8px' }}>
                   {project.demoUrl && (
                     <a
                       href={project.demoUrl}
@@ -1610,7 +1610,7 @@ export default function PortfolioHub() {
                       className="cyber-btn"
                       style={{ padding: '9px 12px', fontSize: '0.8rem', minHeight: 38 }}
                     >
-                      Смотреть демо <ArrowUpRight size={14} />
+                      Демо <ArrowUpRight size={14} />
                     </a>
                   )}
                   <a
