@@ -14,9 +14,10 @@ import {
   Mail,
   ArrowUpRight,
   Calculator,
-  Terminal as TerminalIcon,
   Copy,
   Check,
+  ChevronUp,
+  Cookie,
 } from 'lucide-react';
 
 const GithubIcon = ({ size = 18 }: { size?: number }) => (
@@ -547,57 +548,57 @@ const TECHNOLOGIES = [
   { name: 'Git & CI/CD', category: 'DevOps' },
 ];
 
-const INITIAL_LOGS = [
-  '⚡ [aidar@hub ~]$ init portfolio-core --prod',
-  '✔ [kernel] Loaded Next.js 15.1 (Turbopack) & React 19.0.0',
-  '✔ [stack] Python, Java, Node.js, Next.js, Docker, Kubernetes, PostgreSQL ready',
-  '✔ [cases] 10 live production projects verified & mounted',
-  '✔ [network] Status: 200 OK | Core Web Vitals: 98/100',
-  '✔ [telegram] Gateway ready: https://t.me/Aidar_RG',
-  '💡 [terminal] Type "help", "projects", "backend", "bots" to inspect.',
-];
-
 export default function PortfolioHub() {
   const [filter, setFilter] = useState<'all' | 'web' | 'bots' | 'backend'>('all');
-  const [logs, setLogs] = useState<string[]>(INITIAL_LOGS);
-  const [cmdInput, setCmdInput] = useState('');
+  const [activeSection, setActiveSection] = useState<string>('hero');
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [cookieAccepted, setCookieAccepted] = useState(true); // Default true to prevent flash, checked in useEffect
   const [copiedEmail, setCopiedEmail] = useState(false);
-  const terminalBottomRef = useRef<HTMLDivElement>(null);
 
   const filteredProjects = filter === 'all' ? PROJECTS : PROJECTS.filter((p) => p.category === filter);
 
-  const handleCommand = (e: React.FormEvent) => {
-    e.preventDefault();
-    const cleanCmd = cmdInput.trim().toLowerCase();
-    if (!cleanCmd) return;
-
-    let response = '';
-    if (cleanCmd === 'help') {
-      response = 'Доступные команды: projects, web, bots, backend, stack, contact, clear, reload';
-    } else if (cleanCmd === 'projects') {
-      response = `Всего 10 проектов: 6 Web (Next.js), 2 Telegram Боты, 2 Highload Backend (Kafka/Spring Boot)`;
-    } else if (cleanCmd === 'backend') {
-      response = 'Backend: Transaction Processing Engine (Kafka, Java 21), Immutable Audit Log Service (Spring Boot, PostgreSQL)';
-    } else if (cleanCmd === 'bots') {
-      response = 'Telegram: Field Support System Bot (Java/CMS), Briefy Bot (Python/aiogram)';
-    } else if (cleanCmd === 'stack') {
-      response = 'Стек: Python, Java, Node.js, Next.js 15, React 19, TypeScript, Docker, Kubernetes, PostgreSQL, RabbitMQ, Nginx, Linux, Tailwind CSS';
-    } else if (cleanCmd === 'contact') {
-      response = 'Telegram: @Aidar_RG (https://t.me/Aidar_RG) | Email: disprogar@gmail.com';
-    } else if (cleanCmd === 'clear') {
-      setLogs([]);
-      setCmdInput('');
-      return;
-    } else if (cleanCmd === 'reload') {
-      setLogs(INITIAL_LOGS);
-      setCmdInput('');
-      return;
-    } else {
-      response = `Команда "${cleanCmd}" не найдена. Введите "help" для списка команд.`;
+  // Scroll spy & Scroll-to-top handler
+  useEffect(() => {
+    // Check cookies
+    const savedCookie = localStorage.getItem('garipov_cookie_consent');
+    if (!savedCookie) {
+      setCookieAccepted(false);
     }
 
-    setLogs((prev) => [...prev, `⚡ [aidar@hub ~]$ ${cmdInput}`, response]);
-    setCmdInput('');
+    const handleScroll = () => {
+      // Toggle back to top button
+      if (window.scrollY > 300) {
+        setShowScrollTop(true);
+      } else {
+        setShowScrollTop(false);
+      }
+
+      // Determine active section
+      const sections = ['hero', 'technologies', 'projects', 'contacts'];
+      const scrollPosition = window.scrollY + 200;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sections[i]);
+        if (el && el.offsetTop <= scrollPosition) {
+          setActiveSection(sections[i]);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const acceptCookies = () => {
+    localStorage.setItem('garipov_cookie_consent', 'true');
+    setCookieAccepted(true);
   };
 
   const copyEmail = () => {
@@ -608,7 +609,7 @@ export default function PortfolioHub() {
 
   return (
     <div>
-      {/* Top Navigation */}
+      {/* Top Navigation with Active Section Highlighting */}
       <header style={{ borderBottom: '1px solid var(--border-subtle)', padding: '16px 0', backgroundColor: 'rgba(6, 8, 13, 0.92)', backdropFilter: 'blur(20px)', position: 'sticky', top: 0, zIndex: 50 }}>
         <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -621,11 +622,34 @@ export default function PortfolioHub() {
             </div>
           </div>
 
-          <nav style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-            <a href="#projects" style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none' }}>Проекты</a>
-            <a href="#technologies" style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none' }}>Технологии</a>
-            <a href="#terminal" style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none' }}>Терминал</a>
-            <a href="#contacts" style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none' }}>Контакты</a>
+          <nav style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            {[
+              { id: 'hero', label: 'Главная' },
+              { id: 'technologies', label: 'Технологии' },
+              { id: 'projects', label: 'Проекты' },
+              { id: 'contacts', label: 'Контакты' },
+            ].map((item) => {
+              const isActive = activeSection === item.id;
+              return (
+                <a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  style={{
+                    color: isActive ? '#FFF' : 'var(--text-secondary)',
+                    backgroundColor: isActive ? 'rgba(59, 130, 246, 0.15)' : 'transparent',
+                    border: `1px solid ${isActive ? 'rgba(59, 130, 246, 0.4)' : 'transparent'}`,
+                    padding: '8px 16px',
+                    borderRadius: 10,
+                    fontSize: '0.875rem',
+                    fontWeight: isActive ? 700 : 500,
+                    textDecoration: 'none',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
           </nav>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -639,78 +663,39 @@ export default function PortfolioHub() {
         </div>
       </header>
 
-      {/* Hero Section with Interactive Neural Mesh Canvas */}
-      <section style={{ padding: '90px 0 60px 0', position: 'relative', overflow: 'hidden' }}>
+      {/* Hero Section with Interactive Neural Mesh Canvas (No Terminal) */}
+      <section id="hero" style={{ padding: '110px 0 90px 0', position: 'relative', overflow: 'hidden' }}>
         <HeroInteractiveCanvas />
 
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ textAlign: 'center', maxWidth: 900, margin: '0 auto 50px auto' }}>
+          <div style={{ textAlign: 'center', maxWidth: 900, margin: '0 auto' }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', borderRadius: 9999, background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.3)', color: '#34D399', fontSize: '0.8125rem', fontWeight: 700, marginBottom: '24px' }}>
               <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10B981', display: 'inline-block', boxShadow: '0 0 10px #10B981' }}></span>
               Открыт для новых проектов и заказов
             </div>
 
-            <h1 style={{ fontSize: 'clamp(2.3rem, 5.2vw, 3.6rem)', lineHeight: 1.15, marginBottom: '24px' }}>
+            <h1 style={{ fontSize: 'clamp(2.4rem, 5.5vw, 3.8rem)', lineHeight: 1.15, marginBottom: '24px' }}>
               Разработка веб-сервисов, <span className="glow-accent">Telegram-ботов</span> и Backend-систем
             </h1>
 
-            <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', lineHeight: 1.65, maxWidth: 760, margin: '0 auto 36px auto' }}>
-              Создаю сверхбыстрые веб-приложения на Next.js 15, квиз-калькуляторы сметы, Telegram-ботов и отказоустойчивые Backend-системы на Java/Spring Boot & Kafka.
+            <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', lineHeight: 1.65, maxWidth: 780, margin: '0 auto 40px auto' }}>
+              Создаю продающие сайты на Next.js 15, интерактивные квиз-калькуляторы сметы, Telegram-ботов и надежные масштабируемые Backend-сервисы.
             </p>
 
             <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <a href="#projects" className="cyber-btn" style={{ padding: '16px 36px', fontSize: '1rem' }}>
+              <a href="#projects" className="cyber-btn" style={{ padding: '16px 36px', fontSize: '1.05rem' }}>
                 Смотреть проекты ({PROJECTS.length}) ➔
               </a>
-              <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn-ghost" style={{ padding: '16px 28px', fontSize: '1rem' }}>
+              <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn-ghost" style={{ padding: '16px 28px', fontSize: '1.05rem' }}>
                 <TelegramIcon size={18} /> Написать в Telegram
               </a>
-            </div>
-          </div>
-
-          {/* Interactive Terminal Window */}
-          <div id="terminal" style={{ maxWidth: 900, margin: '0 auto 20px auto' }}>
-            <div className="terminal-window">
-              <div className="terminal-header">
-                <div className="terminal-dots">
-                  <div className="terminal-dot" style={{ background: '#EF4444' }}></div>
-                  <div className="terminal-dot" style={{ background: '#F59E0B' }}></div>
-                  <div className="terminal-dot" style={{ background: '#10B981' }}></div>
-                </div>
-                <div style={{ fontSize: '0.75rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <TerminalIcon size={13} /> aidar-garipov@portfolio-hub: ~
-                </div>
-                <div style={{ width: 40 }}></div>
-              </div>
-
-              <div className="terminal-body">
-                {logs.map((line, idx) => (
-                  <div key={idx} style={{ marginBottom: '4px', color: line.startsWith('✔') ? '#34D399' : line.startsWith('⚡') ? '#60A5FA' : line.startsWith('💡') ? '#FBBF24' : '#94A3B8' }}>
-                    {line}
-                  </div>
-                ))}
-                <div ref={terminalBottomRef}></div>
-
-                {/* Input Prompt */}
-                <form onSubmit={handleCommand} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px' }}>
-                  <span style={{ color: '#60A5FA', fontWeight: 700 }}>⚡ [aidar@hub ~]$</span>
-                  <input
-                    type="text"
-                    value={cmdInput}
-                    onChange={(e) => setCmdInput(e.target.value)}
-                    placeholder="введите команду (help, projects, backend, bots, stack)..."
-                    style={{ flex: 1, background: 'transparent', border: 'none', color: '#FFF', fontFamily: 'var(--font-mono)', fontSize: '0.84rem', outline: 'none' }}
-                  />
-                  <span className="cursor-blink"></span>
-                </form>
-              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Technologies Section with Real Brand SVG Icons */}
-      <section id="technologies" style={{ padding: '80px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
+      <section id="technologies" style={{ padding: '90px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
         <div className="container">
           <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 48px auto' }}>
             <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
@@ -938,6 +923,83 @@ export default function PortfolioHub() {
           <p style={{ marginTop: '12px', fontSize: '0.75rem' }}>© {new Date().getFullYear()} Все права защищены. garipov-ar.github.io</p>
         </div>
       </footer>
+
+      {/* Floating Back to Top Button */}
+      {showScrollTop && (
+        <button
+          type="button"
+          onClick={scrollToTop}
+          style={{
+            position: 'fixed',
+            bottom: '30px',
+            right: '30px',
+            width: '48px',
+            height: '48px',
+            borderRadius: '14px',
+            background: 'rgba(12, 16, 26, 0.9)',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(59, 130, 246, 0.4)',
+            color: '#FFF',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(59, 130, 246, 0.25)',
+            zIndex: 90,
+            transition: 'all 0.25s ease',
+          }}
+          title="Наверх"
+          aria-label="Наверх"
+        >
+          <ChevronUp size={22} color="#60A5FA" />
+        </button>
+      )}
+
+      {/* Cookie Consent Banner */}
+      {!cookieAccepted && (
+        <div
+          style={{
+            position: 'fixed',
+            bottom: '24px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: 'calc(100% - 48px)',
+            maxWidth: '680px',
+            background: 'rgba(12, 16, 26, 0.95)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(59, 130, 246, 0.3)',
+            borderRadius: '18px',
+            padding: '18px 24px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '20px',
+            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(59, 130, 246, 0.15)',
+            zIndex: 100,
+            flexWrap: 'wrap',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: '240px' }}>
+            <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(59, 130, 246, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#60A5FA', flexShrink: 0 }}>
+              <Cookie size={20} />
+            </div>
+            <div style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+              Этот сайт использует файлы cookie для улучшения пользовательского опыта и аналитики.
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button
+              type="button"
+              onClick={acceptCookies}
+              className="cyber-btn"
+              style={{ padding: '10px 22px', fontSize: '0.84rem', borderRadius: 10 }}
+            >
+              Принять
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
