@@ -22,6 +22,16 @@ import {
   Clock,
   Coins,
   MessageSquare,
+  ShieldCheck,
+  Code2,
+  Workflow,
+  HelpCircle,
+  ChevronDown,
+  Server,
+  Bot,
+  Globe,
+  Cpu,
+  ArrowRight,
 } from 'lucide-react';
 
 const GithubIcon = ({ size = 18 }: { size?: number }) => (
@@ -46,7 +56,7 @@ const THEMES = [
   { id: 'amber', name: 'Cyber Amber', color: '#F59E0B' },
 ];
 
-// Interactive Hero Particle Network Background
+// Interactive Hero Particle Canvas Background
 function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -73,7 +83,7 @@ function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
       y: height / 2,
       targetX: width / 2,
       targetY: height / 2,
-      radius: 160,
+      radius: 150,
       isHovering: false,
     };
 
@@ -94,7 +104,7 @@ function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
       parent.addEventListener('mouseleave', handleMouseLeave);
     }
 
-    const particleCount = Math.min(Math.floor((width * height) / 12000), 75);
+    const particleCount = Math.min(Math.floor((width * height) / 13000), 65);
     const particles: {
       x: number;
       y: number;
@@ -110,12 +120,12 @@ function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
       particles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.8,
-        vy: (Math.random() - 0.5) * 0.8,
+        vx: (Math.random() - 0.5) * 0.7,
+        vy: (Math.random() - 0.5) * 0.7,
         baseRadius: Math.random() * 2 + 1,
         radius: Math.random() * 2 + 1,
         color: themeColor,
-        alpha: Math.random() * 0.5 + 0.3,
+        alpha: Math.random() * 0.4 + 0.25,
       });
     }
 
@@ -126,9 +136,9 @@ function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
       ctx.clearRect(0, 0, width, height);
 
       if (mouse.isHovering) {
-        const gradient = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, mouse.radius * 1.5);
-        gradient.addColorStop(0, `${themeColor}2e`);
-        gradient.addColorStop(0.5, `${themeColor}0f`);
+        const gradient = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, mouse.radius * 1.4);
+        gradient.addColorStop(0, `${themeColor}22`);
+        gradient.addColorStop(0.5, `${themeColor}08`);
         gradient.addColorStop(1, 'transparent');
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, width, height);
@@ -148,9 +158,9 @@ function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
 
         if (mouse.isHovering && dist < mouse.radius) {
           const force = (mouse.radius - dist) / mouse.radius;
-          p.x -= (dx / dist) * force * 2.5;
-          p.y -= (dy / dist) * force * 2.5;
-          p.radius = p.baseRadius + force * 2.5;
+          p.x -= (dx / dist) * force * 2.2;
+          p.y -= (dy / dist) * force * 2.2;
+          p.radius = p.baseRadius + force * 2;
         } else {
           p.radius += (p.baseRadius - p.radius) * 0.1;
         }
@@ -159,7 +169,7 @@ function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx.fillStyle = themeColor;
         ctx.globalAlpha = p.alpha;
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = 8;
         ctx.shadowColor = themeColor;
         ctx.fill();
         ctx.shadowBlur = 0;
@@ -169,7 +179,7 @@ function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(mouse.x, mouse.y);
-          ctx.strokeStyle = `${themeColor}66`;
+          ctx.strokeStyle = `${themeColor}44`;
           ctx.lineWidth = 1;
           ctx.stroke();
         }
@@ -184,7 +194,7 @@ function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `${themeColor}2e`;
+            ctx.strokeStyle = `${themeColor}22`;
             ctx.lineWidth = 0.8;
             ctx.stroke();
           }
@@ -222,16 +232,16 @@ function HeroInteractiveCanvas({ themeColor }: { themeColor: string }) {
   );
 }
 
-// Tech Brand SVG Icons
+// 15 Tech Icons
 const TECH_ICONS: Record<string, React.ReactNode> = {
   'Python': (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <path d="M11.91 2C6.44 2 6.78 4.38 6.78 4.38L6.79 6.84H12V7.61H3.69S2 7.42 2 12.87c0 5.46 1.48 5.25 1.48 5.25h2.21v-3.11s-.12-3.69 3.65-3.69h5.18s3.53.06 3.53-3.44V4.44S18.57 2 11.91 2zM9.4 3.73a.87.87 0 110 1.74.87.87 0 010-1.74z" fill="#38BDF8"/>
       <path d="M12.09 22c5.47 0 5.13-2.38 5.13-2.38l-.01-2.46H12v-.77h8.31s1.69.19 1.69-5.26c0-5.46-1.48-5.25-1.48-5.25h-2.21v3.11s.12 3.69-3.65 3.69H9.48s-3.53-.06-3.53 3.44v3.44S5.43 22 12.09 22zm2.51-1.73a.87.87 0 110-1.74.87.87 0 010 1.74z" fill="#FBBF24"/>
     </svg>
   ),
   'Java': (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <path d="M8.8 17.5c-2.3.2-3.8.7-3.8 1.3 0 .9 3.1 1.7 7 1.7s7-.8 7-1.7c0-.6-1.5-1.1-3.8-1.3" stroke="#F87171" strokeWidth="1.6" strokeLinecap="round"/>
       <path d="M9 13.5c-1.8.3-2.8.7-2.8 1.2 0 .8 2.6 1.5 5.8 1.5 3.2 0 5.8-.7 5.8-1.5 0-.5-1-1-2.8-1.2" stroke="#F87171" strokeWidth="1.6" strokeLinecap="round"/>
       <path d="M12 2c1 2-2 3.5-2 5.5s3 3.5 1 5.5" stroke="#F87171" strokeWidth="1.8" strokeLinecap="round"/>
@@ -239,20 +249,19 @@ const TECH_ICONS: Record<string, React.ReactNode> = {
     </svg>
   ),
   'Node.js': (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M12 2l8.66 5v10L12 22l-8.66-5V7L12 2z" fill="#34D399" opacity="0.2"/>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <path d="M12 2l8.66 5v10L12 22l-8.66-5V7L12 2z" stroke="#34D399" strokeWidth="1.6"/>
       <path d="M12 6.5l5 3v5l-5 3-5-3v-5l5-3z" fill="#34D399"/>
     </svg>
   ),
   'Next.js 15': (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="10" fill="#000" stroke="#FFF" strokeWidth="1.6"/>
       <path d="M15 8v8M9 8v8l7.5-9" stroke="#FFF" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   ),
   'React 19': (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <ellipse cx="12" cy="12" rx="10" ry="4.2" stroke="#60A5FA" strokeWidth="1.5" transform="rotate(30 12 12)"/>
       <ellipse cx="12" cy="12" rx="10" ry="4.2" stroke="#60A5FA" strokeWidth="1.5" transform="rotate(90 12 12)"/>
       <ellipse cx="12" cy="12" rx="10" ry="4.2" stroke="#60A5FA" strokeWidth="1.5" transform="rotate(150 12 12)"/>
@@ -260,22 +269,21 @@ const TECH_ICONS: Record<string, React.ReactNode> = {
     </svg>
   ),
   'TypeScript': (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <rect width="24" height="24" rx="4" fill="#3178C6"/>
       <path d="M11.5 9H6.5V11H8V18H10V11H11.5V9Z" fill="#FFF"/>
       <path d="M17.8 11.2C17.4 10.4 16.5 10 15.3 10C13.8 10 12.8 10.8 12.8 12.1C12.8 14.5 16 13.7 16 15.4C16 16.2 15.3 16.6 14.2 16.6C13.1 16.6 12.2 16 11.8 15.2L10.3 16.1C11 17.5 12.4 18.2 14.2 18.2C16.4 18.2 17.8 17.1 17.8 15.4C17.8 13 14.6 13.8 14.6 12.2C14.6 11.6 15.1 11.3 15.9 11.3C16.7 11.3 17.3 11.7 17.6 12.3L17.8 11.2Z" fill="#FFF"/>
     </svg>
   ),
   'Telegram Bot API': (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="11" fill="#229ED9"/>
       <path d="M17.5 7.5L5.5 12.2l4.3 2.1 2.2 4.3 1.2-3.4 4.3-7.7z" fill="#FFF"/>
       <path d="M9.8 14.3l3.4-3.4" stroke="#229ED9" strokeWidth="1.2"/>
     </svg>
   ),
   'Docker': (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M22 12.5c-.5-.4-1.5-.4-2.1 0-.3-1.6-1.5-2.7-3-2.7h-.5c-.3-1.4-1.5-2.3-2.9-2.3-1.6 0-3 1.2-3 2.8H4c-1.1 0-2 .9-2 2 0 4.4 3.6 8 8 8 5.3 0 9.8-3.8 10-9.1.7.3 1.5.1 2-.7z" fill="#38BDF8" opacity="0.2"/>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <path d="M22 12.5c-.5-.4-1.5-.4-2.1 0-.3-1.6-1.5-2.7-3-2.7h-.5c-.3-1.4-1.5-2.3-2.9-2.3-1.6 0-3 1.2-3 2.8H4c-1.1 0-2 .9-2 2 0 4.4 3.6 8 8 8 5.3 0 9.8-3.8 10-9.1.7.3 1.5.1 2-.7z" stroke="#38BDF8" strokeWidth="1.5"/>
       <rect x="5" y="9.5" width="2" height="2" fill="#38BDF8"/>
       <rect x="8" y="9.5" width="2" height="2" fill="#38BDF8"/>
@@ -283,21 +291,21 @@ const TECH_ICONS: Record<string, React.ReactNode> = {
     </svg>
   ),
   'Kubernetes': (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="10" stroke="#326CE5" strokeWidth="1.5"/>
       <polygon points="12,4 19,8 19,16 12,20 5,16 5,8" stroke="#326CE5" strokeWidth="1.4" fill="none"/>
       <circle cx="12" cy="12" r="3" fill="#326CE5"/>
     </svg>
   ),
   'PostgreSQL': (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <ellipse cx="12" cy="7" rx="8" ry="3.5" stroke="#818CF8" strokeWidth="1.6"/>
       <path d="M4 7v10c0 1.9 3.6 3.5 8 3.5s8-1.6 8-3.5V7" stroke="#818CF8" strokeWidth="1.6"/>
-      <path d="M4 12c0 1.9 3.6 3.5 8 3.5s8-1.6 8-3.5" stroke="#818CF8" strokeWidth="1.6"/>
+      <path d="M4 12c0 1.9 3.6 3.5 8 3.5" stroke="#818CF8" strokeWidth="1.6"/>
     </svg>
   ),
   'RabbitMQ': (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <rect x="3" y="4" width="18" height="16" rx="4" fill="#FF6600" opacity="0.15"/>
       <path d="M12 7c-2.5 0-4 1.5-4 4 0 1.5.5 3 2 3.8v2.2h4v-2.2c1.5-.8 2-2.3 2-3.8 0-2.5-1.5-4-4-4z" fill="#FB923C"/>
       <circle cx="10.5" cy="10.5" r="1" fill="#FFF"/>
@@ -305,14 +313,13 @@ const TECH_ICONS: Record<string, React.ReactNode> = {
     </svg>
   ),
   'Nginx': (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <polygon points="12,2 21.5,7.5 21.5,18.5 12,24 2.5,18.5 2.5,7.5" fill="#009639" opacity="0.2"/>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <polygon points="12,2 21.5,7.5 21.5,18.5 12,24 2.5,18.5 2.5,7.5" stroke="#34D399" strokeWidth="1.6"/>
       <path d="M8 8v8l8-8v8" stroke="#FFF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   ),
   'Linux': (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <path d="M12 3c-2.8 0-4 2.5-4 5.5 0 1.5.5 3 1 4.5-.8.5-2 1.5-2 3.5 0 2.5 2.5 4.5 7 4.5s7-2 7-4.5c0-2-1.2-3-2-3.5.5-1.5 1-3 1-4.5 0-3-1.2-5.5-4-5.5z" stroke="#FBBF24" strokeWidth="1.6" fill="#FBBF24" fillOpacity="0.2"/>
       <circle cx="10" cy="7.5" r="1" fill="#FFF"/>
       <circle cx="14" cy="7.5" r="1" fill="#FFF"/>
@@ -320,12 +327,12 @@ const TECH_ICONS: Record<string, React.ReactNode> = {
     </svg>
   ),
   'Tailwind CSS': (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <path d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.336 6.182 14.975 4.8 12.001 4.8zm-6 7.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624 1.177 1.194 2.538 2.576 5.512 2.576 3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.336 13.382 8.975 12 6.001 12z" fill="#38BDF8"/>
     </svg>
   ),
   'Git & CI/CD': (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <rect width="18" height="18" rx="3" transform="rotate(45 12 12)" stroke="#F43F5E" strokeWidth="1.6" fill="#F43F5E" fillOpacity="0.15"/>
       <circle cx="12" cy="8" r="1.5" fill="#FFF"/>
       <circle cx="12" cy="16" r="1.5" fill="#FFF"/>
@@ -335,235 +342,242 @@ const TECH_ICONS: Record<string, React.ReactNode> = {
   ),
 };
 
-interface Project {
+// 3 Core Products
+const PRODUCTS = [
+  {
+    id: 'sites',
+    number: '01',
+    title: 'Сайты для бизнеса',
+    desc: 'Продающие посадочные страницы, каталоги и квиз-калькуляторы с конверсией x2–x3 и моментальной передачей лидов.',
+    icon: <Globe size={26} color="#38BDF8" />,
+    features: ['Next.js 15 & React 19', 'Квиз-калькуляторы сметы', 'PageSpeed 95–98 / 100', 'Mobile First верстка'],
+  },
+  {
+    id: 'bots',
+    number: '02',
+    title: 'Telegram-боты & TMA',
+    desc: 'Чат-боты для автоматизации приема заявок, квалификации лидов, сбора брифов и интеграции с CRM.',
+    icon: <Bot size={26} color="#34D399" />,
+    features: ['Автоматический сбор брифов', 'Интеграция с базой данных', 'Уведомления менеджерам', 'Telegram Mini Apps (TMA)'],
+  },
+  {
+    id: 'backend',
+    number: '03',
+    title: 'Backend & Автоматизация',
+    desc: 'Отказоустойчивые серверные микросервисы, REST API, парсинг данных и интеграция внутренних систем.',
+    icon: <Server size={26} color="#818CF8" />,
+    features: ['Java / Python / Node.js', 'PostgreSQL & Docker', 'Apache Kafka очереди', 'Высокая надежность (ACID)'],
+  },
+];
+
+// 4 Steps Workflow
+const WORKFLOW_STEPS = [
+  {
+    step: '01',
+    title: 'Обсуждаем задачу',
+    desc: 'Созваниваемся или подробно разбираем проект в Telegram. Определяем цели бизнеса, ЦА и ключевые метрики.',
+  },
+  {
+    step: '02',
+    title: 'Формируем смету и ТЗ',
+    desc: 'Фиксируем архитектуру, список модулей, точные сроки и прозрачную фиксированную стоимость без скрытых наценок.',
+  },
+  {
+    step: '03',
+    title: 'Разработка и тест',
+    desc: 'Пишу чистый код, разворачиваю тестовый стенд на живом домене. Вы видите процесс и вносите обратную связь.',
+  },
+  {
+    step: '04',
+    title: 'Запуск и передача кода',
+    desc: 'Публикую проект в прод, подключаю домен, передаю все исходники в ваш репозиторий и даю гарантию на работу.',
+  },
+];
+
+// Trust Pillars
+const TRUST_POINTS = [
+  {
+    title: '10+ реализованных проектов',
+    desc: 'От конверсионных сайтов строительных компаний до отказоустойчивых enterprise-систем.',
+    badge: 'Практический опыт',
+  },
+  {
+    title: 'Полный цикл разработки под ключ',
+    desc: 'От архитектуры и интерактива до деплоя на быстрый хостинг и настройки Telegram-ботов.',
+    badge: 'Без подрядчиков',
+  },
+  {
+    title: 'Прямая связь с разработчиком',
+    desc: 'Никаких испорченных телефонов и наценок агентств. Быстрые правки и понимание задач бизнеса.',
+    badge: '100% фокус',
+  },
+  {
+    title: 'Чистый код и исходники у вас',
+    desc: 'Сайт строится на современных технологиях (Next.js, Python, Java, Docker), исходники принадлежат вам.',
+    badge: 'Надежность',
+  },
+];
+
+interface CaseProject {
   id: string;
   title: string;
   category: 'web' | 'bots' | 'backend';
   categoryLabel: string;
-  description: string;
-  features: string[];
+  problem: string;
+  solution: string;
+  businessResult: string;
   stack: string[];
   demoUrl?: string;
   githubUrl: string;
   image: string;
   accentColor: string;
-  metrics: string;
 }
 
-const PROJECTS: Project[] = [
+const CASES: CaseProject[] = [
   {
     id: 'nordic',
     title: 'Nordic Craft — Строительная компания',
     category: 'web',
-    categoryLabel: 'Next.js & Frontend',
-    description: 'Премиальный адаптивный сайт для строительной компании с интерактивным 5-шаговым квиз-калькулятором сметы и ипотеки.',
-    features: [
-      '5-шаговый интерактивный квиз-калькулятор стоимости и ипотеки',
-      'Каталог проектов домов с планировками и рендерами',
-      'Интеграция с Telegram-ботом для моментального приема заявок',
-      'PageSpeed 98/100 и полная Mobile First адаптивность',
-    ],
-    stack: ['Next.js 15', 'React 19', 'TypeScript', 'CSS Modules', 'Telegram API'],
+    categoryLabel: 'Сайты для бизнеса',
+    problem: 'Клиенты уходили с сайта без заявки из-за отсутствия понятного расчета стоимости дома и условий ипотеки.',
+    solution: 'Разработан 5-шаговый интерактивный квиз-калькулятор с мгновенным подбором комплектации и связкой с Telegram.',
+    businessResult: 'Заявки поступают сразу с выбранной сметой и контактом, повышая конверсию первого касания.',
+    stack: ['Next.js 15', 'React 19', 'TypeScript', 'Telegram Bot API', 'CSS Modules'],
     demoUrl: 'https://garipov-ar.github.io/nordic-craft-construction/',
     githubUrl: 'https://github.com/garipov-ar/nordic-craft-construction',
     image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80',
     accentColor: '#10B981',
-    metrics: 'PageSpeed 98 • 5 шагов квиза',
   },
   {
     id: 'echo',
     title: 'Гостевой комплекс «ЭХО»',
     category: 'web',
-    categoryLabel: 'Next.js & Frontend',
-    description: 'Атмосферный лендинг для загородного комплекса в таежном стиле с переключателем домов, умным букингом и спа-ритуалами.',
-    features: [
-      'Интерактивный переключатель (A-Frame «Шалаш» vs «Большой дом»)',
-      'Умный калькулятор дат (будний / выходной тариф, скидка 10% от 2 суток)',
-      'Интерактивный выбор спа-услуг (чан, баня, барбекю-сет)',
-      'Интеграция с Яндекс Картами (реальная геопозиция)',
-    ],
+    categoryLabel: 'Сайты для бизнеса',
+    problem: 'Требовалось автоматизировать расчет бронирования в зависимости от дней недели (будни/выходные) и спа-услуг.',
+    solution: 'Создан атмосферный лендинг с переключателем домов (Шалаш/Большой дом), динамическим прайсингом и скидкой от 2 суток.',
+    businessResult: 'Гости самостоятельно конфигурируют отдых с доп. услугами (чан/баня), снижая нагрузку на администратора.',
     stack: ['Next.js 15', 'React 19', 'TypeScript', 'Booking Engine', 'Yandex Maps'],
     demoUrl: 'https://garipov-ar.github.io/echo-houses-rental/',
     githubUrl: 'https://github.com/garipov-ar/echo-houses-rental',
     image: 'https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&w=1000&q=80',
     accentColor: '#D97706',
-    metrics: 'Dynamic Pricing • 2 объекта',
-  },
-  {
-    id: 'transaction-engine',
-    title: 'Transaction Processing Engine — Highload',
-    category: 'backend',
-    categoryLabel: 'Backend & Highload',
-    description: 'Высоконагруженный распределенный движок процессинга финансовых транзакций с очередями сообщений и защитой от сбоев.',
-    features: [
-      'Асинхронная обработка потока транзакций через Apache Kafka',
-      'Гарантия идемпотентности и строгой целостности данных (ACID)',
-      'Тюнинг JVM памяти и оптимизация пула соединений PostgreSQL',
-      'Архитектура микросервисов с метриками и мониторингом',
-    ],
-    stack: ['Java 21', 'Spring Boot 3', 'Apache Kafka', 'PostgreSQL', 'Docker', 'JVM Tuning'],
-    githubUrl: 'https://github.com/garipov-ar/transaction-engine',
-    image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1000&q=80',
-    accentColor: '#38BDF8',
-    metrics: 'High Throughput • Kafka Pipeline',
-  },
-  {
-    id: 'field-support',
-    title: 'Field Support System — Telecom Bot + CMS',
-    category: 'bots',
-    categoryLabel: 'Telegram Боты & CMS',
-    description: 'Корпоративная экосистема для выездных инженеров связи: Telegram-бот для регламентов и CMS-панель управления базой знаний.',
-    features: [
-      'Telegram-бот для мгновенного поиска регламентов и схем оборудования',
-      'CMS-панель для диспетчеров и технических авторов',
-      'Интеграция с реляционной базой данных PostgreSQL',
-      'Система разграничения прав доступа и логирование запросов',
-    ],
-    stack: ['Java', 'Spring Boot', 'Telegram Bot API', 'PostgreSQL', 'REST API', 'Docker'],
-    githubUrl: 'https://github.com/garipov-ar/field-support-system',
-    image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1000&q=80',
-    accentColor: '#818CF8',
-    metrics: 'Telegram Bot + CMS • PostgreSQL',
-  },
-  {
-    id: 'audit-log',
-    title: 'Immutable Financial Audit Log Service',
-    category: 'backend',
-    categoryLabel: 'Backend & Highload',
-    description: 'Отказоустойчивый сервис неизменяемого аудита финансовых транзакций и системных событий (WORM-паттерн).',
-    features: [
-      'Защита записей аудита от модификации и несанкционированного удаления',
-      'Партиционирование таблиц PostgreSQL для работы с миллионами записей',
-      'REST API для быстрой интеграции с банковскими шлюзами',
-      'Полная трассировка действий операторов и транзакций',
-    ],
-    stack: ['Java', 'Spring Boot', 'PostgreSQL', 'REST API', 'Docker'],
-    githubUrl: 'https://github.com/garipov-ar/audit-log-service',
-    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=80',
-    accentColor: '#A78BFA',
-    metrics: 'Immutable Audit • Enterprise',
   },
   {
     id: 'briefy-bot',
     title: 'Briefy Bot — Умный Telegram-бот сбора брифов',
     category: 'bots',
-    categoryLabel: 'Telegram Боты & CMS',
-    description: 'Интерактивный Telegram-бот для автоматизированного анкетирования клиентов, сбора ТЗ и передачи структурированных лидов.',
-    features: [
-      'Пошаговый сценарий опроса клиентов с валидацией ответов',
-      'Генерация структурированного брифа в Telegram и экспорт',
-      'Удобные Inline-кнопки и сохранение состояния диалога',
-      'Мгновенное уведомление менеджеров о новой заполненной заявке',
-    ],
+    categoryLabel: 'Telegram-боты & CRM',
+    problem: 'Менеджеры тратили до 40 минут на первичный опрос каждого лида для выяснения требований к проекту.',
+    solution: 'Интерактивный Telegram-бот проводит пошаговый опрос клиента, валидирует данные и формирует готовое ТЗ.',
+    businessResult: 'Экономия до 80% времени менеджеров, мгновенная отправка заполненного брифа в рабочий чат.',
     stack: ['Python', 'aiogram', 'Telegram Bot API', 'SQLite/PostgreSQL'],
     githubUrl: 'https://github.com/garipov-ar/briefy-bot',
     image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1000&q=80',
     accentColor: '#F43F5E',
-    metrics: 'Python • aiogram • Брифы',
+  },
+  {
+    id: 'field-support',
+    title: 'Field Support System — Telecom Bot + CMS',
+    category: 'bots',
+    categoryLabel: 'Telegram-боты & CMS',
+    problem: 'Выездные инженеры тратили время на поиск актуальных схем оборудования и регламентов на удаленных объектах.',
+    solution: 'Telegram-бот для мгновенного поиска документации по коду ошибки + Web-панель управления базой знаний.',
+    businessResult: 'Сокращение времени простоя оборудования и оперативный доступ к регламентам прямо со смартфона.',
+    stack: ['Java', 'Spring Boot', 'Telegram Bot API', 'PostgreSQL', 'Docker'],
+    githubUrl: 'https://github.com/garipov-ar/field-support-system',
+    image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1000&q=80',
+    accentColor: '#818CF8',
+  },
+  {
+    id: 'transaction-engine',
+    title: 'Transaction Processing Engine — Highload',
+    category: 'backend',
+    categoryLabel: 'Backend & Автоматизация',
+    problem: 'Необходимость надежной распределенной обработки финансового потока без потерь и дублирования транзакций.',
+    solution: 'Построена асинхронная архитектура на базе Apache Kafka и Spring Boot 3 с гарантией идемпотентности (ACID).',
+    businessResult: 'Стабильная работа под высокой нагрузкой с защитой от сбоев и полным мониторингом состояний.',
+    stack: ['Java 21', 'Spring Boot 3', 'Apache Kafka', 'PostgreSQL', 'Docker', 'JVM Tuning'],
+    githubUrl: 'https://github.com/garipov-ar/transaction-engine',
+    image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1000&q=80',
+    accentColor: '#38BDF8',
   },
   {
     id: 'door',
-    title: 'Дверь-Мастер — Установка межкомнатных дверей',
+    title: 'Дверь-Мастер — Установка дверей',
     category: 'web',
-    categoryLabel: 'Next.js & Frontend',
-    description: 'Высококонверсионный сайт для мастеров по установке дверей с онлайн-калькулятором, врезкой магнитных замков и гарантией 2 года.',
-    features: [
-      'Калькулятор стоимости (распашные, Invisible, купе, доборы, врезка)',
-      'Скидка 10% при заказе от 3-х полотен',
-      'Фотогалерея выполненных объектов с макро-деталями',
-      'Оффер монтажа без пыли с подключением пылесоса',
-    ],
+    categoryLabel: 'Сайты для бизнеса',
+    problem: 'Сложность дистанционного расчета монтажа полотен, доборов и врезки магнитных замков отпугивала заказчиков.',
+    solution: 'Создан наглядный калькулятор комплектации со скидкой 10% от 3-х полотен и презентацией чистого монтажа.',
+    businessResult: 'Заказчик сразу видит точную прозрачную вилку цен, что увеличивает доверие и звонки мастеру.',
     stack: ['Next.js 15', 'React 19', 'TypeScript', 'CSS Modules'],
     demoUrl: 'https://garipov-ar.github.io/door-install/',
     githubUrl: 'https://github.com/garipov-ar/door-install',
     image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1000&q=80',
     accentColor: '#C08244',
-    metrics: 'Скидки 10% • Чистый монтаж',
+  },
+  {
+    id: 'audit-log',
+    title: 'Immutable Financial Audit Log Service',
+    category: 'backend',
+    categoryLabel: 'Backend & Автоматизация',
+    problem: 'Требование регуляторов к неизменяемому хранению финансовых логов и аудиту действий операторов.',
+    solution: 'Разработан сервис на базе PostgreSQL и WORM-паттерна (Write Once, Read Many) с защитой от модификации.',
+    businessResult: '100% юридическая чистота логов и моментальный поиск по миллионам архивных записей.',
+    stack: ['Java', 'Spring Boot', 'PostgreSQL', 'REST API', 'Docker'],
+    githubUrl: 'https://github.com/garipov-ar/audit-log-service',
+    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=80',
+    accentColor: '#A78BFA',
   },
   {
     id: 'demolition',
-    title: 'Демонтаж-Про — Демонтажные работы под ключ',
+    title: 'Демонтаж-Про — Демонтажные работы',
     category: 'web',
-    categoryLabel: 'Next.js & Frontend',
-    description: 'Продающий лендинг по сносу стен, перегородок, стяжки и вывозу строительного мусора контейнерами 8–27 м³.',
-    features: [
-      'Калькулятор демонтажа по площади пола и типу стен',
-      'Расчет стоимости вывоза мусора и спуска грузчиками',
-      'Фотогалерея объектов «до / после»',
-      'Акцент на соблюдение закона о тишине и чистоту подъезда',
-    ],
+    categoryLabel: 'Сайты для бизнеса',
+    problem: 'Заказчикам сложно оценить объемы сноса стен и количество контейнеров для строительного мусора.',
+    solution: 'Внедрен экспресс-калькулятор расчета площади пола, типа стен и объема контейнеров (8–27 м³).',
+    businessResult: 'Клиент за 15 секунд получает смету, а компания — подготовленный лид с параметрами объекта.',
     stack: ['Next.js 15', 'React 19', 'TypeScript', 'CSS Modules'],
     demoUrl: 'https://garipov-ar.github.io/demolition-service/',
     githubUrl: 'https://github.com/garipov-ar/demolition-service',
     image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1000&q=80',
     accentColor: '#E57A22',
-    metrics: 'Смета за 15 сек • Контейнеры 8м³',
   },
   {
     id: 'handyman',
-    title: 'Муж на час 24/7 — Срочный бытовой ремонт',
+    title: 'Муж на час 24/7 — Срочный ремонт',
     category: 'web',
-    categoryLabel: 'Next.js & Frontend',
-    description: 'Лендинг службы срочного мелкого ремонта с интерактивным чек-листом услуг и выездом мастера за 45 минут.',
-    features: [
-      'Интерактивный чек-лист бытовых услуг с автоматическим подсчетом сметы',
-      'Категории: сантехника, навеска ТВ/полок, сборка мебели, замки',
-      'Таймер срочного выезда за 45 минут',
-      'Прозрачный прайс-лист без накруток на месте',
-    ],
+    categoryLabel: 'Сайты для бизнеса',
+    problem: 'Высокая конкуренция в нише мелкого бытового ремонта и недоверие к скрытым накруткам цен на месте.',
+    solution: 'Интерактивный чек-лист услуг с фиксированным прайсом и таймером срочного выезда за 45 минут.',
+    businessResult: 'Прозрачная смета до приезда мастера повышает конверсию в вызов на 40%.',
     stack: ['Next.js 15', 'React 19', 'TypeScript', 'CSS Modules'],
     demoUrl: 'https://garipov-ar.github.io/handyman-service/',
     githubUrl: 'https://github.com/garipov-ar/handyman-service',
     image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1000&q=80',
     accentColor: '#3B82F6',
-    metrics: 'Выезд 45 мин • Чек-лист',
   },
   {
     id: 'electrical',
-    title: 'Электро-Монтаж — Электромонтажные работы',
+    title: 'Электро-Монтаж — Работы по ГОСТ',
     category: 'web',
-    categoryLabel: 'Next.js & Frontend',
-    description: 'Экспертный сайт по электромонтажу в квартирах и домах по ГОСТ и ПУЭ с онлайн-расчетом проекта и сборкой щитов.',
-    features: [
-      'Калькулятор стоимости по типу жилья (1к, 2к, 3к, коттедж) и материалу стен',
-      'Расчет точек розеток и сборки электрощита на автоматике ABB/Schneider',
-      'Фотогалерея кабельных трасс по лазерному уровню',
-      'Гарантия 5 лет по официальному договору',
-    ],
+    categoryLabel: 'Сайты для бизнеса',
+    problem: 'Потребители опасаются некачественной проводки и хотят понимать схему работы по официальному договору.',
+    solution: 'Сайт с онлайн-расчетом точек розеток, сборки щита ABB и демонстрацией лазерной прокладки трасс.',
+    businessResult: 'Фокус на ГОСТ, ПУЭ и 5 лет гарантии привлекает заказчиков с премиальными чеками.',
     stack: ['Next.js 15', 'React 19', 'TypeScript', 'CSS Modules'],
     demoUrl: 'https://garipov-ar.github.io/electrical-service/',
     githubUrl: 'https://github.com/garipov-ar/electrical-service',
     image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=1000&q=80',
     accentColor: '#F59E0B',
-    metrics: 'ГОСТ & ПУЭ • Гарантия 5 лет',
   },
 ];
 
-// 15 Real Technologies
-const TECHNOLOGIES = [
-  { name: 'Python', category: 'Backend / Scripts' },
-  { name: 'Java', category: 'Backend & Enterprise' },
-  { name: 'Node.js', category: 'Runtime & APIs' },
-  { name: 'Next.js 15', category: 'Full-Stack Web' },
-  { name: 'React 19', category: 'Frontend UI' },
-  { name: 'TypeScript', category: 'Language' },
-  { name: 'Telegram Bot API', category: 'Bots & Mini Apps' },
-  { name: 'PostgreSQL', category: 'Database' },
-  { name: 'Docker', category: 'Containers' },
-  { name: 'Kubernetes', category: 'Orchestration' },
-  { name: 'RabbitMQ', category: 'Message Queue' },
-  { name: 'Nginx', category: 'Web Server' },
-  { name: 'Linux', category: 'OS & Infrastructure' },
-  { name: 'Tailwind CSS', category: 'Styling' },
-  { name: 'Git & CI/CD', category: 'DevOps' },
-];
-
-// Project Calculator Presets
+// Project Calculator Options
 const PROJECT_TYPES = [
   {
     id: 'landing',
     title: 'Продающий Landing Page',
-    desc: 'Высококонверсионный сайт на Next.js 15 с анимацией и адаптивностью',
+    desc: 'Высококонверсионный сайт на Next.js 15 с квизом и адаптивностью',
     basePrice: 35000,
     baseDays: 5,
   },
@@ -583,9 +597,9 @@ const PROJECT_TYPES = [
   },
   {
     id: 'backend',
-    title: 'Backend API & Highload',
-    desc: 'Масштабируемый серверный сервис на Java/Kafka/PostgreSQL',
-    basePrice: 55000,
+    title: 'Backend API & Автоматизация',
+    desc: 'Масштабируемый серверный сервис на Java/Python/PostgreSQL',
+    basePrice: 50000,
     baseDays: 10,
   },
 ];
@@ -598,6 +612,26 @@ const MODULE_OPTIONS = [
   { id: 'seo', label: 'PageSpeed 95+ и SEO-оптимизация', price: 8000, days: 1 },
 ];
 
+// FAQ Items
+const FAQ_ITEMS = [
+  {
+    q: 'Сколько времени занимает разработка проекта?',
+    a: 'Лендинг с интерактивным квиз-калькулятором создается в среднем за 5–7 рабочих дней. Telegram-боты запускаются за 3–5 дней. Сложные веб-сервисы и Backend-системы — от 10 до 20 рабочих дней. Возможен срочный экспресс-запуск.',
+  },
+  {
+    q: 'Как строится процесс оплаты?',
+    a: 'Обычно мы делим оплату на 2 этапа: 50% предоплата перед стартом проектирования и 50% после полной демонстрации готового продукта на тестовом стенде перед передачей исходников и публикацией.',
+  },
+  {
+    q: 'Что требуется от меня для старта?',
+    a: 'Достаточно описать задачу своими словами в Telegram: чем занимается ваш бизнес, какие есть пожелания по функционалу или референсы. Я помогу структурировать ТЗ и предложу оптимальный план реализации.',
+  },
+  {
+    q: 'Будет ли сайт быстро работать на смартфонах?',
+    a: 'Да, все проекты разрабатываются по методологии Mobile First на Next.js 15. Показатели в Google PageSpeed составляют 95–98 баллов из 100, что обеспечивает мгновенную загрузку даже на мобильном 4G.',
+  },
+];
+
 export default function PortfolioHub() {
   const [filter, setFilter] = useState<'all' | 'web' | 'bots' | 'backend'>('all');
   const [activeSection, setActiveSection] = useState<string>('hero');
@@ -605,20 +639,20 @@ export default function PortfolioHub() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [cookieAccepted, setCookieAccepted] = useState(true);
   const [copiedEmail, setCopiedEmail] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   // Calculator State
   const [calcType, setCalcType] = useState<string>('landing');
   const [selectedModules, setSelectedModules] = useState<string[]>(['quiz', 'crm']);
   const [isExpress, setIsExpress] = useState<boolean>(false);
 
-  const filteredProjects = filter === 'all' ? PROJECTS : PROJECTS.filter((p) => p.category === filter);
+  const filteredCases = filter === 'all' ? CASES : CASES.filter((c) => c.category === filter);
 
-  // Active theme color
   const activeThemeColor = useMemo(() => {
     return THEMES.find((t) => t.id === currentTheme)?.color || '#3B82F6';
   }, [currentTheme]);
 
-  // Dynamic Calculator Computation
+  // Calculator Computation
   const calculation = useMemo(() => {
     const selectedType = PROJECT_TYPES.find((t) => t.id === calcType) || PROJECT_TYPES[0];
     let totalPrice = selectedType.basePrice;
@@ -644,7 +678,7 @@ export default function PortfolioHub() {
     };
   }, [calcType, selectedModules, isExpress]);
 
-  // Generate Telegram Pre-filled Message URL
+  // Telegram Pre-filled URL
   const telegramMessageUrl = useMemo(() => {
     const selectedModsNames = selectedModules
       .map((id) => MODULE_OPTIONS.find((m) => m.id === id)?.label)
@@ -660,14 +694,11 @@ export default function PortfolioHub() {
     return `https://t.me/Aidar_RG?text=${encodeURIComponent(text)}`;
   }, [calculation, selectedModules, isExpress]);
 
-  // Theme Initializer and Scroll Spy
   useEffect(() => {
-    // Theme setup
     const savedTheme = localStorage.getItem('garipov_theme_accent') || 'blue';
     setCurrentTheme(savedTheme);
     document.documentElement.setAttribute('data-theme-accent', savedTheme);
 
-    // Cookie setup
     const savedCookie = localStorage.getItem('garipov_cookie_consent');
     if (!savedCookie) {
       setCookieAccepted(false);
@@ -680,8 +711,8 @@ export default function PortfolioHub() {
         setShowScrollTop(false);
       }
 
-      const sections = ['hero', 'technologies', 'projects', 'calculator', 'contacts'];
-      const scrollPosition = window.scrollY + 200;
+      const sections = ['hero', 'products', 'trust', 'cases', 'workflow', 'calculator', 'technologies', 'faq', 'contacts'];
+      const scrollPosition = window.scrollY + 220;
 
       for (let i = sections.length - 1; i >= 0; i--) {
         const el = document.getElementById(sections[i]);
@@ -725,27 +756,28 @@ export default function PortfolioHub() {
 
   return (
     <div>
-      {/* Top Navigation with Active Section Highlighting & Theme Switcher */}
-      <header style={{ borderBottom: '1px solid var(--border-subtle)', padding: '14px 0', backgroundColor: 'rgba(6, 8, 13, 0.92)', backdropFilter: 'blur(20px)', position: 'sticky', top: 0, zIndex: 50 }}>
+      {/* Top Navigation */}
+      <header style={{ borderBottom: '1px solid var(--border-subtle)', padding: '14px 0', backgroundColor: 'rgba(6, 8, 13, 0.94)', backdropFilter: 'blur(20px)', position: 'sticky', top: 0, zIndex: 50 }}>
         <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{ width: 42, height: 42, borderRadius: 12, background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '1.15rem', color: '#FFF', boxShadow: '0 4px 18px rgba(var(--color-primary-rgb), 0.5)', border: '1px solid rgba(255,255,255,0.2)' }}>
               AG
             </div>
             <div>
               <div style={{ fontWeight: 800, fontSize: '1.1rem', color: '#FFF', letterSpacing: '-0.02em' }}>Айдар Гарипов</div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--color-primary-light)', fontFamily: 'var(--font-mono)' }}>Web & Software Developer</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--color-primary-light)', fontFamily: 'var(--font-mono)' }}>Full-Stack & Bot Developer</div>
             </div>
           </div>
 
           {/* Navigation Links */}
-          <nav style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <nav style={{ display: 'flex', gap: '4px', alignItems: 'center', flexWrap: 'wrap' }}>
             {[
-              { id: 'hero', label: 'Главная' },
-              { id: 'technologies', label: 'Технологии' },
-              { id: 'projects', label: 'Проекты' },
+              { id: 'products', label: 'Услуги' },
+              { id: 'cases', label: 'Кейсы' },
+              { id: 'trust', label: 'Преимущества' },
+              { id: 'workflow', label: 'Процесс' },
               { id: 'calculator', label: 'Калькулятор' },
-              { id: 'contacts', label: 'Контакты' },
+              { id: 'faq', label: 'FAQ' },
             ].map((item) => {
               const isActive = activeSection === item.id;
               return (
@@ -756,9 +788,9 @@ export default function PortfolioHub() {
                     color: isActive ? '#FFF' : 'var(--text-secondary)',
                     backgroundColor: isActive ? 'rgba(var(--color-primary-rgb), 0.15)' : 'transparent',
                     border: `1px solid ${isActive ? 'rgba(var(--color-primary-rgb), 0.4)' : 'transparent'}`,
-                    padding: '7px 14px',
+                    padding: '6px 12px',
                     borderRadius: 10,
-                    fontSize: '0.84rem',
+                    fontSize: '0.82rem',
                     fontWeight: isActive ? 700 : 500,
                     textDecoration: 'none',
                     transition: 'all 0.2s ease',
@@ -770,24 +802,23 @@ export default function PortfolioHub() {
             })}
           </nav>
 
-          {/* Theme Palette Switcher & Social Links */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            {/* Theme Selector */}
-            <div style={{ display: 'flex', gap: '6px', background: 'rgba(255,255,255,0.04)', padding: '5px 8px', borderRadius: 12, border: '1px solid var(--border-subtle)' }} title="Сменить акцент темы">
+          {/* Theme Palette & Contact CTA */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ display: 'flex', gap: '5px', background: 'rgba(255,255,255,0.04)', padding: '4px 6px', borderRadius: 10, border: '1px solid var(--border-subtle)' }} title="Сменить акцент темы">
               {THEMES.map((th) => (
                 <button
                   key={th.id}
                   type="button"
                   onClick={() => changeTheme(th.id)}
                   style={{
-                    width: 20,
-                    height: 20,
+                    width: 18,
+                    height: 18,
                     borderRadius: '50%',
                     background: th.color,
                     border: currentTheme === th.id ? '2px solid #FFF' : '1px solid transparent',
                     cursor: 'pointer',
                     transform: currentTheme === th.id ? 'scale(1.15)' : 'scale(0.9)',
-                    boxShadow: currentTheme === th.id ? `0 0 10px ${th.color}` : 'none',
+                    boxShadow: currentTheme === th.id ? `0 0 8px ${th.color}` : 'none',
                     transition: 'all 0.2s ease',
                   }}
                   title={th.name}
@@ -796,80 +827,199 @@ export default function PortfolioHub() {
               ))}
             </div>
 
-            <a href="https://github.com/garipov-ar" target="_blank" rel="noopener noreferrer" className="cyber-btn-ghost" style={{ padding: '7px 12px', fontSize: '0.8125rem' }}>
-              <GithubIcon size={15} /> GitHub
-            </a>
-            <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn" style={{ padding: '7px 16px', fontSize: '0.8125rem' }}>
-              <TelegramIcon size={15} /> @Aidar_RG
+            <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn" style={{ padding: '8px 18px', fontSize: '0.8125rem' }}>
+              <TelegramIcon size={15} /> Обсудить проект
             </a>
           </div>
         </div>
       </header>
 
-      {/* Hero Section with Interactive Neural Mesh Canvas */}
-      <section id="hero" style={{ padding: '100px 0 80px 0', position: 'relative', overflow: 'hidden' }}>
+      {/* Hero Section: High-converting Commercial Offer + Live Architecture Artifact */}
+      <section id="hero" style={{ padding: '90px 0 80px 0', position: 'relative', overflow: 'hidden' }}>
         <HeroInteractiveCanvas themeColor={activeThemeColor} />
 
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ textAlign: 'center', maxWidth: 900, margin: '0 auto' }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', borderRadius: 9999, background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.3)', color: '#34D399', fontSize: '0.8125rem', fontWeight: 700, marginBottom: '24px' }}>
-              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10B981', display: 'inline-block', boxShadow: '0 0 10px #10B981' }}></span>
-              Открыт для новых проектов и заказов
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '48px', alignItems: 'center' }}>
+            {/* Left: Commercial Copy */}
+            <div>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 14px', borderRadius: 9999, background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.3)', color: '#34D399', fontSize: '0.8125rem', fontWeight: 700, marginBottom: '20px' }}>
+                <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10B981', display: 'inline-block', boxShadow: '0 0 10px #10B981' }}></span>
+                Открыт для новых заказов • Запуск от 3 дней
+              </div>
+
+              <h1 style={{ fontSize: 'clamp(2.3rem, 4.2vw, 3.4rem)', lineHeight: 1.15, marginBottom: '20px', letterSpacing: '-0.03em' }}>
+                Разрабатываю сайты и <span className="glow-accent">Telegram-ботов</span>, которые приводят заявки
+              </h1>
+
+              <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '32px', maxWidth: 580 }}>
+                От продающих посадочных страниц с квиз-калькуляторами сметы до Telegram-ботов и надежных Backend-систем. Беру проект от идеи и ТЗ до запуска в прод.
+              </p>
+
+              <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', alignItems: 'center' }}>
+                <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn" style={{ padding: '16px 32px', fontSize: '1rem' }}>
+                  <TelegramIcon size={18} /> 💬 Обсудить проект
+                </a>
+                <a href="#calculator" className="cyber-btn-ghost" style={{ padding: '16px 24px', fontSize: '1rem' }}>
+                  <Calculator size={18} /> Рассчитать смету
+                </a>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '24px', marginTop: '36px', paddingTop: '24px', borderTop: '1px solid var(--border-subtle)' }}>
+                <div>
+                  <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#FFF', fontFamily: 'var(--font-heading)' }}>10+</div>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Кейсов в портфолио</div>
+                </div>
+                <div style={{ width: 1, height: 32, background: 'var(--border-subtle)' }}></div>
+                <div>
+                  <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#34D399', fontFamily: 'var(--font-heading)' }}>98/100</div>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Скорость PageSpeed</div>
+                </div>
+                <div style={{ width: 1, height: 32, background: 'var(--border-subtle)' }}></div>
+                <div>
+                  <div style={{ fontSize: '1.4rem', fontWeight: 900, color: 'var(--color-primary-light)', fontFamily: 'var(--font-heading)' }}>0%</div>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Посредников и наценок</div>
+                </div>
+              </div>
             </div>
 
-            <h1 style={{ fontSize: 'clamp(2.4rem, 5.5vw, 3.8rem)', lineHeight: 1.15, marginBottom: '24px' }}>
-              Разработка веб-сервисов, <span className="glow-accent">Telegram-ботов</span> и Backend-систем
-            </h1>
+            {/* Right: Live Architecture & Flow Artifact */}
+            <div className="cyber-card" style={{ padding: '28px', border: '1px solid rgba(var(--color-primary-rgb), 0.3)', boxShadow: '0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(var(--color-primary-rgb), 0.15)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                  <Cpu size={15} color="var(--color-primary-light)" /> System Architecture Flow
+                </div>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: '#34D399', fontWeight: 700 }}>
+                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10B981' }}></span> Live 200 OK
+                </span>
+              </div>
 
-            <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', lineHeight: 1.65, maxWidth: 780, margin: '0 auto 40px auto' }}>
-              Создаю продающие сайты на Next.js 15, интерактивные квиз-калькуляторы сметы, Telegram-ботов и надежные масштабируемые Backend-сервисы.
-            </p>
+              {/* Connected Flow Diagram */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                {/* Node 1: Client Web */}
+                <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-subtle)', borderRadius: 12, padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ width: 34, height: 34, borderRadius: 8, background: 'rgba(56, 189, 248, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Globe size={18} color="#38BDF8" />
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 800, fontSize: '0.9rem', color: '#FFF' }}>Frontend: Next.js 15 & React 19</div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Квиз-калькулятор • Скорость 98/100 • UI</div>
+                    </div>
+                  </div>
+                  <span style={{ fontSize: '0.75rem', color: '#38BDF8', fontFamily: 'var(--font-mono)' }}>Client</span>
+                </div>
 
-            <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <a href="#calculator" className="cyber-btn" style={{ padding: '16px 34px', fontSize: '1.05rem' }}>
-                <Calculator size={18} /> Рассчитать проект ➔
-              </a>
-              <a href="#projects" className="cyber-btn-ghost" style={{ padding: '16px 28px', fontSize: '1.05rem' }}>
-                Смотреть проекты ({PROJECTS.length})
-              </a>
-              <a href="https://t.me/Aidar_RG" target="_blank" rel="noopener noreferrer" className="cyber-btn-ghost" style={{ padding: '16px 24px', fontSize: '1.05rem' }}>
-                <TelegramIcon size={18} /> Telegram
-              </a>
+                {/* Arrow */}
+                <div style={{ textAlign: 'center', color: 'var(--color-primary-light)', fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', opacity: 0.8 }}>
+                  <span>↓ HTTPS / REST API / Webhooks</span>
+                </div>
+
+                {/* Node 2: Backend Logic */}
+                <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-subtle)', borderRadius: 12, padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ width: 34, height: 34, borderRadius: 8, background: 'rgba(129, 140, 248, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Server size={18} color="#818CF8" />
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 800, fontSize: '0.9rem', color: '#FFF' }}>Backend: Python / Java / Node.js</div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Обработка данных • PostgreSQL • Docker</div>
+                    </div>
+                  </div>
+                  <span style={{ fontSize: '0.75rem', color: '#818CF8', fontFamily: 'var(--font-mono)' }}>Core API</span>
+                </div>
+
+                {/* Arrow */}
+                <div style={{ textAlign: 'center', color: 'var(--color-primary-light)', fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', opacity: 0.8 }}>
+                  <span>↓ Instant Lead Notification</span>
+                </div>
+
+                {/* Node 3: Telegram Bot */}
+                <div style={{ background: 'rgba(34, 158, 217, 0.08)', border: '1px solid rgba(34, 158, 217, 0.3)', borderRadius: 12, padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ width: 34, height: 34, borderRadius: 8, background: '#229ED9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <TelegramIcon size={18} />
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 800, fontSize: '0.9rem', color: '#FFF' }}>Telegram-бот & Уведомления</div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Заявка со сметой за 2 сек в телефон владельца</div>
+                    </div>
+                  </div>
+                  <span style={{ fontSize: '0.75rem', color: '#34D399', fontWeight: 800, fontFamily: 'var(--font-mono)' }}>Delivered</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Technologies Section with Real Brand SVG Icons */}
-      <section id="technologies" style={{ padding: '90px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
+      {/* 3 Core Products Section */}
+      <section id="products" style={{ padding: '80px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
         <div className="container">
           <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 48px auto' }}>
             <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
-              &lt; technologies /&gt;
+              &lt; solutions /&gt;
             </div>
-            <h2 style={{ fontSize: '2.2rem', marginBottom: '12px' }}>Стек технологий</h2>
-            <p style={{ color: 'var(--text-muted)' }}>Инструменты разработки масштабируемых систем и веб-сервисов</p>
+            <h2 style={{ fontSize: '2.4rem', marginBottom: '12px' }}>3 продукта для роста вашего бизнеса</h2>
+            <p style={{ color: 'var(--text-muted)' }}>Каждое решение закрывает конкретную задачу: от привлечения лидов до автоматизации</p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px' }}>
-            {TECHNOLOGIES.map((tech, idx) => (
-              <div
-                key={idx}
-                className="cyber-card"
-                style={{
-                  background: 'var(--bg-main)',
-                  padding: '18px 20px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '14px',
-                }}
-              >
-                <div style={{ width: 38, height: 38, borderRadius: 10, background: 'rgba(255,255,255,0.04)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: '1px solid rgba(255,255,255,0.08)' }}>
-                  {TECH_ICONS[tech.name] || <span style={{ width: 10, height: 10, borderRadius: '50%', background: 'var(--color-primary)' }}></span>}
-                </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
+            {PRODUCTS.map((prod) => (
+              <div key={prod.id} className="cyber-card" style={{ padding: '32px 28px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#FFF' }}>{tech.name}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{tech.category}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+                    <div style={{ width: 50, height: 50, borderRadius: 14, background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-subtle)' }}>
+                      {prod.icon}
+                    </div>
+                    <span style={{ fontSize: '1.6rem', fontWeight: 900, color: 'var(--color-primary-light)', fontFamily: 'var(--font-heading)', opacity: 0.5 }}>
+                      {prod.number}
+                    </span>
+                  </div>
+
+                  <h3 style={{ fontSize: '1.4rem', marginBottom: '12px', color: '#FFF' }}>{prod.title}</h3>
+                  <p style={{ fontSize: '0.9375rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '24px' }}>
+                    {prod.desc}
+                  </p>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '28px' }}>
+                    {prod.features.map((feat, fIdx) => (
+                      <div key={fIdx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.84rem', color: 'var(--text-primary)' }}>
+                        <CheckCircle2 size={16} color="var(--color-primary-light)" style={{ flexShrink: 0 }} />
+                        <span>{feat}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <a href="#calculator" className="cyber-btn-ghost" style={{ padding: '12px 18px', fontSize: '0.875rem', justifyContent: 'center' }}>
+                  Рассчитать этот продукт <ArrowRight size={16} />
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Trust & Social Proof: Why Clients Choose Me */}
+      <section id="trust" style={{ padding: '80px 0' }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 48px auto' }}>
+            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
+              &lt; why-me /&gt;
+            </div>
+            <h2 style={{ fontSize: '2.4rem', marginBottom: '12px' }}>Почему со мной выгодно работать</h2>
+            <p style={{ color: 'var(--text-muted)' }}>Надежность Senior-разработчика, прозрачные сроки и фокус на бизнес-результате</p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
+            {TRUST_POINTS.map((item, idx) => (
+              <div key={idx} className="cyber-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <div>
+                  <span style={{ display: 'inline-block', padding: '4px 10px', borderRadius: 6, background: 'rgba(var(--color-primary-rgb), 0.12)', color: 'var(--color-primary-light)', fontSize: '0.75rem', fontWeight: 800, marginBottom: '16px', fontFamily: 'var(--font-mono)' }}>
+                    {item.badge}
+                  </span>
+                  <h3 style={{ fontSize: '1.15rem', color: '#FFF', marginBottom: '10px' }}>{item.title}</h3>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -877,23 +1027,23 @@ export default function PortfolioHub() {
         </div>
       </section>
 
-      {/* Projects Showcase (10 Full Projects from Repositories) */}
-      <section id="projects" style={{ padding: '90px 0' }}>
+      {/* Repackaged Case Studies with Business Problem -> Solution -> Result */}
+      <section id="cases" style={{ padding: '90px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
         <div className="container">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '20px', marginBottom: '48px' }}>
             <div>
               <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
-                &lt; all-projects /&gt;
+                &lt; case-studies /&gt;
               </div>
-              <h2 style={{ fontSize: '2.5rem' }}>Реализованные проекты ({PROJECTS.length})</h2>
+              <h2 style={{ fontSize: '2.5rem' }}>Реализованные кейсы ({CASES.length})</h2>
             </div>
 
             {/* Filter Tabs */}
-            <div style={{ display: 'flex', gap: '8px', background: 'var(--bg-surface)', padding: '6px', borderRadius: 14, border: '1px solid var(--border-subtle)', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '8px', background: 'var(--bg-main)', padding: '6px', borderRadius: 14, border: '1px solid var(--border-subtle)', flexWrap: 'wrap' }}>
               {[
-                { id: 'all', label: `Все проекты (${PROJECTS.length})` },
-                { id: 'web', label: 'Веб-сайты & Лендинги (6)' },
-                { id: 'bots', label: 'Telegram Боты (2)' },
+                { id: 'all', label: `Все кейсы (${CASES.length})` },
+                { id: 'web', label: 'Сайты для бизнеса (6)' },
+                { id: 'bots', label: 'Telegram-боты (2)' },
                 { id: 'backend', label: 'Backend & Highload (2)' },
               ].map((tab) => (
                 <button
@@ -919,49 +1069,66 @@ export default function PortfolioHub() {
             </div>
           </div>
 
-          {/* Project Grid */}
+          {/* Cases Grid */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '32px' }}>
-            {filteredProjects.map((project) => (
+            {filteredCases.map((project) => (
               <div
                 key={project.id}
                 className="cyber-card"
                 style={{
+                  background: 'var(--bg-main)',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                 }}
               >
                 <div>
-                  {/* Project Image */}
-                  <div style={{ height: 230, backgroundImage: `url('${project.image}')`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
-                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(12, 16, 26, 0.95) 0%, transparent 60%)' }} />
-                    <span style={{ position: 'absolute', top: 16, left: 16, background: 'rgba(6, 8, 13, 0.85)', backdropFilter: 'blur(8px)', color: project.accentColor, border: `1px solid ${project.accentColor}40`, padding: '6px 14px', borderRadius: 8, fontSize: '0.75rem', fontWeight: 800 }}>
+                  {/* Case Cover */}
+                  <div style={{ height: 210, backgroundImage: `url('${project.image}')`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
+                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(6, 8, 13, 0.95) 0%, transparent 60%)' }} />
+                    <span style={{ position: 'absolute', top: 16, left: 16, background: 'rgba(6, 8, 13, 0.85)', backdropFilter: 'blur(8px)', color: project.accentColor, border: `1px solid ${project.accentColor}40`, padding: '6px 12px', borderRadius: 8, fontSize: '0.75rem', fontWeight: 800 }}>
                       {project.categoryLabel}
-                    </span>
-                    <span style={{ position: 'absolute', bottom: 16, right: 16, background: 'rgba(6, 8, 13, 0.85)', color: '#FFF', padding: '4px 10px', borderRadius: 6, fontSize: '0.75rem', fontFamily: 'var(--font-mono)' }}>
-                      {project.metrics}
                     </span>
                   </div>
 
-                  {/* Project Content */}
-                  <div style={{ padding: '24px 24px 0 24px' }}>
-                    <h3 style={{ fontSize: '1.35rem', marginBottom: '10px', color: '#FFF' }}>{project.title}</h3>
-                    <p style={{ fontSize: '0.9375rem', color: 'var(--text-secondary)', marginBottom: '18px', lineHeight: 1.6 }}>
-                      {project.description}
-                    </p>
+                  {/* Case Body: Problem -> Solution -> Result */}
+                  <div style={{ padding: '24px' }}>
+                    <h3 style={{ fontSize: '1.3rem', marginBottom: '16px', color: '#FFF' }}>{project.title}</h3>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
-                      {project.features.map((feat, fIdx) => (
-                        <div key={fIdx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '0.8125rem', color: 'var(--text-primary)' }}>
-                          <CheckCircle2 size={16} color={project.accentColor} style={{ flexShrink: 0, marginTop: 2 }} />
-                          <span>{feat}</span>
-                        </div>
-                      ))}
+                    {/* Problem */}
+                    <div style={{ marginBottom: '12px' }}>
+                      <div style={{ fontSize: '0.75rem', color: '#EF4444', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '3px' }}>
+                        Проблема бизнеса
+                      </div>
+                      <div style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                        {project.problem}
+                      </div>
                     </div>
 
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '24px' }}>
+                    {/* Solution */}
+                    <div style={{ marginBottom: '12px' }}>
+                      <div style={{ fontSize: '0.75rem', color: '#60A5FA', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '3px' }}>
+                        Решение
+                      </div>
+                      <div style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                        {project.solution}
+                      </div>
+                    </div>
+
+                    {/* Business Result */}
+                    <div style={{ marginBottom: '18px', background: 'rgba(16, 185, 129, 0.08)', padding: '10px 12px', borderRadius: 10, border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                      <div style={{ fontSize: '0.75rem', color: '#34D399', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '3px' }}>
+                        Результат для бизнеса
+                      </div>
+                      <div style={{ fontSize: '0.84rem', color: '#E2E8F0', fontWeight: 500, lineHeight: 1.5 }}>
+                        {project.businessResult}
+                      </div>
+                    </div>
+
+                    {/* Stack tags */}
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '8px' }}>
                       {project.stack.map((s, sIdx) => (
-                        <span key={sIdx} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border-subtle)', color: 'var(--text-muted)', padding: '4px 10px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>
+                        <span key={sIdx} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border-subtle)', color: 'var(--text-muted)', padding: '3px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>
                           {s}
                         </span>
                       ))}
@@ -977,9 +1144,9 @@ export default function PortfolioHub() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="cyber-btn"
-                      style={{ padding: '12px 18px', fontSize: '0.875rem' }}
+                      style={{ padding: '12px 16px', fontSize: '0.85rem' }}
                     >
-                      Демо сайта <ArrowUpRight size={16} />
+                      Смотреть демо <ArrowUpRight size={16} />
                     </a>
                   )}
                   <a
@@ -987,11 +1154,36 @@ export default function PortfolioHub() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="cyber-btn-ghost"
-                    style={{ padding: '12px 14px', fontSize: '0.875rem', justifyContent: 'center' }}
+                    style={{ padding: '12px 14px', fontSize: '0.85rem', justifyContent: 'center' }}
                   >
-                    <GithubIcon size={16} /> Исходный код
+                    <GithubIcon size={16} /> Исходники
                   </a>
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 4 Steps Workflow Section */}
+      <section id="workflow" style={{ padding: '90px 0' }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 48px auto' }}>
+            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
+              &lt; workflow /&gt;
+            </div>
+            <h2 style={{ fontSize: '2.4rem', marginBottom: '12px' }}>Как строится работа</h2>
+            <p style={{ color: 'var(--text-muted)' }}>Прозрачные 4 шага от первой переписки до готового продукта в сети</p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px' }}>
+            {WORKFLOW_STEPS.map((step, idx) => (
+              <div key={idx} className="cyber-card" style={{ padding: '28px 24px', position: 'relative' }}>
+                <div style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--color-primary-light)', fontFamily: 'var(--font-heading)', opacity: 0.4, marginBottom: '14px' }}>
+                  {step.step}
+                </div>
+                <h3 style={{ fontSize: '1.2rem', color: '#FFF', marginBottom: '10px' }}>{step.title}</h3>
+                <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{step.desc}</p>
               </div>
             ))}
           </div>
@@ -1003,7 +1195,7 @@ export default function PortfolioHub() {
         <div className="container">
           <div style={{ textAlign: 'center', maxWidth: 700, margin: '0 auto 48px auto' }}>
             <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
-              &lt; project-calculator /&gt;
+              &lt; calculator /&gt;
             </div>
             <h2 style={{ fontSize: '2.5rem', marginBottom: '14px' }}>Калькулятор стоимости и сроков</h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem' }}>
@@ -1012,9 +1204,9 @@ export default function PortfolioHub() {
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '36px', alignItems: 'start' }}>
-            {/* Step 1 & 2: Options Configuration */}
+            {/* Options */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
-              {/* Step 1: Project Type */}
+              {/* Step 1 */}
               <div className="cyber-card" style={{ padding: '24px' }}>
                 <div style={{ fontSize: '0.875rem', color: 'var(--color-primary-light)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px', fontFamily: 'var(--font-mono)' }}>
                   Шаг 1. Тип разработки
@@ -1044,7 +1236,7 @@ export default function PortfolioHub() {
                 </div>
               </div>
 
-              {/* Step 2: Additional Modules */}
+              {/* Step 2 */}
               <div className="cyber-card" style={{ padding: '24px' }}>
                 <div style={{ fontSize: '0.875rem', color: 'var(--color-primary-light)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px', fontFamily: 'var(--font-mono)' }}>
                   Шаг 2. Дополнительные модули
@@ -1076,7 +1268,7 @@ export default function PortfolioHub() {
                 </div>
               </div>
 
-              {/* Step 3: Speed option */}
+              {/* Step 3 */}
               <div className="cyber-card" style={{ padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
                 <div>
                   <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#FFF' }}>⚡ Экспресс-запуск проекта</div>
@@ -1102,7 +1294,7 @@ export default function PortfolioHub() {
               </div>
             </div>
 
-            {/* Live Calculation Summary & One-Click Telegram CTA */}
+            {/* Live Calculation Summary & CTA */}
             <div className="cyber-card" style={{ padding: '32px', border: '1px solid rgba(var(--color-primary-rgb), 0.35)', boxShadow: '0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(var(--color-primary-rgb), 0.15)', position: 'sticky', top: 100 }}>
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '4px 12px', borderRadius: 8, background: 'rgba(var(--color-primary-rgb), 0.15)', color: 'var(--color-primary-light)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '20px', fontFamily: 'var(--font-mono)' }}>
                 Итоговый расчёт
@@ -1170,15 +1362,80 @@ export default function PortfolioHub() {
         </div>
       </section>
 
-      {/* Contacts / CTA */}
-      <section id="contacts" style={{ padding: '90px 0', borderTop: '1px solid var(--border-subtle)', background: 'radial-gradient(circle at 50% 100%, rgba(var(--color-primary-rgb), 0.15) 0%, transparent 60%)' }}>
-        <div className="container" style={{ maxWidth: 860, textAlign: 'center' }}>
-          <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
-            &lt; contact-me /&gt;
+      {/* Technologies Section (Balanced Proof of Engineering Competence) */}
+      <section id="technologies" style={{ padding: '80px 0' }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 48px auto' }}>
+            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
+              &lt; tech-stack /&gt;
+            </div>
+            <h2 style={{ fontSize: '2.2rem', marginBottom: '12px' }}>Стек и технологии</h2>
+            <p style={{ color: 'var(--text-muted)' }}>Инструменты для создания быстрых интерфейсов и отказоустойчивых систем</p>
           </div>
-          <h2 style={{ fontSize: '2.5rem', marginBottom: '16px' }}>Готовы обсудить ваш проект?</h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginBottom: '40px', lineHeight: 1.6 }}>
-            Напишите мне в Telegram или на электронную почту — обсудим сайт, Telegram-бота или Backend-систему, подберем архитектуру и сделаем быстрый запуск.
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px' }}>
+            {Object.keys(TECH_ICONS).map((name, idx) => (
+              <div
+                key={idx}
+                className="cyber-card"
+                style={{
+                  padding: '16px 18px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '14px',
+                }}
+              >
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(255,255,255,0.04)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: '1px solid rgba(255,255,255,0.08)' }}>
+                  {TECH_ICONS[name]}
+                </div>
+                <div style={{ fontWeight: 700, fontSize: '0.92rem', color: '#FFF' }}>{name}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" style={{ padding: '80px 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
+        <div className="container" style={{ maxWidth: 860 }}>
+          <div style={{ textAlign: 'center', margin: '0 auto 48px auto' }}>
+            <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
+              &lt; faq /&gt;
+            </div>
+            <h2 style={{ fontSize: '2.4rem', marginBottom: '12px' }}>Часто задаваемые вопросы</h2>
+            <p style={{ color: 'var(--text-muted)' }}>Ответы на популярные вопросы о процессе, оплате и гарантиях</p>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            {FAQ_ITEMS.map((item, idx) => {
+              const isOpen = openFaq === idx;
+              return (
+                <div key={idx} className="cyber-card" style={{ padding: '20px 24px', cursor: 'pointer' }} onClick={() => setOpenFaq(isOpen ? null : idx)}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+                    <h3 style={{ fontSize: '1.05rem', color: '#FFF' }}>{item.q}</h3>
+                    <ChevronDown size={20} color="var(--color-primary-light)" style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.25s ease' }} />
+                  </div>
+                  {isOpen && (
+                    <p style={{ marginTop: '14px', fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6, borderTop: '1px solid var(--border-subtle)', paddingTop: '12px' }}>
+                      {item.a}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* High-Converting Final CTA Section */}
+      <section id="contacts" style={{ padding: '100px 0', background: 'radial-gradient(circle at 50% 100%, rgba(var(--color-primary-rgb), 0.18) 0%, transparent 60%)' }}>
+        <div className="container" style={{ maxWidth: 840, textAlign: 'center' }}>
+          <div style={{ color: 'var(--color-primary)', fontSize: '0.8125rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
+            &lt; start-project /&gt;
+          </div>
+          <h2 style={{ fontSize: 'clamp(2.2rem, 4.5vw, 3rem)', marginBottom: '18px' }}>Есть идея проекта или нужна автоматизация?</h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '1.15rem', marginBottom: '40px', lineHeight: 1.6, maxWidth: 680, margin: '0 auto 40px auto' }}>
+            Опишите задачу в Telegram — предложу оптимальный вариант реализации, стек и предварительный план запуска за 1 рабочий день.
           </p>
 
           <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
@@ -1187,46 +1444,31 @@ export default function PortfolioHub() {
               target="_blank"
               rel="noopener noreferrer"
               className="cyber-btn"
-              style={{ padding: '16px 32px', fontSize: '1rem' }}
+              style={{ padding: '18px 38px', fontSize: '1.05rem' }}
             >
-              <TelegramIcon size={18} /> Написать в Telegram
+              <TelegramIcon size={20} /> 💬 Обсудить проект в Telegram
             </a>
-
-            <button
-              type="button"
-              onClick={copyEmail}
-              className="cyber-btn-ghost"
-              style={{
-                padding: '16px 24px',
-                fontSize: '1rem',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '10px',
-                cursor: 'pointer',
-              }}
-              title="Нажмите, чтобы скопировать email"
-            >
-              <Mail size={18} color="var(--color-primary-light)" />
-              <span>disprogar@gmail.com</span>
-              <span style={{ display: 'inline-flex', alignItems: 'center', marginLeft: '4px', opacity: 0.8 }}>
-                {copiedEmail ? <Check size={16} color="#34D399" /> : <Copy size={16} />}
-              </span>
-              {copiedEmail && (
-                <span style={{ fontSize: '0.8rem', color: '#34D399', fontWeight: 600, marginLeft: '4px' }}>
-                  (скопирован!)
-                </span>
-              )}
-            </button>
 
             <a
               href="https://github.com/garipov-ar"
               target="_blank"
               rel="noopener noreferrer"
               className="cyber-btn-ghost"
-              style={{ padding: '16px 26px', fontSize: '1rem' }}
+              style={{ padding: '18px 28px', fontSize: '1.05rem' }}
             >
-              <GithubIcon size={18} /> GitHub Профиль
+              <GithubIcon size={20} /> Посмотреть GitHub
             </a>
+
+            <button
+              type="button"
+              onClick={copyEmail}
+              className="cyber-btn-ghost"
+              style={{ padding: '18px 24px', fontSize: '1.05rem' }}
+              title="Скопировать email"
+            >
+              <Mail size={18} color="var(--color-primary-light)" />
+              <span>{copiedEmail ? 'Email скопирован!' : 'Email'}</span>
+            </button>
           </div>
         </div>
       </section>
@@ -1234,7 +1476,7 @@ export default function PortfolioHub() {
       {/* Footer */}
       <footer style={{ padding: '40px 0', borderTop: '1px solid var(--border-subtle)', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.875rem', background: '#05070B' }}>
         <div className="container">
-          <div style={{ fontWeight: 800, color: '#FFF', fontSize: '1.1rem', marginBottom: '8px' }}>Айдар Гарипов — Web & Software Developer</div>
+          <div style={{ fontWeight: 800, color: '#FFF', fontSize: '1.1rem', marginBottom: '8px' }}>Айдар Гарипов — Full-Stack & Bot Developer</div>
           <p style={{ color: 'var(--color-primary-light)', fontFamily: 'var(--font-mono)', fontSize: '0.875rem', marginTop: '6px' }}>
             Сделано с терминалом и любовью ❤️
           </p>
@@ -1242,7 +1484,7 @@ export default function PortfolioHub() {
         </div>
       </footer>
 
-      {/* Floating Back to Top Button */}
+      {/* Back to Top */}
       {showScrollTop && (
         <button
           type="button"
