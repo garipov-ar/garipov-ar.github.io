@@ -97,6 +97,24 @@ h1, h2, h3, h4 {
   }
 }
 
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 100;
+  background-color: rgba(6, 8, 13, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-subtle);
+  transition: all 0.2s ease;
+}
+
+.main-content {
+  padding-top: 56px;
+}
+
 .glow-gradient {
   background: linear-gradient(135deg, #FFFFFF 0%, var(--color-primary-light) 50%, var(--color-primary) 100%);
   -webkit-background-clip: text;

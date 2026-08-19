@@ -1011,27 +1011,9 @@ export default function PortfolioHub() {
   const currentArchInfo = ARCH_DETAILS[activeArchNode] || ARCH_DETAILS.web;
 
   return (
-    <div style={{ overflowX: 'hidden', width: '100%' }}>
-      {/* Top Engineering Status Bar (Desktop Only) */}
-      <div className="status-bar-wrapper" style={{ background: '#040609', borderBottom: '1px solid rgba(255,255,255,0.05)', padding: '6px 0', fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#34D399', fontWeight: 700 }}>
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10B981', display: 'inline-block', boxShadow: '0 0 8px #10B981' }}></span>
-              SYSTEM ONLINE
-            </span>
-            <span>node: prod-eu-north</span>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <span>Next.js 15 Turbopack</span>
-            <span>latency: &lt;45ms</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Top Navigation */}
-      <header style={{ borderBottom: '1px solid var(--border-subtle)', padding: '10px 0', backgroundColor: 'rgba(6, 8, 13, 0.94)', backdropFilter: 'blur(20px)', position: 'sticky', top: 0, zIndex: 50 }}>
+    <div style={{ width: '100%' }}>
+      {/* Top Permanent Fixed Header */}
+      <header className="site-header" style={{ padding: '10px 0' }}>
         <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
           {/* Logo & Brand */}
           <a href="#hero" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', minWidth: 0 }}>
@@ -1179,8 +1161,9 @@ export default function PortfolioHub() {
         )}
       </header>
 
-      {/* Hero Section */}
-      <section id="hero" style={{ padding: '48px 0 40px 0', position: 'relative', overflow: 'hidden' }}>
+      <main className="main-content">
+        {/* Hero Section */}
+        <section id="hero" style={{ padding: '48px 0 40px 0', position: 'relative', overflow: 'hidden' }}>
         <HeroInteractiveCanvas themeColor={activeThemeColor} />
 
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
@@ -1978,6 +1961,7 @@ export default function PortfolioHub() {
           </div>
         </div>
       </section>
+      </main>
 
       {/* Footer */}
       <footer style={{ padding: '28px 0', borderTop: '1px solid var(--border-subtle)', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8rem', background: '#05070B' }}>
